@@ -35,6 +35,10 @@ void windowAdderWindow::ok()
     {
         _mdi->addBogMgWindow( _ui->txt_eaps->text() );
     }
+    if( _ui->chb_bopmgUiChar->isChecked() )
+    {
+        _mdi->addBopmgUICharWindow( _ui->txt_bopmgUIChar->text() );
+    }
     if( _ui->chb_simpleGraph->isChecked() )
     {
         _mdi->addSimpleGraph( _ui->txt_simpleGraph->text() );

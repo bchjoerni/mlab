@@ -56,9 +56,17 @@ void mdiHandler::addSimpleGraph( const QString &title )
 }
 
 void mdiHandler::addBogMgWindow( const QString& title )
+
 {
     LOG(INFO) << "add bogMgWindow";
     bopmgWindow* window = new bopmgWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
+void mdiHandler::addBopmgUICharWindow( const QString& title )
+{
+    LOG(INFO) << "add bopmgUICharWindow";
+    bopmgUICharWindow* window = new bopmgUICharWindow;
     addWindow( window, window->windowFlags(), title );
 }
 

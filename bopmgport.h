@@ -19,7 +19,7 @@ public:
 
     explicit bopmgPort( QObject *parent = 0 );
     void updateValues() override;
-    void setValue( setValueType type, double value, bool autoAdjust );
+    void setValue( setValueType type, double value, bool autoAdjust = false );
     double minVoltage() const;
     double maxVoltage() const;
     double minCurrent() const;

@@ -11,6 +11,7 @@
 #include "pairsavewindow.h"
 #include "eapswindow.h"
 #include "simplegraphwindow.h"
+#include "bopmguicharwindow.h"
 
 class mdiHandler : public QObject
 {
@@ -22,7 +23,8 @@ public:
     void addPairSaveWindow( const QString& title );
     void addSimpleGraph( const QString& title );
     void addBogMgWindow( const QString& title );
-    void addEapsWindow( const QString& title );    
+    void addEapsWindow( const QString& title );
+    void addBopmgUICharWindow( const QString& title );
 
 public slots:
     void windowClosed();

@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     eapswindow.cpp \
     bopmgport.cpp \
     simplegraphwindow.cpp \
-    simplegraphwidget.cpp
+    simplegraphwidget.cpp \
+    bopmguicharwindow.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -40,7 +41,8 @@ HEADERS  += mainwindow.h \
     easylogging++.h \
     bopmgport.h \
     simplegraphwindow.h \
-    simplegraphwidget.h
+    simplegraphwidget.h \
+    bopmguicharwindow.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -48,7 +50,8 @@ FORMS    += mainwindow.ui \
     powermetertestwindow.ui \
     pairsavewindow.ui \
     eapswindow.ui \
-    simplegraphwindow.ui
+    simplegraphwindow.ui \
+    bopmguicharwindow.ui
 
 CONFIG   += c++11
 

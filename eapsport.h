@@ -20,7 +20,7 @@ public:
 
     explicit eapsPort( QObject *parent = 0 );
     void updateValues() override;
-    void setValue( setValueType type, double value, bool autoAdjust );
+    void setValue( setValueType type, double value, bool autoAdjust = false );
     double maxVoltage() const;
     double maxCurrent() const;
     void setEmitVoltage( bool emitVoltage );

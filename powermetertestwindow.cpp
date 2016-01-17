@@ -3,7 +3,7 @@
 
 powerMeterTestWindow::powerMeterTestWindow( QWidget *parent ) :
     mLabWindow( parent ),
-    _ui( new Ui::powerMeterTestWindow ), _setValue( 0.0 ),
+    _ui( new Ui::powerMeterTestWindow ), _setValue( 0.01 ),
     _randomGenerator( new std::mt19937( std::random_device()() ) )
 {
     _ui->setupUi( this );
