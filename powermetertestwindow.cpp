@@ -62,6 +62,7 @@ void powerMeterTestWindow::connectPort()
     _ui->lbl_status->setText( CONNECTED );
     _ui->lbl_status->setStyleSheet( STYLE_OK );
     _ui->btn_connect->setText( DISCONNECT_PORT );
+    _ui->lbl_info->setText( "testport" );
     setInit( true );
 }
 
@@ -71,6 +72,7 @@ void powerMeterTestWindow::disconnectPort()
     _ui->lbl_status->setText( NOT_CONNECTED );
     _ui->lbl_status->setStyleSheet( STYLE_ERROR );
     _ui->btn_connect->setText( CONNECT_PORT );
+    _ui->lbl_info->setText( "-" );
     setInit( false );
 }
 

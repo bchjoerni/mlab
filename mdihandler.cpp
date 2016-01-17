@@ -36,24 +36,35 @@ void mdiHandler::putValue( const QString &id, double value )
 
 void mdiHandler::addPowerMeterTestWindow( const QString &title )
 {
+    LOG(INFO) << "add powerMeterTestWindow";
     powerMeterTestWindow* pmtw = new powerMeterTestWindow;
     addWindow( pmtw, pmtw->windowFlags(), title );
 }
 
 void mdiHandler::addPairSaveWindow( const QString &title )
 {
+    LOG(INFO) << "add pairSaveWindow";
     pairSaveWindow* psw = new pairSaveWindow;
     addWindow( psw, psw->windowFlags(), title );
 }
 
+void mdiHandler::addSimpleGraph( const QString &title )
+{
+    LOG(INFO) << "add simpleGraph";
+    simpleGraphWindow* sgw = new simpleGraphWindow;
+    addWindow( sgw, sgw->windowFlags(), title );
+}
+
 void mdiHandler::addBogMgWindow( const QString& title )
 {
-    bopMgWindow* window = new bopMgWindow;
+    LOG(INFO) << "add bogMgWindow";
+    bopmgWindow* window = new bopmgWindow;
     addWindow( window, window->windowFlags(), title );
 }
 
 void mdiHandler::addEapsWindow( const QString &title )
 {
+    LOG(INFO) << "add eapsWindow";
     eapsWindow* window = new eapsWindow;
     addWindow( window, window->windowFlags(), title );
 }
@@ -75,5 +86,6 @@ void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
 
 void mdiHandler::windowClosed()
 {
+    LOG(INFO) << "window closed";
     emit windowNumberChanged( -1 );
 }

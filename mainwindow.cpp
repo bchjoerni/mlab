@@ -64,6 +64,8 @@ void mainWindow::startMeasurement()
     _clockTimer.start( CLOCK_INTERVAL_MS );
     _ui->lbl_updateStatus->setText( "running " );
     _ui->lbl_updateStatus->setStyleSheet( "color: green" );
+    LOG(INFO) << "update timer started, interval: "
+              << _ui->dsp_updateInterval->value() << " s";
 }
 
 void mainWindow::stopMeasurement()
@@ -73,6 +75,7 @@ void mainWindow::stopMeasurement()
     _clockTimer.stop();
     _ui->lbl_updateStatus->setText( "paused  " );
     _ui->lbl_updateStatus->setStyleSheet( "color: red" );
+    LOG(INFO) << "update timer stopped";
 }
 
 void mainWindow::addWindow()
@@ -113,6 +116,7 @@ void mainWindow::setStartStopButtons( bool running )
 
 void mainWindow::doUpdate()
 {
+    LOG(INFO) << "do update ...";
     _mdi->doUpdates();
 }
 
@@ -141,6 +145,8 @@ void mainWindow::setLog()
                             "TO_STANDARD_OUTPUT = false" );
     config.parseFromText( _ui->act_log->isChecked() ? enabled : disabled );
     el::Loggers::reconfigureAllLoggers( config );
+    LOG(INFO) << "Logger enabled, "
+              << _statusBarNumWindows->text().toStdString();
 }
 
 void mainWindow::exit()

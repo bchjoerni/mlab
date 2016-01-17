@@ -2,11 +2,10 @@
 #define EAPSPORT_H
 
 #include <QObject>
-#include <QSerialPort>
 #include <QString>
-#include <QTimer>
-#include <QTime>
 #include <QApplication>
+
+#include <cmath>
 
 #include "easylogging++.h"
 #include "labport.h"
@@ -16,15 +15,18 @@ class eapsPort : public labPort
     Q_OBJECT
 
 public:
-    enum eapsSetValues{ none, voltage, current };
+    enum setValueType{ setTypeNone, setTypeVoltage, setTypeCurrent,
+                      setTypePowerByVoltage, setTypePowerByCurrent };
 
     explicit eapsPort( QObject *parent = 0 );
-    void open( const QString& portName );
-    void getUpdateValues() override;
-    void setValue( eapsSetValues type, double value, bool autoAdjust );
+    void updateValues() override;
+    void setValue( setValueType type, double value, bool autoAdjust );
+    double maxVoltage() const;
+    double maxCurrent() const;
     void setEmitVoltage( bool emitVoltage );
     void setEmitCurrent( bool emitCurrent );
-    void setEmitPower( bool power );
+    void setEmitPower( bool emitPower );
+    QString idString() const;
 
 signals:
     void newVoltage( double volt );
@@ -36,6 +38,8 @@ private slots:
     void receivedMsg( QByteArray msg );
 
 private:
+    void setSerialValues();
+    void setLabPortVariables();
     void getIdn();
     void getMaxValues();
     void getIdString();
@@ -43,33 +47,56 @@ private:
     void getInitValues() override;
     void getVoltage();
     void getCurrent();
+    double calcAdjustedValue( double setValue, double lastValue );
+    void adjustValues();
     void setVoltage( double voltage );
     void setCurrent( double current );
     void setToPrototype( unsigned char* msg );
     void setCheckBytes( unsigned char* msg );
-    int calcCheckBytes( unsigned char* msg );
+    int  calcCheckBytes( unsigned char* msg );
     bool checkMsgBytes( unsigned char* msg );
+    bool checkAnswerFormat( QByteArray msg, unsigned char* msgValues );
+    void updateNumInTimeValues();
 
-    labPort _port;
+    void answerSetVoltage();
+    void answerGetVoltage( unsigned char* msgValues );
+    void answerSetCurrent();
+    void answerGetCurrent( unsigned char* msgValues );
+    void answerSetStatus();
+    void answerGetStatus( unsigned char* msgValues );
+    void answerSetIdString();
+    void answerGetIdString( QByteArray msg );
+    void answerEcho( unsigned char* msgValues );
+    void answerError( unsigned char* msgValues );
+    void answerSetIdn();
+    void answerGetIdn( unsigned char* msgValues );
+    void answerGetMaxValues( unsigned char* msgValues );
+    void answerSetUserText();
+    void answerGetUserText( QByteArray msg );
+
     QString _idString;
     int _id;
     int _maxVoltageOut;    
     int _maxCurrentOut;
     int _maxVoltageIn;
     int _maxCurrentIn;
-    int _initCount;
-    double _maxVoltage;
-    double _maxCurrent;
+    double _minVoltageValue;
+    double _maxVoltageValue;
+    double _minCurrentValue;
+    double _maxCurrentValue;
     double _lastVoltage;
     double _lastCurrent;
-    eapsSetValues _setValueType;
+    double _lastPower;
+    setValueType _setValueType;
     double _setVoltage;
     double _setCurrent;
+    double _setPower;
     bool _autoAdjust;
     bool _emitVoltage;
     bool _emitCurrent;
     bool _emitPower;
 
+    const double adjustmentFactor = 0.3;
     const static int MESSAGE_LENGTH = 24;
     const unsigned char MESSAGE_PROTOTYPE[MESSAGE_LENGTH]
             = { 170, 85, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

@@ -17,7 +17,7 @@
    <item row="5" column="0">
     <widget class="QCheckBox" name="chb_eaps">
      <property name="text">
-      <string>EA-PS</string>
+      <string>EA-PS 3000</string>
      </property>
     </widget>
    </item>
@@ -117,6 +117,23 @@
     <widget class="QLineEdit" name="txt_pairSave">
      <property name="text">
       <string>value saver</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0">
+    <widget class="QCheckBox" name="chb_simpleGraph">
+     <property name="text">
+      <string>simple graph</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1">
+    <widget class="QLineEdit" name="txt_simpleGraph">
+     <property name="text">
+      <string>simple graph</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>

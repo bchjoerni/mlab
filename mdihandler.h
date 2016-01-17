@@ -10,6 +10,7 @@
 #include "powermetertestwindow.h"
 #include "pairsavewindow.h"
 #include "eapswindow.h"
+#include "simplegraphwindow.h"
 
 class mdiHandler : public QObject
 {
@@ -19,8 +20,9 @@ public:
     void doUpdates();
     void addPowerMeterTestWindow( const QString& title );
     void addPairSaveWindow( const QString& title );
+    void addSimpleGraph( const QString& title );
     void addBogMgWindow( const QString& title );
-    void addEapsWindow( const QString& title );
+    void addEapsWindow( const QString& title );    
 
 public slots:
     void windowClosed();
