@@ -43,6 +43,7 @@ private:
     void setLabPortVariables();
     void setCls();
     void setOutput( bool on );
+    void setRemoteControl( bool on );
     void getIdn();
     void getMinVoltage();
     void getMaxVoltage();
@@ -84,6 +85,7 @@ private:
     const QString CMD_CURRENT_MAX = "CURR?MAX";
     const QString CMD_VOLTAGE     = "MEAS:VOLT?";
     const QString CMD_CURRENT     = "MEAS:CURR?";
+    const QString CMD_OTHER       = "other";
 };
 
 #endif // BOPMGPORT_H

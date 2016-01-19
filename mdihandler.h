@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QMdiArea>
 #include <QMdiSubWindow>
+#include <QStringList>
 
 #include "easylogging++.h"
 #include "bopmgwindow.h"
@@ -25,6 +26,7 @@ public:
     void addBogMgWindow( const QString& title );
     void addEapsWindow( const QString& title );
     void addBopmgUICharWindow( const QString& title );
+    QStringList getWindowNames();
 
 public slots:
     void windowClosed();

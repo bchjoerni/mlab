@@ -2,6 +2,8 @@
 #define WINDOWADDERWINDOW_H
 
 #include <QDialog>
+#include <QStringList>
+#include <QMessageBox>
 
 #include "easylogging++.h"
 #include "mdihandler.h"
@@ -24,6 +26,9 @@ private slots:
     void cancel();
 
 private:
+    bool checkWindowNames();
+    bool namesValid( QStringList names );
+
     Ui::windowAdderWindow *_ui;
     mdiHandler* _mdi;
 };

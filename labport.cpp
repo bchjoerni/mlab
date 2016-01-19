@@ -58,12 +58,9 @@ void labPort::clearErrors()
 void labPort::sendMsg( const char* msg, int numChars, bool inTime )
 {
     QByteArray bytes( msg, numChars );
+    _msgToSend.push_back( bytes );
 
-    if( _sendTimer.isActive() )
-    {
-        _msgToSend.push_back( bytes );
-    }
-    else
+    if( !_sendTimer.isActive() )
     {
         timeToSendMsg();
         _sendTimer.start( _writingPauseMs );

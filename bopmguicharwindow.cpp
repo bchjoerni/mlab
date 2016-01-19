@@ -146,13 +146,13 @@ void bopmgUICharWindow::doUpdate()
 {
     if( _port.isRunning() )
     {
+        _port.updateValues();
+
         if( _running )
         {
             setValues();
             _tickCounter++;
         }
-
-        _port.updateValues();
     }
 }
 
@@ -177,19 +177,30 @@ void bopmgUICharWindow::setValues()
         }
         _port.setValue( bopmgPort::setValueType::setTypeCurrent, value, false );
     }
+
+    if( value >= _ui->dsb_toValue->value() )
+    {
+        _running = false;
+        _tickCounter = 0;
+        _ui->frame_setValues->setEnabled( true );
+        _ui->btn_startStop->setText( START );
+    }
 }
 
 void bopmgUICharWindow::startStop()
 {
+    bool started = (_ui->btn_startStop->text() == START);
+
     if( _ui->dsb_fromValue->value() > _ui->dsb_toValue->value() )
     {
         double temp = _ui->dsb_fromValue->value();
         _ui->dsb_fromValue->setValue( _ui->dsb_toValue->value() );
         _ui->dsb_toValue->setValue( temp );
     }
-    bool started = (_ui->btn_startStop->text() == START);
 
+    _ui->btn_startStop->setText( started ? STOP : START );
     _running = started;
+    _tickCounter = 0;
     _ui->frame_setValues->setEnabled( !started );
 }
 

@@ -19,6 +19,11 @@ windowAdderWindow::~windowAdderWindow()
 
 void windowAdderWindow::ok()
 {
+    if( !checkWindowNames() )
+    {
+        return;
+    }
+
     if( _ui->chb_powerMeterTest->isChecked() )
     {
         _mdi->addPowerMeterTestWindow( _ui->txt_test->text() );
@@ -33,7 +38,7 @@ void windowAdderWindow::ok()
     }
     if( _ui->chb_bopMg->isChecked() )
     {
-        _mdi->addBogMgWindow( _ui->txt_eaps->text() );
+        _mdi->addBogMgWindow( _ui->txt_bogMg->text() );
     }
     if( _ui->chb_bopmgUiChar->isChecked() )
     {
@@ -50,4 +55,97 @@ void windowAdderWindow::ok()
 void windowAdderWindow::cancel()
 {
     reject();
+}
+
+bool windowAdderWindow::checkWindowNames()
+{
+    QStringList names;
+
+    if( _ui->chb_powerMeterTest->isChecked() )
+    {
+        names.push_back( _ui->txt_test->text() );
+    }
+    if( _ui->chb_pairSave->isChecked() )
+    {
+        names.push_back( _ui->txt_pairSave->text() );
+    }
+    if( _ui->chb_eaps->isChecked() )
+    {
+        names.push_back( _ui->txt_eaps->text() );
+    }
+    if( _ui->chb_bopMg->isChecked() )
+    {
+        names.push_back( _ui->txt_bogMg->text() );
+    }
+    if( _ui->chb_bopmgUiChar->isChecked() )
+    {
+        names.push_back( _ui->txt_bopmgUIChar->text() );
+    }
+    if( _ui->chb_simpleGraph->isChecked() )
+    {
+        names.push_back( _ui->txt_simpleGraph->text() );
+    }
+
+    return namesValid( names );
+}
+
+bool windowAdderWindow::namesValid( QStringList names )
+{
+    if( names.isEmpty() )
+    {
+        return true;
+    }
+
+    for( QString name : names )
+    {
+        if( name.isEmpty() )
+        {
+            QMessageBox msgBox;
+            msgBox.setWindowTitle( "error" );
+            msgBox.setText( "Window names must not be empty!" );
+            msgBox.exec();
+
+            return false;
+        }
+    }
+
+    for( int i = 0; i < names.size(); i++ )
+    {
+        for( int k = 0; k < names.size(); k++ )
+        {
+            if( i != k && names.at( i ) == names.at( k ) )
+            {
+                QMessageBox msgBox;
+                msgBox.setWindowTitle( "error" );
+                msgBox.setText( "Window names have to be unique!\n"
+                                "('" + names.at( i ) + "' is not!)" );
+                msgBox.exec();
+
+                return false;
+            }
+        }
+    }
+
+    QStringList existingNames = _mdi->getWindowNames();
+    if( !existingNames.isEmpty() )
+    {
+        for( QString name : names )
+        {
+            for( QString existingName : existingNames )
+            {
+                if( name == existingName )
+                {
+                    QMessageBox msgBox;
+                    msgBox.setWindowTitle( "error" );
+                    msgBox.setText( "Window name '" + name + "' is already "
+                                                             "used!"  );
+                    msgBox.exec();
+
+                    return false;
+                }
+            }
+        }
+    }
+
+    return true;
 }

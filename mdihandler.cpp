@@ -92,6 +92,19 @@ void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
              SLOT( putValue( QString, double ) ) );
 }
 
+QStringList mdiHandler::getWindowNames()
+{
+    QStringList names;
+
+    auto subWindows = _mdiArea->subWindowList();
+    for( QMdiSubWindow* window : subWindows )
+    {
+        names.push_back( window->windowTitle() );
+    }
+
+    return names;
+}
+
 void mdiHandler::windowClosed()
 {
     LOG(INFO) << "window closed";

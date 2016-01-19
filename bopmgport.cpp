@@ -1,8 +1,8 @@
 #include "bopmgport.h"
 
 bopmgPort::bopmgPort( QObject *parent ) : labPort( parent ),
-    _minVoltage( -1.0 ), _maxVoltage( 1.0 ),
-    _minCurrent( -1.0 ), _maxCurrent( 1.0 ),
+    _minVoltage( -100.0 ), _maxVoltage( 100.0 ),
+    _minCurrent( -10.0 ), _maxCurrent( 10.0 ),
     _lastVoltage( 0.0 ), _lastCurrent( 0.0 ), _lastPower( 0.0 ),
     _setValueType( setValueType::setTypeNone ), _autoAdjust( false ),
     _emitVoltage( false ), _emitCurrent( false ), _emitPower( false )
@@ -26,7 +26,7 @@ void bopmgPort::setLabPortVariables()
 {
     _initTimeoutMs      = 1500;
     _initValueCounter   = 0;
-    _numInitValues      = 5;
+    _numInitValues      = 1;
     _minBytesRead       = -10;
     _writingPauseMs     = 100;
     _bytesError         = 20;
@@ -35,13 +35,13 @@ void bopmgPort::setLabPortVariables()
 }
 
 void bopmgPort::getInitValues()
-{
+{    
     setCls();
-    getMinVoltage();
-    getMaxVoltage();
-    getMinCurrent();
-    getMaxCurrent();
+    _expectedAnswer.push_back( CMD_OTHER );
+    setRemoteControl( true );
+    _expectedAnswer.push_back( CMD_OTHER );
     setOutput( true );
+    _expectedAnswer.push_back( CMD_IDN );
     getIdn();
 }
 
@@ -89,6 +89,7 @@ void bopmgPort::setEmitPower( bool emitPower )
 void bopmgPort::updateNumInTimeValues()
 {
     _numInTimeValues = 0;
+    /*
     if( _emitVoltage )
     {
         _numInTimeValues++;
@@ -101,6 +102,7 @@ void bopmgPort::updateNumInTimeValues()
     {
         _numInTimeValues++;
     }
+    */
 }
 
 void bopmgPort::setCls()
@@ -108,9 +110,14 @@ void bopmgPort::setCls()
     sendBopmgCmd( "*CLS" );
 }
 
+void bopmgPort::setRemoteControl( bool on )
+{
+    sendBopmgCmd( QString( "SYST:REM " ) + (on ? "ON" : "OFF") );
+}
+
 void bopmgPort::setOutput( bool on )
 {
-    sendBopmgCmd( QString( "OUP " ) + (on ? "ON" : "OFF") );
+    sendBopmgCmd( QString( "OUTP " ) + (on ? "ON" : "OFF") );
 }
 
 void bopmgPort::getIdn()
@@ -250,11 +257,13 @@ void bopmgPort::setValue( setValueType type, double value, bool autoAdjust )
 
 void bopmgPort::setVoltage( double voltage )
 {
+    _expectedAnswer.push_back( CMD_OTHER );
     sendBopmgCmd( "VOLT " + QString::number( voltage ) );
 }
 
 void bopmgPort::setCurrent( double current )
 {
+    _expectedAnswer.push_back( CMD_OTHER );
     sendBopmgCmd( "CURR " + QString::number( current ) );
 }
 
@@ -270,12 +279,12 @@ void bopmgPort::getCurrent()
 
 void bopmgPort::sendBopmgCmd( QString cmd, bool inTime )
 {
-    QString msg = cmd + "\r\n";
+    QString msg = cmd + ";\r\n";
     if( cmd.contains( "?" ) )
     {
         _expectedAnswer.push_back( cmd );
     }
-    sendMsg( msg.toStdString().c_str(), msg.size(), inTime );
+    sendMsg( msg.toStdString().c_str(), msg.size(), false ); // todo: in time not working properly
 }
 
 void bopmgPort::receivedMsg( QByteArray msg )
@@ -286,6 +295,8 @@ void bopmgPort::receivedMsg( QByteArray msg )
         return;
     }
 
+    msg.replace( 0x0A, "" ).replace( 0x0B, "" ).replace( 0x0D, "" )
+            .replace( 0x11, "" ).replace( 0x13, "" );
     bool conversionSuccessful = false;
     if( _expectedAnswer[0] == CMD_VOLTAGE )
     {
@@ -307,7 +318,7 @@ void bopmgPort::receivedMsg( QByteArray msg )
     }
     else if( _expectedAnswer[0] == CMD_IDN )
     {
-        _idString = msg;
+        _idString = msg.left( 20 );
         _initValueCounter++;
         emit initSuccessful( _idString );
     }
@@ -346,6 +357,9 @@ void bopmgPort::receivedMsg( QByteArray msg )
             _maxCurrent = value;
             _initValueCounter++;
         }
+    }
+    else if( _expectedAnswer[0] == CMD_OTHER )
+    {
     }
     else
     {

@@ -28,7 +28,7 @@ void eapsPort::setLabPortVariables()
 {
     _initTimeoutMs      = 1500;
     _initValueCounter   = 0;
-    _numInitValues      = 4;
+    _numInitValues      = 3;
     _minBytesRead       = MESSAGE_LENGTH;
     _writingPauseMs     = 100;
     _bytesError         = 75;
@@ -38,7 +38,6 @@ void eapsPort::setLabPortVariables()
 
 void eapsPort::getInitValues()
 {
-    LOG(INFO) << "eaps: getIdn() ...";
     getIdn();
 }
 
