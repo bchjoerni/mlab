@@ -34,6 +34,7 @@ private slots:
     void startMeasurement();
     void stopMeasurement();
     void addWindow();
+    void addUiCharWindows();
     void doUpdate();
     void timeUpdate();
     void setLog();

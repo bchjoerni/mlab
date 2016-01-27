@@ -19,58 +19,13 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0" colspan="8">
+    <item row="1" column="0" colspan="9">
      <widget class="QMdiArea" name="mdiArea"/>
     </item>
-    <item row="0" column="5">
-     <widget class="QTimeEdit" name="time_timeRunning">
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-      <property name="displayFormat">
-       <string>hh:mm:ss</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3">
-     <widget class="QPushButton" name="btn_startMeasurement">
-      <property name="text">
-       <string>start</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="4">
-     <widget class="QPushButton" name="btn_stopMeasurement">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>stop</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="lbl_updateStatus">
-      <property name="font">
-       <font>
-        <italic>true</italic>
-       </font>
-      </property>
-      <property name="styleSheet">
-       <string notr="true">color: red</string>
-      </property>
-      <property name="text">
-       <string>paused </string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="7">
+    <item row="0" column="8">
      <widget class="QPushButton" name="btn_addWindow">
       <property name="text">
-       <string>add Window</string>
+       <string>add &amp;Window</string>
       </property>
      </widget>
     </item>
@@ -110,6 +65,58 @@
       </property>
      </spacer>
     </item>
+    <item row="0" column="5">
+     <widget class="QTimeEdit" name="time_timeRunning">
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="displayFormat">
+       <string>hh:mm:ss</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="3">
+     <widget class="QPushButton" name="btn_startMeasurement">
+      <property name="text">
+       <string>st&amp;art</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="4">
+     <widget class="QPushButton" name="btn_stopMeasurement">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>st&amp;op</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="lbl_updateStatus">
+      <property name="font">
+       <font>
+        <italic>true</italic>
+       </font>
+      </property>
+      <property name="styleSheet">
+       <string notr="true">color: red</string>
+      </property>
+      <property name="text">
+       <string> paused </string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="7">
+     <widget class="QPushButton" name="btn_addUiCharWindows">
+      <property name="text">
+       <string>add UI-&amp;Char Windows</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -134,27 +141,20 @@
      <string>Windows</string>
     </property>
     <addaction name="act_addWindow"/>
+    <addaction name="act_addUiCharWindows"/>
    </widget>
    <addaction name="menuProgram"/>
    <addaction name="menuWindows"/>
   </widget>
-  <widget class="QToolBar" name="mainToolBar">
-   <attribute name="toolBarArea">
-    <enum>TopToolBarArea</enum>
-   </attribute>
-   <attribute name="toolBarBreak">
-    <bool>false</bool>
-   </attribute>
-  </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="act_addWindow">
    <property name="text">
-    <string>Add Window</string>
+    <string>&amp;Add Window</string>
    </property>
   </action>
   <action name="act_exit">
    <property name="text">
-    <string>Exit</string>
+    <string>&amp;Exit</string>
    </property>
   </action>
   <action name="act_log">
@@ -162,7 +162,12 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Log</string>
+    <string>&amp;Log</string>
+   </property>
+  </action>
+  <action name="act_addUiCharWindows">
+   <property name="text">
+    <string>Add UI-&amp;Char Windows</string>
    </property>
   </action>
  </widget>

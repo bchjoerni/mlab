@@ -21,10 +21,11 @@ public:
     void updateValues() override;
     void startPump();
     void stopPump();
-    void setValue( setValueType type, double value, bool autoAdjust = false );
+    void setValue( setValueType type, double value );
     void setEmitRpm( bool emitRpm );
     void setEmitPressure( bool emitPressure );
     QString idString() const;
+    void setId( int id );
 
 signals:
     void initSuccessful( QString idString );

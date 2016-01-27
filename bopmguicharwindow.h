@@ -3,6 +3,7 @@
 
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QMessageBox>
 
 #include <cmath>
 
@@ -54,12 +55,17 @@ private:
     void refreshPortList();
     void addItems();
     void setValues();
+    bool endOfLoop();
+    void uiCharFinished();
 
     Ui::bopmgUICharWindow *_ui;
     bopmgPort _port;
     int _tickCounter;
+    int _loopCounter;
     bool _running;
-    double _valueForTickCalc;
+    bool _increasing;
+    double _setUiValue;
+    double _lastMeasuredValue;
 
     const QString VOLTAGE          = "voltage";
     const QString CURRENT          = "current";

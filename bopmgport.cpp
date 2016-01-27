@@ -375,6 +375,11 @@ void bopmgPort::receivedMsg( QByteArray msg )
             _lastCurrent = current;
             emit newCurrent( _lastCurrent );
         }
+        if( _emitPower )
+        {
+            _lastPower = _lastVoltage*_lastCurrent;
+            emit newPower( _lastPower );
+        }
     }
     else if( _expectedAnswer[0] == CMD_IDN )
     {

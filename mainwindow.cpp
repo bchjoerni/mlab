@@ -35,6 +35,8 @@ void mainWindow::connectActions()
     connect( _ui->act_exit, SIGNAL( triggered() ), this, SLOT( exit() ) );
     connect( _ui->act_addWindow, SIGNAL( triggered() ), this,
              SLOT( addWindow() ) );
+    connect( _ui->act_addUiCharWindows, SIGNAL( triggered() ), this,
+             SLOT( addUiCharWindows() ) );
     connect( _ui->act_log, SIGNAL( triggered( bool ) ), this,
              SLOT( setLog() ) );
 }
@@ -48,6 +50,8 @@ void mainWindow::connectButtons()
 
     connect( _ui->btn_addWindow, SIGNAL( clicked() ), this,
              SLOT( addWindow() ) );
+    connect( _ui->btn_addUiCharWindows, SIGNAL( clicked() ), this,
+             SLOT( addUiCharWindows() ) );
 }
 
 void mainWindow::connectTimers()
@@ -62,7 +66,7 @@ void mainWindow::startMeasurement()
     _updateTimer.start( static_cast<int>( _ui->dsp_updateInterval->value() *
                                           1000 ) );
     _clockTimer.start( CLOCK_INTERVAL_MS );
-    _ui->lbl_updateStatus->setText( "running " );
+    _ui->lbl_updateStatus->setText( " running " );
     _ui->lbl_updateStatus->setStyleSheet( "color: green" );
     LOG(INFO) << "update timer started, interval: "
               << _ui->dsp_updateInterval->value() << " s";
@@ -73,7 +77,7 @@ void mainWindow::stopMeasurement()
     setStartStopButtons( false );
     _updateTimer.stop();
     _clockTimer.stop();
-    _ui->lbl_updateStatus->setText( "paused  " );
+    _ui->lbl_updateStatus->setText( " paused  " );
     _ui->lbl_updateStatus->setStyleSheet( "color: red" );
     LOG(INFO) << "update timer stopped";
 }
@@ -82,6 +86,22 @@ void mainWindow::addWindow()
 {
     windowAdderWindow waw( _mdi, this );
     waw.exec();
+}
+
+void mainWindow::addUiCharWindows()
+{
+    if( _mdi->getWindowNames().isEmpty() )
+    {
+        _mdi->addUiCharWindows();
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle( "Error!" );
+        msgBox.setText( "UI Windows can only be added if there are no other "
+                        "windows!" );
+        msgBox.exec();
+    }
 }
 
 void mainWindow::windowNumberChanged( int change )

@@ -30,7 +30,10 @@ SOURCES += main.cpp\
     temperaturecalcwindow.cpp \
     tsh071port.cpp \
     tsh071window.cpp \
-    allsavewindow.cpp
+    allsavewindow.cpp \
+    elflowport.cpp \
+    elflowprotocol.cpp \
+    byteconverter.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -50,7 +53,10 @@ HEADERS  += mainwindow.h \
     temperaturecalcwindow.h \
     tsh071port.h \
     tsh071window.h \
-    allsavewindow.h
+    allsavewindow.h \
+    elflowport.h \
+    elflowprotocol.h \
+    byteconverter.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \

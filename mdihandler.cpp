@@ -154,3 +154,72 @@ void mdiHandler::windowClosed()
     LOG(INFO) << "window closed";
     emit windowNumberChanged( -1 );
 }
+
+void mdiHandler::addUiCharWindows()
+{
+    const int border = 1;
+
+    const QString s1 = "UI Characteristic";
+    const QString s2 = "Heating";
+    const QString s3 = "Temperature Calculator";
+    const QString s4 = "UI Value Saver";
+    const QString s5 = "All Value Saver";
+    const QString s6 = "Graph";
+
+    QRect r1;
+    QRect r2;
+    QRect r3;
+    QRect r4;
+    QRect r5;
+    QRect r6;
+
+    addBopmgUICharWindow(     s1 );
+    addEapsWindow(            s2 );
+    addCalcTemperatureWindow( s3 );
+    addPairSaveWindow(        s4 );
+    addAllSaveWindow(         s5 );
+    addSimpleGraph(           s6 );
+
+    auto subWindows = _mdiArea->subWindowList();
+    for( QMdiSubWindow* w : subWindows )
+    {
+        if( w->windowTitle() == s1 )
+        {
+            w->setGeometry( border, border,
+                            w->geometry().width(), w->geometry().height() );
+            r1 = w->geometry();
+        }
+        else if( w->windowTitle() == s2 )
+        {
+            w->setGeometry( r1.x(), border*2 + r1.height(),
+                            w->geometry().width(), w->geometry().height() );
+            r2 = w->geometry();
+        }
+        else if( w->windowTitle() == s3 )
+        {
+            w->setGeometry( border*2 + (r1.width() > r2.width() ?
+                                            r1.width() : r2.width()), border,
+                            w->geometry().width(), w->geometry().height() );
+            r3 = w->geometry();
+        }
+        else if( w->windowTitle() == s4 )
+        {
+            w->setGeometry( r3.x(), border*2 + r3.height(),
+                            w->geometry().width(), w->geometry().height() );
+            r4 = w->geometry();
+        }
+        else if( w->windowTitle() == s5 )
+        {
+            w->setGeometry( r3.x(), border + r4.y() + r4.height(),
+                            w->geometry().width(), w->geometry().height() );
+            r5 = w->geometry();
+        }
+        else if( w->windowTitle() == s6 )
+        {
+            w->setGeometry( 3*border + r1.width() + r3.width(), border,
+                            r1.width()*3/2, r1.width()*3/2 );
+            r6 = w->geometry();
+        }
+    }
+}
+

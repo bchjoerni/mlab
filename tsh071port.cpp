@@ -1,7 +1,7 @@
 #include "tsh071port.h"
 
 tsh071Port::tsh071Port( QObject* parent ) : labPort( parent ),
-    _idString( "Vacuum Pump" ), _id( 1 )
+    _id( 0 )
 {
     setSerialValues();
     setLabPortVariables();
@@ -28,6 +28,11 @@ void tsh071Port::setLabPortVariables()
     _bytesError         = 20;
     _inTimeValueCounter = 0;
     _numInTimeValues    = 0;
+}
+
+void tsh071Port::setId( int id )
+{
+    _id = id;
 }
 
 void tsh071Port::getInitValues()
@@ -101,7 +106,7 @@ void tsh071Port::setEmitPressure( bool emitPressure )
     _emitPressure = emitPressure;
 }
 
-void tsh071Port::setValue( setValueType type, double value, bool autoAdjust )
+void tsh071Port::setValue( setValueType type, double value )
 {
     if( type == setValueType::setTypeNone )
     {
@@ -133,7 +138,7 @@ void tsh071Port::setValue( setValueType type, double value, bool autoAdjust )
 
 QString tsh071Port::idString() const
 {
-    return "";
+    return _idString;
 }
 
 void tsh071Port::receivedMsg( QByteArray msg )

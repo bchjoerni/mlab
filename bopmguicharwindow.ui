@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>469</width>
+    <width>486</width>
     <height>461</height>
    </rect>
   </property>
@@ -103,12 +103,12 @@
           </widget>
          </item>
          <item row="0" column="11">
-          <widget class="QCheckBox" name="chb_fixedSteps">
+          <widget class="QCheckBox" name="chb_calcValues">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
-            <string>fix steps</string>
+            <string>calc values</string>
            </property>
            <property name="checked">
             <bool>true</bool>
@@ -169,8 +169,13 @@
          </item>
          <item row="1" column="10" colspan="2">
           <widget class="QLabel" name="lbl_unit_lbl">
+           <property name="font">
+            <font>
+             <pointsize>8</pointsize>
+            </font>
+           </property>
            <property name="text">
-            <string>(unit for all)</string>
+            <string>(unit for all fields)</string>
            </property>
           </widget>
          </item>
@@ -184,7 +189,7 @@
          <item row="2" column="2">
           <widget class="QSpinBox" name="spb_repeat">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -194,7 +199,7 @@
          <item row="2" column="3" colspan="4">
           <widget class="QCheckBox" name="chb_loop">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string>roundly</string>
@@ -285,6 +290,9 @@
          </item>
          <item row="0" column="2">
           <widget class="QCheckBox" name="chb_shareVoltage">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>share</string>
            </property>
@@ -327,6 +335,9 @@
          </item>
          <item row="0" column="2">
           <widget class="QCheckBox" name="chb_shareCurrent">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
            <property name="text">
             <string>share</string>
            </property>

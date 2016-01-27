@@ -3,8 +3,9 @@
 
 bopmgUICharWindow::bopmgUICharWindow( QWidget *parent ) :
     mLabWindow( parent ),
-    _ui( new Ui::bopmgUICharWindow ), _tickCounter( 0 ), _running( false ),
-    _valueForTickCalc( 0.0 )
+    _ui( new Ui::bopmgUICharWindow ), _tickCounter( 0 ), _loopCounter( 0 ),
+    _running( false ), _increasing( true ),
+    _setUiValue( 0.0 ), _lastMeasuredValue( 0.0 )
 {
     _ui->setupUi( this );
 
@@ -52,7 +53,7 @@ void bopmgUICharWindow::connectUiElements()
              SLOT( emitCurrentChanged() ) );
     connect( _ui->chb_sharePower, SIGNAL( stateChanged( int ) ), this,
              SLOT( emitPowerChanged() ) );
-    connect( _ui->chb_fixedSteps, SIGNAL( stateChanged( int ) ), this,
+    connect( _ui->chb_calcValues, SIGNAL( stateChanged( int ) ), this,
              SLOT( fixStepSizeChanged() ) );
 
     connect( _ui->dsb_fromValue, SIGNAL( valueChanged( double ) ), this,
@@ -89,6 +90,11 @@ void bopmgUICharWindow::refreshPortList()
         if( !info.isBusy() )
         {
             _ui->cob_ports->addItem( info.portName() );
+
+            if( info.serialNumber() == "FTV9UOK8" )
+            {
+                _ui->cob_ports->setCurrentText( info.portName() );
+            }
         }
     }
 
@@ -154,72 +160,115 @@ void bopmgUICharWindow::doUpdate()
         {
             setValues();
             _tickCounter++;
+            _ui->lbl_ticksLeft->setText( QString::number(
+                        _ui->lbl_ticksLeft->text().toInt() - 1 ) );
         }
     }
 }
 
 void bopmgUICharWindow::setValues()
 {
-    double value = _ui->dsb_fromValue->value()
-            + _tickCounter*_ui->dsb_stepSize->value();
+    if( endOfLoop() )
+    {
+        uiCharFinished();
+        return;
+    }
+
+    double setValue = (_ui->chb_calcValues->isChecked() ?
+                           _setUiValue : _lastMeasuredValue);
+    _setUiValue = setValue + (_increasing ? 1 : -1)*_ui->dsb_stepSize->value();
 
     if( _ui->cob_setValue->currentText() == VOLTAGE )
     {
         if( _ui->cob_unit->currentText() == UNIT_MILLIVOLT )
         {
-            value /= 1000.0;
+            _setUiValue /= 1000.0;
         }
-        _port.setValue( bopmgPort::setValueType::setTypeVoltage, value, false );
+        _port.setValue( bopmgPort::setValueType::setTypeVoltage,
+                        _setUiValue, false );
     }
     else if( _ui->cob_setValue->currentText() == CURRENT )
     {
         if( _ui->cob_unit->currentText() == UNIT_MILLIAMPERE )
         {
-            value /= 1000.0;
+            _setUiValue /= 1000.0;
         }
-        _port.setValue( bopmgPort::setValueType::setTypeCurrent, value, false );
+        _port.setValue( bopmgPort::setValueType::setTypeCurrent,
+                        _setUiValue, false );
     }
+}
 
-    if( value >= _ui->dsb_toValue->value() )
+bool bopmgUICharWindow::endOfLoop()
+{
+    if( (_increasing && (_setUiValue >= _ui->dsb_toValue->value()))
+    || (!_increasing && (_setUiValue <= _ui->dsb_fromValue->value())) )
     {
-        _running = false;
-        _tickCounter = 0;
-        _ui->frame_setValues->setEnabled( true );
-        _ui->chb_setZeroWhenFinished->setEnabled( true );
-        _ui->btn_startStop->setText( START );
-
-        if( _ui->chb_setZeroWhenFinished->isChecked() )
+        if( _loopCounter < (_ui->chb_loop->isChecked() ? 1 : 0) +
+                _ui->spb_repeat->value()*(_ui->chb_loop->isChecked() ? 2 : 1) )
         {
-            if( _ui->cob_setValue->currentText() == VOLTAGE )
+            _loopCounter++;
+            if( _ui->chb_loop->isChecked() )
             {
-                _port.setValue( bopmgPort::setValueType::setTypeVoltage,
-                                0.0, false );
+                _increasing = !_increasing;
             }
-            else if( _ui->cob_setValue->currentText() == CURRENT )
+            else
             {
-                _port.setValue( bopmgPort::setValueType::setTypeCurrent,
-                                0.0, false );
+                _setUiValue = _ui->dsb_fromValue->value() +
+                        (_increasing ? -1 : 1)*_ui->dsb_stepSize->value();
+                _lastMeasuredValue = _setUiValue;
             }
         }
+        else
+        {
+            return true;
+        }
     }
+
+    return false;
+}
+
+void bopmgUICharWindow::uiCharFinished()
+{
+    _running = false;
+    _tickCounter = 0;
+    _ui->frame_setValues->setEnabled( true );
+    _ui->chb_setZeroWhenFinished->setEnabled( true );
+    _ui->btn_startStop->setText( START );
+    calculateRemainingTicks();
+
+    if( _ui->chb_setZeroWhenFinished->isChecked() )
+    {
+        if( _ui->cob_setValue->currentText() == VOLTAGE )
+        {
+            _port.setValue( bopmgPort::setValueType::setTypeVoltage,
+                            0.0, false );
+        }
+        else if( _ui->cob_setValue->currentText() == CURRENT )
+        {
+            _port.setValue( bopmgPort::setValueType::setTypeCurrent,
+                            0.0, false );
+        }
+    }
+
+    emit changeWindowState( this->windowTitle(), false );
 }
 
 void bopmgUICharWindow::startStop()
 {
+    calculateRemainingTicks();
     bool started = (_ui->btn_startStop->text() == START);
 
-    if( _ui->dsb_fromValue->value() > _ui->dsb_toValue->value() )
-    {
-        double temp = _ui->dsb_fromValue->value();
-        _ui->dsb_fromValue->setValue( _ui->dsb_toValue->value() );
-        _ui->dsb_toValue->setValue( temp );
-    }
+    _increasing = (_ui->dsb_fromValue->value() < _ui->dsb_toValue->value());
 
     _ui->btn_startStop->setText( started ? STOP : START );
     _running = started;
     _tickCounter = 0;
+    _loopCounter = 0;
     _ui->frame_setValues->setEnabled( !started );
     _ui->chb_setZeroWhenFinished->setEnabled( !started );
+    _setUiValue = _ui->dsb_fromValue->value() +
+            (_increasing ? -1 : 1)*_ui->dsb_stepSize->value();
+    _lastMeasuredValue = _setUiValue;
 
     emit changeWindowState( this->windowTitle(), started );
 }
@@ -228,6 +277,11 @@ void bopmgUICharWindow::voltageUpdate( double voltage )
 {
     LOG(INFO) << this->windowTitle().toStdString() << ": voltage update: "
               << voltage;
+
+    if( _ui->cob_setValue->currentText() == VOLTAGE )
+    {
+        _lastMeasuredValue = voltage;
+    }
     _ui->txt_voltage->setText( QString::number( voltage ) + " V" );
     emit newValue( this->windowTitle() + ": " + VOLTAGE, voltage );
 }
@@ -236,6 +290,11 @@ void bopmgUICharWindow::currentUpdate( double current )
 {
     LOG(INFO) << this->windowTitle().toStdString() << ": current update: "
               << current;
+
+    if( _ui->cob_setValue->currentText() == CURRENT )
+    {
+        _lastMeasuredValue = current;
+    }
     _ui->txt_current->setText( QString::number( current ) + " A" );
     emit newValue( this->windowTitle() + ": " + CURRENT, current );
 }
@@ -325,34 +384,30 @@ void bopmgUICharWindow::updateUnitRange()
 
 void bopmgUICharWindow::fixStepSizeChanged()
 {
-    _ui->lbl_ticksApprox->setVisible( !_ui->chb_fixedSteps->isChecked() );
+    _ui->lbl_ticksApprox->setVisible( !_ui->chb_calcValues->isChecked() );
+    if( !_ui->chb_calcValues->isChecked() )
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle( "Warning!" );
+        msgBox.setText( "Warning: Using measured values might cause "
+                        "problems!" );
+        msgBox.exec();
+    }
 }
 
 void bopmgUICharWindow::calculateRemainingTicks()
 {
-    if( _running )
-    {
-        if( _ui->cob_setValue->currentText() == VOLTAGE )
-        {
-            _valueForTickCalc = _ui->txt_voltage->text().toDouble();
-        }
-        else if( _ui->cob_setValue->currentText() == CURRENT )
-        {
-            _valueForTickCalc = _ui->txt_current->text().toDouble();
-        }
-    }
-    else
-    {
-        _valueForTickCalc = _ui->dsb_fromValue->value();
-    }
-
-    double steps = std::abs( _ui->dsb_toValue->value() - _valueForTickCalc )
-            /_ui->dsb_stepSize->value();
+    double steps = std::abs( _ui->dsb_toValue->value() -
+                _ui->dsb_fromValue->value() )/_ui->dsb_stepSize->value();
     if( _ui->chb_loop->isChecked() )
     {
         steps *= 2;
     }
     steps *= (1 + _ui->spb_repeat->value());
+    if( !_ui->chb_loop->isChecked() )
+    {
+        steps += _ui->spb_repeat->value();
+    }
     _ui->lbl_ticksLeft->setText( QString::number(
                                      static_cast<int>( steps ) + 1 ) );
 }

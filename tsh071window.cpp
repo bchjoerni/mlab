@@ -77,6 +77,11 @@ void tsh071Window::refreshPortList()
         if( !info.isBusy() )
         {
             _ui->cob_ports->addItem( info.portName() );
+
+            if( info.serialNumber() == "FTYIWRSL" )
+            {
+                _ui->cob_ports->setCurrentText( info.portName() );
+            }
         }
     }
 
@@ -103,6 +108,7 @@ void tsh071Window::connectivityButtonPressed()
 
 void tsh071Window::connectPort()
 {
+    _port.setId( _ui->spb_id->value() );
     _port.openPort( _ui->cob_ports->currentText() );
 }
 
@@ -114,6 +120,7 @@ void tsh071Window::disconnectPort()
     _ui->lbl_status->setText( NOT_CONNECTED );
     _ui->lbl_status->setStyleSheet( STYLE_ERROR );
     _ui->btn_connect->setText( CONNECT_PORT );
+    _ui->spb_id->setEnabled( true );
 
     emit changeWindowState( this->windowTitle(), false );
 }
@@ -124,17 +131,17 @@ void tsh071Window::initFinished( const QString &idString )
               << idString.toStdString();
     _ui->lbl_info->setText( idString );
 
-    _ui->btn_setRpm->setEnabled( true );
     _ui->lbl_status->setText( CONNECTED );
     _ui->lbl_status->setStyleSheet( STYLE_OK );
     _ui->btn_connect->setText( DISCONNECT_PORT );
+    _ui->spb_id->setEnabled( false );
 }
 
 void tsh071Window::setRotation()
 {
     double value = static_cast<double>( _ui->spb_rpm->value() );
 
-    _port.setValue( tsh071Port::setValueType::setTypeRpm, value, false );
+    _port.setValue( tsh071Port::setValueType::setTypeRpm, value );
     _ui->lbl_rpmSet->setText( QString::number( value ) );
 }
 
@@ -152,6 +159,8 @@ void tsh071Window::stopPump()
     _port.stopPump();
     _ui->lbl_running->setText( "pausing" );
     _ui->lbl_running->setStyleSheet( STYLE_ERROR );
+
+    emit changeWindowState( this->windowTitle(), false );
 }
 
 void tsh071Window::doUpdate()
@@ -256,6 +265,7 @@ void tsh071Window::resetInfo()
         _ui->lbl_info->setStyleSheet( "" );
         _ui->btn_connect->setText( DISCONNECT_PORT );
         _ui->btn_connect->setEnabled( true );
+        _ui->spb_id->setEnabled( false );
 
         emit changeWindowState( this->windowTitle(), true );
     }
@@ -264,6 +274,7 @@ void tsh071Window::resetInfo()
         _ui->lbl_info->setText( "-" );
         _ui->lbl_info->setStyleSheet( "" );
         _ui->btn_connect->setText( CONNECT_PORT );
+        _ui->spb_id->setEnabled( true );
         refreshPortList();
     }
 }

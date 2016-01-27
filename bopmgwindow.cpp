@@ -84,6 +84,11 @@ void bopmgWindow::refreshPortList()
         if( !info.isBusy() )
         {
             _ui->cob_ports->addItem( info.portName() );
+
+            if( info.serialNumber() == "FTV9UOK8" )
+            {
+                _ui->cob_ports->setCurrentText( info.portName() );
+            }
         }
     }
 
