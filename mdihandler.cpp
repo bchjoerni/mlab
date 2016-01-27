@@ -216,7 +216,7 @@ void mdiHandler::addUiCharWindows()
         }
         else if( w->windowTitle() == s6 )
         {
-            w->setGeometry( 3*border + r1.width() + r3.width(), border,
+            w->setGeometry( border + r3.x() + r3.width(), border,
                             r1.width()*3/2, r1.width()*3/2 );
             r6 = w->geometry();
         }

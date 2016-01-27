@@ -16,7 +16,8 @@ class eapsPort : public labPort
 
 public:
     enum setValueType{ setTypeNone, setTypeVoltage, setTypeCurrent,
-                      setTypePowerByVoltage, setTypePowerByCurrent };
+                       setTypePowerByVoltage, setTypePowerByCurrent,
+                       setTypeResistanceByVoltage, setTypeResistanceByCurrent };
 
     explicit eapsPort( QObject *parent = 0 );
     void updateValues() override;
@@ -26,12 +27,14 @@ public:
     void setEmitVoltage( bool emitVoltage );
     void setEmitCurrent( bool emitCurrent );
     void setEmitPower( bool emitPower );
+    void setEmitResistance( bool emitResistance );
     QString idString() const;
 
 signals:
     void newVoltage( double volt );
     void newCurrent( double current );
     void newPower( double power );
+    void newResistance( double resistance );
     void initSuccessful( QString idString );
 
 private slots:
@@ -87,14 +90,17 @@ private:
     double _lastVoltage;
     double _lastCurrent;
     double _lastPower;
+    double _lastResistance;
     setValueType _setValueType;
     double _setVoltage;
     double _setCurrent;
     double _setPower;
+    double _setResistance;
     bool _autoAdjust;
     bool _emitVoltage;
     bool _emitCurrent;
     bool _emitPower;
+    bool _emitResistance;
 
     const double adjustmentFactor = 0.3;
     const static int MESSAGE_LENGTH = 24;

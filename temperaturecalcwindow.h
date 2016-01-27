@@ -33,8 +33,7 @@ private slots:
 private:
     Ui::temperatureCalcWindow *_ui;
     bool _running;
-    double _lastVoltage;
-    double _lastCurrent;
+    double _lastResistance;
     double _linearInitTemperature;
     double _linearInitResistance;
 

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>486</width>
-    <height>461</height>
+    <height>404</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -69,6 +69,16 @@
       <enum>QFrame::Box</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_7">
+      <item row="1" column="1">
+       <widget class="QCheckBox" name="chb_setZeroWhenFinished">
+        <property name="text">
+         <string>set 0 when finished</string>
+        </property>
+        <property name="checked">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0" colspan="4">
        <widget class="QFrame" name="frame_setValues">
         <layout class="QGridLayout" name="gridLayout_5">
@@ -249,14 +259,49 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="btn_startStop">
-        <property name="enabled">
-         <bool>false</bool>
+      <item row="3" column="0" colspan="4">
+       <widget class="QFrame" name="frame_current">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
         </property>
-        <property name="text">
-         <string>start</string>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
         </property>
+        <layout class="QGridLayout" name="gridLayout_2">
+         <item row="0" column="0">
+          <widget class="QLabel" name="lbl_current_lbl">
+           <property name="text">
+            <string>current:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="txt_current">
+           <property name="text">
+            <string>-</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QCheckBox" name="chb_shareCurrent">
+           <property name="enabled">
+            <bool>false</bool>
+           </property>
+           <property name="text">
+            <string>share</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
       <item row="2" column="0" colspan="4">
@@ -304,100 +349,13 @@
         </layout>
        </widget>
       </item>
-      <item row="3" column="0" colspan="4">
-       <widget class="QFrame" name="frame_current">
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
+      <item row="1" column="2">
+       <widget class="QPushButton" name="btn_startStop">
+        <property name="enabled">
+         <bool>false</bool>
         </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_2">
-         <item row="0" column="0">
-          <widget class="QLabel" name="lbl_current_lbl">
-           <property name="text">
-            <string>current:</string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="txt_current">
-           <property name="text">
-            <string>-</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QCheckBox" name="chb_shareCurrent">
-           <property name="enabled">
-            <bool>false</bool>
-           </property>
-           <property name="text">
-            <string>share</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="4" column="0" colspan="4">
-       <widget class="QFrame" name="frame_power">
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <layout class="QGridLayout" name="gridLayout_3">
-         <item row="0" column="0">
-          <widget class="QLabel" name="lbl_power_lbl">
-           <property name="text">
-            <string>power:  </string>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QLineEdit" name="txt_power">
-           <property name="text">
-            <string>-</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignCenter</set>
-           </property>
-           <property name="readOnly">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-         <item row="0" column="2">
-          <widget class="QCheckBox" name="chb_sharePower">
-           <property name="text">
-            <string>share</string>
-           </property>
-           <property name="checked">
-            <bool>true</bool>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QCheckBox" name="chb_setZeroWhenFinished">
         <property name="text">
-         <string>set 0 when finished</string>
-        </property>
-        <property name="checked">
-         <bool>true</bool>
+         <string>start</string>
         </property>
        </widget>
       </item>

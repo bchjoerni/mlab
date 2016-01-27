@@ -16,9 +16,8 @@ bopmgUICharWindow::bopmgUICharWindow( QWidget *parent ) :
     refreshPortList();
     calculateRemainingTicks();
 
-    emitVoltageChanged();
-    emitCurrentChanged();
-    emitPowerChanged();
+    _port.setEmitVoltage( true );
+    _port.setEmitCurrent( true );
 }
 
 bopmgUICharWindow::~bopmgUICharWindow()
@@ -36,8 +35,6 @@ void bopmgUICharWindow::connectPortFunctions()
              SLOT( voltageUpdate( double ) ) );
     connect( &_port, SIGNAL( newCurrent( double ) ), this,
              SLOT( currentUpdate( double ) ) );
-    connect( &_port, SIGNAL( newPower( double ) ), this,
-             SLOT( powerUpdate( double ) ) );
 }
 
 void bopmgUICharWindow::connectUiElements()
@@ -47,12 +44,6 @@ void bopmgUICharWindow::connectUiElements()
     connect( _ui->cob_unit, SIGNAL( currentTextChanged( QString ) ),
              this, SLOT( updateUnitRange() ) );
 
-    connect( _ui->chb_shareVoltage, SIGNAL( stateChanged( int ) ), this,
-             SLOT( emitVoltageChanged() ) );
-    connect( _ui->chb_shareCurrent, SIGNAL( stateChanged( int ) ), this,
-             SLOT( emitCurrentChanged() ) );
-    connect( _ui->chb_sharePower, SIGNAL( stateChanged( int ) ), this,
-             SLOT( emitPowerChanged() ) );
     connect( _ui->chb_calcValues, SIGNAL( stateChanged( int ) ), this,
              SLOT( fixStepSizeChanged() ) );
 
@@ -283,7 +274,11 @@ void bopmgUICharWindow::voltageUpdate( double voltage )
         _lastMeasuredValue = voltage;
     }
     _ui->txt_voltage->setText( QString::number( voltage ) + " V" );
-    emit newValue( this->windowTitle() + ": " + VOLTAGE, voltage );
+
+    if( _ui->chb_shareVoltage->isChecked() )
+    {
+        emit newValue( this->windowTitle() + ": " + VOLTAGE, voltage );
+    }
 }
 
 void bopmgUICharWindow::currentUpdate( double current )
@@ -296,30 +291,11 @@ void bopmgUICharWindow::currentUpdate( double current )
         _lastMeasuredValue = current;
     }
     _ui->txt_current->setText( QString::number( current ) + " A" );
-    emit newValue( this->windowTitle() + ": " + CURRENT, current );
-}
 
-void bopmgUICharWindow::powerUpdate( double power )
-{
-    LOG(INFO) << this->windowTitle().toStdString() << ": power update: "
-              << power;
-    _ui->txt_power->setText( QString::number( power ) + " W" );
-    emit newValue( this->windowTitle() + ": " + POWER, power );
-}
-
-void bopmgUICharWindow::emitVoltageChanged()
-{
-    _port.setEmitVoltage( _ui->chb_shareVoltage->isChecked() );
-}
-
-void bopmgUICharWindow::emitCurrentChanged()
-{
-    _port.setEmitCurrent( _ui->chb_shareCurrent->isChecked() );
-}
-
-void bopmgUICharWindow::emitPowerChanged()
-{
-    _port.setEmitPower( _ui->chb_sharePower->isChecked() );
+    if( _ui->chb_shareCurrent->isChecked() )
+    {
+        emit newValue( this->windowTitle() + ": " + CURRENT, current );
+    }
 }
 
 void bopmgUICharWindow::setValueSelectionChanged()

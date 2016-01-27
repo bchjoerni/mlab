@@ -17,8 +17,7 @@ tsh071Window::tsh071Window( QWidget *parent ) :
     refreshPortList();
     visibilitySelectionChanged();
 
-    emitRpmChanged();
-    emitPressureChanged();
+    setPortEmits();
 }
 
 tsh071Window::~tsh071Window()
@@ -66,6 +65,12 @@ void tsh071Window::addItems()
 {
     _ui->cob_measuredValues->addItem( ROTATION );
     _ui->cob_measuredValues->addItem( PRESSURE );
+}
+
+void tsh071Window::setPortEmits()
+{
+    _port.setEmitRpm(      _ui->frame_rpm->isVisible() );
+    _port.setEmitPressure( _ui->frame_pressure->isVisible() );
 }
 
 void tsh071Window::refreshPortList()
@@ -176,8 +181,12 @@ void tsh071Window::rpmUpdate( int rpm )
     LOG(INFO) << this->windowTitle().toStdString() << ": rpm update: "
               << rpm;
     _ui->txt_rpm->setText( QString::number( rpm ) + " / min" );
-    emit newValue( this->windowTitle() + ": " + ROTATION,
-                   static_cast<double>( rpm ) );
+
+    if( _ui->chb_shareRpm->isChecked() )
+    {
+        emit newValue( this->windowTitle() + ": " + ROTATION,
+                       static_cast<double>( rpm ) );
+    }
 }
 
 void tsh071Window::pressureUpdate( double pressure )
@@ -185,7 +194,11 @@ void tsh071Window::pressureUpdate( double pressure )
     LOG(INFO) << this->windowTitle().toStdString() << ": pressure update: "
               << pressure;
     _ui->txt_pressure->setText( QString::number( pressure ) + " mbar" );
-    emit newValue( this->windowTitle() + ": " + PRESSURE, pressure );
+
+    if( _ui->chb_sharePressure->isChecked() )
+    {
+        emit newValue( this->windowTitle() + ": " + PRESSURE, pressure );
+    }
 }
 
 void tsh071Window::visibilitySelectionChanged()
@@ -216,16 +229,6 @@ void tsh071Window::visibilitySelectionChanged()
     }
 }
 
-void tsh071Window::emitRpmChanged()
-{
-    _port.setEmitRpm( _ui->chb_shareRpm->isChecked() );
-}
-
-void tsh071Window::emitPressureChanged()
-{
-    _port.setEmitPressure( _ui->chb_sharePressure->isChecked() );
-}
-
 void tsh071Window::changeVisibility()
 {
     QString text = _ui->cob_measuredValues->currentText();
@@ -243,6 +246,7 @@ void tsh071Window::changeVisibility()
         _ui->chb_sharePressure->setChecked( false );
     }
     visibilitySelectionChanged();
+    setPortEmits();
 }
 
 void tsh071Window::portError( QString error )

@@ -38,13 +38,9 @@ private slots:
     void initFinished( const QString& idString );
     void voltageUpdate( double voltage );
     void currentUpdate( double current );
-    void powerUpdate( double power );
     void portError( QString error );
     void resetInfo();
     void updateUnitRange();
-    void emitVoltageChanged();
-    void emitCurrentChanged();
-    void emitPowerChanged();
     void fixStepSizeChanged();
     void calculateRemainingTicks();
     void startStop();
@@ -69,7 +65,6 @@ private:
 
     const QString VOLTAGE          = "voltage";
     const QString CURRENT          = "current";
-    const QString POWER            = "power";
 
     const QString START            = "start";
     const QString STOP             = "stop";

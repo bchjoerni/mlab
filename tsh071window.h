@@ -37,8 +37,6 @@ private slots:
     void initFinished( const QString& idString );
     void portError( QString error );
     void resetInfo();
-    void emitRpmChanged();
-    void emitPressureChanged();
     void rpmUpdate( int rpm );
     void pressureUpdate( double pressure );
     void startPump();
@@ -49,6 +47,7 @@ private:
     void connectUiElements();
     void refreshPortList();
     void addItems();
+    void setPortEmits();
 
     Ui::tsh071Window *_ui;
     tsh071Port _port;

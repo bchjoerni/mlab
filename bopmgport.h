@@ -16,7 +16,8 @@ class bopmgPort : public labPort
 
 public:
     enum setValueType{ setTypeNone, setTypeVoltage, setTypeCurrent,
-                      setTypePowerByVoltage, setTypePowerByCurrent };
+                       setTypePowerByVoltage, setTypePowerByCurrent,
+                     setTypeResistanceByVoltage, setTypeResistanceByCurrent };
 
     explicit bopmgPort( QObject *parent = 0 );
     void updateValues() override;
@@ -27,13 +28,15 @@ public:
     double maxCurrent() const;
     void setEmitVoltage( bool emitVoltage );
     void setEmitCurrent( bool emitCurrent );
-    void setEmitPower( bool power );
+    void setEmitPower( bool emitPower );
+    void setEmitResistance( bool emitResistance );
     QString idString() const;
 
 signals:
     void newVoltage( double volt );
     void newCurrent( double current );
     void newPower( double power );
+    void newResistance( double resistance );
     void initSuccessful( QString idString );
 
 private slots:
@@ -76,14 +79,17 @@ private:
     double _maxCurrent;
     double _lastVoltage;
     double _lastCurrent;
-    double _lastPower;    
+    double _lastPower;
+    double _lastResistance;
     double _setVoltage;
     double _setCurrent;
     double _setPower;
+    double _setResistance;
     bool _autoAdjust;
     bool _emitVoltage;
     bool _emitCurrent;
     bool _emitPower;
+    bool _emitResistance;
 
     const int TRIES_SEND_MSG = 3;
     const double adjustmentFactor = 0.3;

@@ -6,8 +6,9 @@ bopmgPort::bopmgPort( QObject *parent ) : labPort( parent ),
     _minVoltage( -100.0 ), _maxVoltage( 100.0 ),
     _minCurrent( -10.0 ), _maxCurrent( 10.0 ),
     _lastVoltage( 0.0 ), _lastCurrent( 0.0 ), _lastPower( 0.0 ),
-    _autoAdjust( false ),
-    _emitVoltage( false ), _emitCurrent( false ), _emitPower( false )
+    _lastResistance( 0.0 ), _autoAdjust( false ),
+    _emitVoltage( false ), _emitCurrent( false ), _emitPower( false ),
+    _emitResistance( false )
 {
     setSerialValues();
     setLabPortVariables();
@@ -55,11 +56,11 @@ void bopmgPort::updateValues()
         emit portError( "Answer missing!" );
     }
 
-    if( _emitVoltage || _emitPower )
+    if( _emitVoltage || _emitPower || _emitResistance )
     {
         getVoltage();
     }
-    if( _emitCurrent || _emitPower )
+    if( _emitCurrent || _emitPower || _emitResistance )
     {
         getCurrent();
     }
@@ -84,6 +85,11 @@ void bopmgPort::setEmitCurrent( bool emitCurrent )
 void bopmgPort::setEmitPower( bool emitPower )
 {
     _emitPower = emitPower;
+}
+
+void bopmgPort::setEmitResistance( bool emitResistance )
+{
+    _emitResistance = emitResistance;
 }
 
 void bopmgPort::setCls()
@@ -177,6 +183,22 @@ void bopmgPort::adjustValues()
                                    (_lastVoltage/_lastCurrent) ) );
         }
     }
+    else if( _setValueType == setValueType::setTypeResistanceByVoltage )
+    {
+        if( _lastVoltage > 0.0 && _lastCurrent > 0.0 )
+        {
+            setVoltage( calcAdjustedValue( _setResistance,
+                        _lastVoltage/_lastCurrent )*_lastCurrent );
+        }
+    }
+    else if( _setValueType == setValueType::setTypeResistanceByCurrent )
+    {
+        if( _lastVoltage > 0.0 && _lastCurrent > 0.0 )
+        {
+            setCurrent( 1.0/(calcAdjustedValue( _setResistance,
+                        _lastVoltage/_lastCurrent )/_lastVoltage) );
+        }
+    }
 }
 
 double bopmgPort::calcAdjustedValue( double setValue, double lastValue )
@@ -227,6 +249,30 @@ void bopmgPort::setValue( setValueType type, double value, bool autoAdjust )
             else if( type == setValueType::setTypePowerByCurrent )
             {
                 setCurrent( std::sqrt( value/resistance ) );
+            }
+        }
+        else
+        {
+            emit portError( "Measure before setting power!" );
+        }
+    }
+    else if( type == setValueType::setTypeResistanceByVoltage
+             || type == setValueType::setTypeResistanceByCurrent )
+    {
+        LOG(INFO) << "bopmg set resistance: " << value << " adjust: "
+                  << autoAdjust << " by voltage: "
+                  << (type == setValueType::setTypeResistanceByVoltage);
+        _setResistance = value;
+        _lastResistance = value;
+        if( _lastVoltage > 0.0 && _lastCurrent > 0.0 )
+        {
+            if( type == setValueType::setTypeResistanceByVoltage )
+            {
+                setVoltage( _lastCurrent*value );
+            }
+            else if( type == setValueType::setTypeResistanceByCurrent )
+            {
+                setCurrent( _lastVoltage/value );
             }
         }
         else
@@ -379,6 +425,11 @@ void bopmgPort::receivedMsg( QByteArray msg )
         {
             _lastPower = _lastVoltage*_lastCurrent;
             emit newPower( _lastPower );
+        }
+        if( _emitResistance )
+        {
+            _lastResistance = _lastVoltage/_lastCurrent;
+            emit newResistance( _lastResistance );
         }
     }
     else if( _expectedAnswer[0] == CMD_IDN )

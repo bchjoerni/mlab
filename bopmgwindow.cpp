@@ -14,9 +14,7 @@ bopmgWindow::bopmgWindow( QWidget *parent ) :
     refreshPortList();
     visibilitySelectionChanged();
 
-    emitVoltageChanged();
-    emitCurrentChanged();
-    emitPowerChanged();
+    setPortEmits();
 }
 
 bopmgWindow::~bopmgWindow()
@@ -36,6 +34,8 @@ void bopmgWindow::connectPortFunctions()
              SLOT( currentUpdate( double ) ) );
     connect( &_port, SIGNAL( newPower( double ) ), this,
              SLOT( powerUpdate( double ) ) );
+    connect( &_port, SIGNAL( newResistance( double ) ), this,
+             SLOT( resistanceUpdate() ) );
 }
 
 void bopmgWindow::connectUiElements()
@@ -46,13 +46,6 @@ void bopmgWindow::connectUiElements()
              SLOT( setValueSelectionChanged() ) );
     connect( _ui->cob_setValueUnit, SIGNAL( currentTextChanged( QString ) ),
              this, SLOT( updateUnitRange() ) );
-
-    connect( _ui->chb_shareVoltage, SIGNAL( stateChanged( int ) ), this,
-             SLOT( emitVoltageChanged() ) );
-    connect( _ui->chb_shareCurrent, SIGNAL( stateChanged( int ) ), this,
-             SLOT( emitCurrentChanged() ) );
-    connect( _ui->chb_sharePower, SIGNAL( stateChanged( int ) ), this,
-             SLOT( emitPowerChanged() ) );
 
     connect( _ui->btn_connect, SIGNAL( clicked() ), this,
              SLOT( connectivityButtonPressed() ) );
@@ -69,10 +62,21 @@ void bopmgWindow::addItems()
     _ui->cob_setValue->addItem( CURRENT );
     _ui->cob_setValue->addItem( POWER_BY_VOLTAGE );
     _ui->cob_setValue->addItem( POWER_BY_CURRENT );
+    _ui->cob_setValue->addItem( RESISTANCE_BY_VOLTAGE );
+    _ui->cob_setValue->addItem( RESISTANCE_BY_CURRENT );
 
     _ui->cob_measuredValues->addItem( VOLTAGE );
     _ui->cob_measuredValues->addItem( CURRENT );
-    _ui->cob_measuredValues->addItem( POWER   );
+    _ui->cob_measuredValues->addItem( POWER );
+    _ui->cob_measuredValues->addItem( RESISTANCE );
+}
+
+void bopmgWindow::setPortEmits()
+{
+    _port.setEmitVoltage(    _ui->frame_voltage->isVisible() );
+    _port.setEmitCurrent(    _ui->frame_current->isVisible() );
+    _port.setEmitPower(      _ui->frame_power->isVisible() );
+    _port.setEmitResistance( _ui->frame_resistance->isVisible() );
 }
 
 void bopmgWindow::refreshPortList()
@@ -194,6 +198,20 @@ void bopmgWindow::setValue()
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_WATT );
     }
+    else if( _ui->cob_setValue->currentText() == RESISTANCE_BY_VOLTAGE )
+    {
+        _port.setValue( bopmgPort::setValueType::setTypeResistanceByVoltage,
+                        value, _ui->chb_adjustSetValue->isChecked() );
+        _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
+                                       + UNIT_OHM );
+    }
+    else if( _ui->cob_setValue->currentText() == RESISTANCE_BY_CURRENT )
+    {
+        _port.setValue( bopmgPort::setValueType::setTypeResistanceByCurrent,
+                        value, _ui->chb_adjustSetValue->isChecked() );
+        _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
+                                       + UNIT_OHM );
+    }
 
     _ui->lbl_setValueSet->setText( _ui->lbl_setValueSet->text() +
                                    (_ui->chb_adjustSetValue->isChecked() ?
@@ -230,6 +248,19 @@ void bopmgWindow::powerUpdate( double power )
               << power;
     _ui->txt_power->setText( QString::number( power ) + " W" );
     emit newValue( this->windowTitle() + ": " + POWER, power );
+}
+
+void bopmgWindow::resistanceUpdate( double resistance )
+{
+    LOG(INFO) << this->windowTitle().toStdString() << ": resistance update: "
+              << resistance;
+    _ui->txt_resistance->setText( QString::number( resistance )
+                                  + " " + UNIT_OHM );
+
+    if( _ui->chb_shareResistance->isChecked() )
+    {
+        emit newValue( this->windowTitle() + ": " + RESISTANCE, resistance );
+    }
 }
 
 void bopmgWindow::visibilitySelectionChanged()
@@ -269,21 +300,17 @@ void bopmgWindow::visibilitySelectionChanged()
             _ui->btn_measuredValuesVisibility->setText( SHOW );
         }
     }
-}
-
-void bopmgWindow::emitVoltageChanged()
-{
-    _port.setEmitVoltage( _ui->chb_shareVoltage->isChecked() );
-}
-
-void bopmgWindow::emitCurrentChanged()
-{
-    _port.setEmitCurrent( _ui->chb_shareCurrent->isChecked() );
-}
-
-void bopmgWindow::emitPowerChanged()
-{
-    _port.setEmitPower( _ui->chb_sharePower->isChecked() );
+    else if( text == RESISTANCE )
+    {
+        if( _ui->frame_resistance->isVisible() )
+        {
+            _ui->btn_measuredValuesVisibility->setText( HIDE );
+        }
+        else
+        {
+            _ui->btn_measuredValuesVisibility->setText( SHOW );
+        }
+    }
 }
 
 void bopmgWindow::changeVisibility()
@@ -308,7 +335,14 @@ void bopmgWindow::changeVisibility()
                     _ui->btn_measuredValuesVisibility->text() == SHOW );
         _ui->chb_sharePower->setChecked( false );
     }
+    else if( text == RESISTANCE )
+    {
+        _ui->frame_resistance->setVisible(
+                    _ui->btn_measuredValuesVisibility->text() == SHOW );
+        _ui->chb_shareResistance->setChecked( false );
+    }
     visibilitySelectionChanged();
+    setPortEmits();
 }
 
 void bopmgWindow::setValueSelectionChanged()
@@ -331,6 +365,15 @@ void bopmgWindow::setValueSelectionChanged()
     {
         _ui->cob_setValueUnit->addItem( UNIT_WATT );
         _ui->cob_setValueUnit->addItem( UNIT_MILLIWATT );
+
+        _ui->btn_setValue->setEnabled( _ui->txt_voltage->text().size() > 3
+                                       && _ui->txt_current->text().size() > 3
+                                       && _port.isRunning() );
+    }
+    else if( _ui->cob_setValue->currentText() == RESISTANCE_BY_VOLTAGE
+             || _ui->cob_setValue->currentText() == RESISTANCE_BY_CURRENT )
+    {
+        _ui->cob_setValueUnit->addItem( UNIT_OHM );
 
         _ui->btn_setValue->setEnabled( _ui->txt_voltage->text().size() > 3
                                        && _ui->txt_current->text().size() > 3
@@ -386,6 +429,14 @@ void bopmgWindow::updateUnitRange()
                         _port.minVoltage()*_port.minCurrent()*1000 );
             _ui->dsp_setValue->setMaximum(
                         _port.maxVoltage()*_port.maxCurrent()*1000 );
+        }
+    }
+    else if( _ui->cob_setValue->currentText() == RESISTANCE_BY_VOLTAGE
+             || _ui->cob_setValue->currentText() == RESISTANCE_BY_CURRENT )
+    {
+        if( _ui->cob_setValueUnit->currentText() == UNIT_OHM )
+        {
+            _ui->dsp_setValue->setMaximum( 1000000 );
         }
     }
 }

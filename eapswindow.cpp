@@ -14,9 +14,7 @@ eapsWindow::eapsWindow( QWidget *parent ) :
     refreshPortList();
     visibilitySelectionChanged();
 
-    emitVoltageChanged();
-    emitCurrentChanged();
-    emitPowerChanged();
+    setPortEmits();
 }
 
 eapsWindow::~eapsWindow()
@@ -36,6 +34,8 @@ void eapsWindow::connectPortFunctions()
              SLOT( currentUpdate( double ) ) );
     connect( &_port, SIGNAL( newPower( double ) ), this,
              SLOT( powerUpdate( double ) ) );
+    connect( &_port, SIGNAL( newResistance( double ) ), this,
+             SLOT( resistanceUpdate( double ) ) );
 }
 
 void eapsWindow::connectUiElements()
@@ -46,13 +46,6 @@ void eapsWindow::connectUiElements()
              SLOT( setValueSelectionChanged() ) );
     connect( _ui->cob_setValueUnit, SIGNAL( currentTextChanged( QString ) ),
              this, SLOT( updateUnitRange() ) );
-
-    connect( _ui->chb_shareVoltage, SIGNAL( stateChanged( int ) ), this,
-             SLOT( emitVoltageChanged() ) );
-    connect( _ui->chb_shareCurrent, SIGNAL( stateChanged( int ) ), this,
-             SLOT( emitCurrentChanged() ) );
-    connect( _ui->chb_sharePower, SIGNAL( stateChanged( int ) ), this,
-             SLOT( emitPowerChanged() ) );
 
     connect( _ui->btn_connect, SIGNAL( clicked() ), this,
              SLOT( connectivityButtonPressed() ) );
@@ -69,10 +62,21 @@ void eapsWindow::addItems()
     _ui->cob_setValue->addItem( CURRENT );
     _ui->cob_setValue->addItem( POWER_BY_VOLTAGE );
     _ui->cob_setValue->addItem( POWER_BY_CURRENT );
+    _ui->cob_setValue->addItem( RESISTANCE_BY_VOLTAGE );
+    _ui->cob_setValue->addItem( RESISTANCE_BY_CURRENT );
 
     _ui->cob_measuredValues->addItem( VOLTAGE );
     _ui->cob_measuredValues->addItem( CURRENT );
-    _ui->cob_measuredValues->addItem( POWER   );
+    _ui->cob_measuredValues->addItem( POWER );
+    _ui->cob_measuredValues->addItem( RESISTANCE );
+}
+
+void eapsWindow::setPortEmits()
+{
+    _port.setEmitVoltage(    _ui->frame_voltage->isVisible() );
+    _port.setEmitCurrent(    _ui->frame_current->isVisible() );
+    _port.setEmitPower(      _ui->frame_power->isVisible() );
+    _port.setEmitResistance( _ui->frame_resistance->isVisible() );
 }
 
 void eapsWindow::refreshPortList()
@@ -194,6 +198,20 @@ void eapsWindow::setValue()
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_WATT );
     }
+    else if( _ui->cob_setValue->currentText() == RESISTANCE_BY_VOLTAGE )
+    {
+        _port.setValue( eapsPort::setValueType::setTypeResistanceByVoltage,
+                        value, _ui->chb_adjustSetValue->isChecked() );
+        _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
+                                       + UNIT_OHM );
+    }
+    else if( _ui->cob_setValue->currentText() == RESISTANCE_BY_CURRENT )
+    {
+        _port.setValue( eapsPort::setValueType::setTypeResistanceByCurrent,
+                        value, _ui->chb_adjustSetValue->isChecked() );
+        _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
+                                       + UNIT_OHM );
+    }
 
     _ui->lbl_setValueSet->setText( _ui->lbl_setValueSet->text() +
                                    (_ui->chb_adjustSetValue->isChecked() ?
@@ -212,24 +230,49 @@ void eapsWindow::voltageUpdate( double voltage )
 {
     LOG(INFO) << this->windowTitle().toStdString() << ": voltage update: "
               << voltage;
-    _ui->txt_voltage->setText( QString::number( voltage ) + " V" );
-    emit newValue( this->windowTitle() + ": " + VOLTAGE, voltage );
+    _ui->txt_voltage->setText( QString::number( voltage ) + " " + UNIT_VOLT );
+
+    if( _ui->chb_shareVoltage->isChecked() )
+    {
+        emit newValue( this->windowTitle() + ": " + VOLTAGE, voltage );
+    }
 }
 
 void eapsWindow::currentUpdate( double current )
 {
     LOG(INFO) << this->windowTitle().toStdString() << ": current update: "
               << current;
-    _ui->txt_current->setText( QString::number( current ) + " A" );
-    emit newValue( this->windowTitle() + ": " + CURRENT, current );
+    _ui->txt_current->setText( QString::number( current ) + " " + UNIT_AMPERE );
+
+    if( _ui->chb_shareCurrent->isChecked() )
+    {
+        emit newValue( this->windowTitle() + ": " + CURRENT, current );
+    }
 }
 
 void eapsWindow::powerUpdate( double power )
 {
     LOG(INFO) << this->windowTitle().toStdString() << ": power update: "
               << power;
-    _ui->txt_power->setText( QString::number( power ) + " W" );
-    emit newValue( this->windowTitle() + ": " + POWER, power );
+    _ui->txt_power->setText( QString::number( power ) + " " + UNIT_WATT );
+
+    if( _ui->chb_sharePower->isChecked() )
+    {
+        emit newValue( this->windowTitle() + ": " + POWER, power );
+    }
+}
+
+void eapsWindow::resistanceUpdate( double resistance )
+{
+    LOG(INFO) << this->windowTitle().toStdString() << ": resistance update: "
+              << resistance;
+    _ui->txt_resistance->setText( QString::number( resistance )
+                                  + " " + UNIT_OHM );
+
+    if( _ui->chb_shareResistance->isChecked() )
+    {
+        emit newValue( this->windowTitle() + ": " + RESISTANCE, resistance );
+    }
 }
 
 void eapsWindow::visibilitySelectionChanged()
@@ -269,21 +312,17 @@ void eapsWindow::visibilitySelectionChanged()
             _ui->btn_measuredValuesVisibility->setText( SHOW );
         }
     }
-}
-
-void eapsWindow::emitVoltageChanged()
-{
-    _port.setEmitVoltage( _ui->chb_shareVoltage->isChecked() );
-}
-
-void eapsWindow::emitCurrentChanged()
-{
-    _port.setEmitCurrent( _ui->chb_shareCurrent->isChecked() );
-}
-
-void eapsWindow::emitPowerChanged()
-{
-    _port.setEmitPower( _ui->chb_sharePower->isChecked() );
+    else if( text == RESISTANCE )
+    {
+        if( _ui->frame_resistance->isVisible() )
+        {
+            _ui->btn_measuredValuesVisibility->setText( HIDE );
+        }
+        else
+        {
+            _ui->btn_measuredValuesVisibility->setText( SHOW );
+        }
+    }
 }
 
 void eapsWindow::changeVisibility()
@@ -308,7 +347,14 @@ void eapsWindow::changeVisibility()
                     _ui->btn_measuredValuesVisibility->text() == SHOW );
         _ui->chb_sharePower->setChecked( false );
     }
+    else if( text == RESISTANCE )
+    {
+        _ui->frame_resistance->setVisible(
+                    _ui->btn_measuredValuesVisibility->text() == SHOW );
+        _ui->chb_shareResistance->setChecked( false );
+    }
     visibilitySelectionChanged();
+    setPortEmits();
 }
 
 void eapsWindow::setValueSelectionChanged()
@@ -331,6 +377,15 @@ void eapsWindow::setValueSelectionChanged()
     {
         _ui->cob_setValueUnit->addItem( UNIT_WATT );
         _ui->cob_setValueUnit->addItem( UNIT_MILLIWATT );
+
+        _ui->btn_setValue->setEnabled( _ui->txt_voltage->text().size() > 3
+                                       && _ui->txt_current->text().size() > 3
+                                       && _port.isRunning() );
+    }
+    else if( _ui->cob_setValue->currentText() == RESISTANCE_BY_VOLTAGE
+             || _ui->cob_setValue->currentText() == RESISTANCE_BY_CURRENT )
+    {
+        _ui->cob_setValueUnit->addItem( UNIT_OHM );
 
         _ui->btn_setValue->setEnabled( _ui->txt_voltage->text().size() > 3
                                        && _ui->txt_current->text().size() > 3
@@ -378,6 +433,14 @@ void eapsWindow::updateUnitRange()
         {
             _ui->dsp_setValue->setMaximum(
                         _port.maxVoltage()*_port.maxCurrent()*1000 );
+        }
+    }
+    else if( _ui->cob_setValue->currentText() == RESISTANCE_BY_VOLTAGE
+             || _ui->cob_setValue->currentText() == RESISTANCE_BY_CURRENT )
+    {
+        if( _ui->cob_setValueUnit->currentText() == UNIT_OHM )
+        {
+            _ui->dsp_setValue->setMaximum( 1000000 );
         }
     }
 }

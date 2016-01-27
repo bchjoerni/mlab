@@ -39,27 +39,29 @@ private slots:
     void voltageUpdate( double voltage );
     void currentUpdate( double current );
     void powerUpdate( double power );
+    void resistanceUpdate( double resistance );
     void portError( QString error );
     void resetInfo();
     void updateUnitRange();
-    void emitVoltageChanged();
-    void emitCurrentChanged();
-    void emitPowerChanged();
 
 private:
     void connectPortFunctions();
     void connectUiElements();
     void refreshPortList();
-    void addItems();    
+    void addItems();
+    void setPortEmits();
 
     Ui::eapsWindow *_ui;
     eapsPort _port;
 
-    const QString VOLTAGE          = "voltage";
-    const QString CURRENT          = "current";
-    const QString POWER            = "power";
-    const QString POWER_BY_VOLTAGE = "power (V)";
-    const QString POWER_BY_CURRENT = "power (I)";
+    const QString VOLTAGE               = "voltage";
+    const QString CURRENT               = "current";
+    const QString POWER                 = "power";
+    const QString RESISTANCE            = "resistance";
+    const QString POWER_BY_VOLTAGE      = "power (V)";
+    const QString POWER_BY_CURRENT      = "power (I)";
+    const QString RESISTANCE_BY_VOLTAGE = "resistance (V)";
+    const QString RESISTANCE_BY_CURRENT = "resistance (I)";
 
     const QString UNIT_MILLIVOLT   = "mV";
     const QString UNIT_VOLT        = "V";
@@ -67,6 +69,7 @@ private:
     const QString UNIT_AMPERE      = "A";
     const QString UNIT_WATT        = "W";
     const QString UNIT_MILLIWATT   = "mW";
+    const QString UNIT_OHM         = "Ω";
 };
 
 #endif // EAPSWINDOW_H

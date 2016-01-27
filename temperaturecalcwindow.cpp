@@ -4,7 +4,7 @@
 temperatureCalcWindow::temperatureCalcWindow( QWidget *parent ) :
     mLabWindow( parent ),
     _ui( new Ui::temperatureCalcWindow ),
-    _running( false ), _lastVoltage( 0.0 ), _lastCurrent( 0.0 ),
+    _running( false ), _lastResistance( 0.0 ),
     _linearInitTemperature( 300.0 ), _linearInitResistance( 0.0 )
 {
     _ui->setupUi( this );
@@ -31,10 +31,9 @@ void temperatureCalcWindow::doUpdate()
 {
     if( _running )
     {
-        double resistance = _lastVoltage/_lastCurrent;
         if( _ui->chb_linear->isChecked() )
         {
-            double temperature = (resistance/_linearInitResistance - 1.0)/
+            double temperature = (_lastResistance/_linearInitResistance - 1.0)/
                     (_ui->dsb_alpha->value()*1E-3) + _linearInitTemperature;
 
             _ui->txt_linearCalcTemperatureCelsius->setText(
@@ -47,7 +46,7 @@ void temperatureCalcWindow::doUpdate()
         if( _ui->chb_quadratic->isChecked() )
         {
             double temperature = -a1/(2.0*a2) + std::sqrt(
-                        std::pow( a1/(2.0*a2), 2.0 ) - (a0 - resistance*
+                        std::pow( a1/(2.0*a2), 2.0 ) - (a0 - _lastResistance*
                         (std::pow( _ui->dsb_diameter->value()*(1E-3)/2.0, 2.0 )*
                          M_PI/(_ui->dsb_length->value()*1E-3)))/a2 );
 
@@ -63,41 +62,23 @@ void temperatureCalcWindow::doUpdate()
 
 void temperatureCalcWindow::putValue( const QString& id, double value )
 {
-    if( id == _ui->cob_voltage->currentText() )
+    if( id == _ui->cob_resistance->currentText() )
     {
-        _lastVoltage = value;
-    }
-    if( id == _ui->cob_current->currentText() )
-    {
-        _lastCurrent = value;
+        _lastResistance = value;
     }
 
     bool inList = false;
-    for( int i = 0; i < _ui->cob_voltage->count(); i++ )
+    for( int i = 0; i < _ui->cob_resistance->count(); i++ )
     {
-        if( _ui->cob_voltage->itemText( i ) == id )
+        if( _ui->cob_resistance->itemText( i ) == id )
         {
             inList = true;
             break;
         }
     }
-    if( !inList && id.contains( "voltage" ) )
+    if( !inList && id.contains( "resistance" ) )
     {
-        _ui->cob_voltage->addItem( id );
-    }
-
-    inList = false;
-    for( int i = 0; i < _ui->cob_current->count(); i++ )
-    {
-        if( _ui->cob_current->itemText( i ) == id )
-        {
-            inList = true;
-            break;
-        }
-    }
-    if( !inList && id.contains( "current" ) )
-    {
-        _ui->cob_current->addItem( id );
+        _ui->cob_resistance->addItem( id );
     }
 }
 
@@ -113,8 +94,7 @@ void temperatureCalcWindow::startStopPressed()
     }
     else
     {
-        if( _ui->cob_voltage->currentText().isEmpty()
-                || _ui->cob_current->currentText().isEmpty() )
+        if( _ui->cob_resistance->currentText().isEmpty() )
         {
             return;
         }
@@ -137,14 +117,14 @@ void temperatureCalcWindow::showShareChanged()
 
 void temperatureCalcWindow::measureLinearInitValue()
 {
-    if( _lastVoltage < 1E-10 || _lastCurrent < 1E-10 )
+    if( _lastResistance < 1E-10 )
     {
         _ui->lbl_status->setText( "Invalid init value!" );
         _ui->lbl_status->setStyleSheet( STYLE_ERROR );
         return;
     }
 
-    _linearInitResistance = _lastVoltage/_lastCurrent;
+    _linearInitResistance = _lastResistance;
     _linearInitTemperature = _ui->dsb_initTemperature->value();
 
     _ui->lbl_linearInitValues->setText( "init values: T = " +
