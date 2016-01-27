@@ -32,6 +32,10 @@ void windowAdderWindow::ok()
     {
         _mdi->addPairSaveWindow( _ui->txt_pairSave->text() );
     }
+    if( _ui->chb_allSave->isChecked() )
+    {
+        _mdi->addAllSaveWindow( _ui->txt_allSave->text() );
+    }
     if( _ui->chb_eaps->isChecked() )
     {
         _mdi->addEapsWindow( _ui->txt_eaps->text() );
@@ -47,6 +51,14 @@ void windowAdderWindow::ok()
     if( _ui->chb_simpleGraph->isChecked() )
     {
         _mdi->addSimpleGraph( _ui->txt_simpleGraph->text() );
+    }
+    if( _ui->chb_calcTemperature->isChecked() )
+    {
+        _mdi->addCalcTemperatureWindow( _ui->txt_calcTemperature->text() );
+    }
+    if( _ui->chb_tsh071->isChecked() )
+    {
+        _mdi->addTsh071Window( _ui->txt_tsh071->text() );
     }
 
     accept();
@@ -69,6 +81,10 @@ bool windowAdderWindow::checkWindowNames()
     {
         names.push_back( _ui->txt_pairSave->text() );
     }
+    if( _ui->chb_allSave->isChecked() )
+    {
+        names.push_back( _ui->txt_allSave->text() );
+    }
     if( _ui->chb_eaps->isChecked() )
     {
         names.push_back( _ui->txt_eaps->text() );
@@ -84,6 +100,14 @@ bool windowAdderWindow::checkWindowNames()
     if( _ui->chb_simpleGraph->isChecked() )
     {
         names.push_back( _ui->txt_simpleGraph->text() );
+    }
+    if( _ui->chb_calcTemperature->isChecked() )
+    {
+        names.push_back( _ui->txt_calcTemperature->text() );
+    }
+    if( _ui->chb_tsh071->isChecked() )
+    {
+        names.push_back( _ui->txt_tsh071->text() );
     }
 
     return namesValid( names );

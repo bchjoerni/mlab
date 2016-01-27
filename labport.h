@@ -23,7 +23,7 @@ public:
     bool isOpen();
     bool isRunning();
     QString getPortName();
-    void clearErrors();    
+    void clearPort();
     virtual void updateValues();
 
 signals:

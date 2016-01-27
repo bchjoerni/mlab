@@ -26,7 +26,11 @@ SOURCES += main.cpp\
     bopmgport.cpp \
     simplegraphwindow.cpp \
     simplegraphwidget.cpp \
-    bopmguicharwindow.cpp
+    bopmguicharwindow.cpp \
+    temperaturecalcwindow.cpp \
+    tsh071port.cpp \
+    tsh071window.cpp \
+    allsavewindow.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -42,7 +46,11 @@ HEADERS  += mainwindow.h \
     bopmgport.h \
     simplegraphwindow.h \
     simplegraphwidget.h \
-    bopmguicharwindow.h
+    bopmguicharwindow.h \
+    temperaturecalcwindow.h \
+    tsh071port.h \
+    tsh071window.h \
+    allsavewindow.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -51,7 +59,10 @@ FORMS    += mainwindow.ui \
     pairsavewindow.ui \
     eapswindow.ui \
     simplegraphwindow.ui \
-    bopmguicharwindow.ui
+    bopmguicharwindow.ui \
+    temperaturecalcwindow.ui \
+    tsh071window.ui \
+    allsavewindow.ui
 
 CONFIG   += c++11
 

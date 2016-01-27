@@ -2,6 +2,7 @@
 #define BOPMGPORT_H
 
 #include <QString>
+#include <QTimer>
 
 #include <vector>
 #include <string>
@@ -37,6 +38,7 @@ signals:
 
 private slots:
     void receivedMsg( QByteArray msg );
+    void nextMsg();
 
 private:
     void setSerialValues();
@@ -56,19 +58,25 @@ private:
     void adjustValues();
     void setVoltage( double voltage );
     void setCurrent( double current );
-    void sendBopmgCmd( QString cmd, bool inTime = false );
-    void updateNumInTimeValues();
+    void sendBopmgCmd( QString cmd, bool answer );
+    void noAnswerReceived();
+    void sendNextMessage();
 
+    setValueType _setValueType;
+    std::vector<QString> _msgToSend;
     std::vector<QString> _expectedAnswer;
+    QTimer  _checkForAnswerTimer;
     QString _idString;
+
+    int _sendCounter;
+    int _answerPending;
     double _minVoltage;
     double _maxVoltage;
     double _minCurrent;
     double _maxCurrent;
     double _lastVoltage;
     double _lastCurrent;
-    double _lastPower;
-    setValueType _setValueType;
+    double _lastPower;    
     double _setVoltage;
     double _setCurrent;
     double _setPower;
@@ -77,6 +85,7 @@ private:
     bool _emitCurrent;
     bool _emitPower;
 
+    const int TRIES_SEND_MSG = 3;
     const double adjustmentFactor = 0.3;
     const QString CMD_IDN         = "*IDN?";
     const QString CMD_VOLTAGE_MIN = "VOLT?MIN";

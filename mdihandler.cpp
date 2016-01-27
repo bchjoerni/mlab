@@ -34,25 +34,60 @@ void mdiHandler::putValue( const QString &id, double value )
     }
 }
 
+void mdiHandler::changeWindowState( const QString &id, bool okay )
+{
+    auto subWindows = _mdiArea->subWindowList();
+    for( QMdiSubWindow* window : subWindows )
+    {
+        if( window->windowTitle() == id )
+        {
+            if( okay )
+            {
+                window->setWindowIcon(
+                            QIcon( ":/images/images/greenDot.png" ) );
+            }
+            else
+            {
+                window->setWindowIcon( QIcon( ":/images/images/redDot.png" ) );
+            }
+            break;
+        }
+    }
+}
+
 void mdiHandler::addPowerMeterTestWindow( const QString &title )
 {
     LOG(INFO) << "add powerMeterTestWindow";
-    powerMeterTestWindow* pmtw = new powerMeterTestWindow;
-    addWindow( pmtw, pmtw->windowFlags(), title );
+    powerMeterTestWindow* window = new powerMeterTestWindow;
+    addWindow( window, window->windowFlags(), title );
 }
 
 void mdiHandler::addPairSaveWindow( const QString &title )
 {
     LOG(INFO) << "add pairSaveWindow";
-    pairSaveWindow* psw = new pairSaveWindow;
-    addWindow( psw, psw->windowFlags(), title );
+    pairSaveWindow* window = new pairSaveWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
+void mdiHandler::addAllSaveWindow( const QString &title )
+{
+    LOG(INFO) << "add allSaveWindow";
+    allSaveWindow* window = new allSaveWindow;
+    addWindow( window, window->windowFlags(), title );
 }
 
 void mdiHandler::addSimpleGraph( const QString &title )
 {
     LOG(INFO) << "add simpleGraph";
-    simpleGraphWindow* sgw = new simpleGraphWindow;
-    addWindow( sgw, sgw->windowFlags(), title );
+    simpleGraphWindow* window = new simpleGraphWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
+void mdiHandler::addCalcTemperatureWindow( const QString &title )
+{
+    LOG(INFO) << "add addCalcTemperature";
+    temperatureCalcWindow* window = new temperatureCalcWindow;
+    addWindow( window, window->windowFlags(), title );
 }
 
 void mdiHandler::addBogMgWindow( const QString& title )
@@ -77,6 +112,13 @@ void mdiHandler::addEapsWindow( const QString &title )
     addWindow( window, window->windowFlags(), title );
 }
 
+void mdiHandler::addTsh071Window( const QString &title )
+{
+    LOG(INFO) << "add tsh071Window";
+    tsh071Window* window = new tsh071Window;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
                             const QString& title )
 {
@@ -90,6 +132,8 @@ void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
     connect( window, SIGNAL( closing() ), this, SLOT( windowClosed() ) );
     connect( window, SIGNAL( newValue( QString, double ) ), this,
              SLOT( putValue( QString, double ) ) );
+    connect( window, SIGNAL( changeWindowState( QString, bool ) ), this,
+             SLOT( changeWindowState( QString, bool ) ) );
 }
 
 QStringList mdiHandler::getWindowNames()

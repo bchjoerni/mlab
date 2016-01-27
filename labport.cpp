@@ -50,8 +50,12 @@ QString labPort::getPortName()
     return _port.portName();
 }
 
-void labPort::clearErrors()
+void labPort::clearPort()
 {
+    if( _port.isOpen() )
+    {
+        _port.clear();
+    }
     _port.clearError();
 }
 
@@ -105,6 +109,7 @@ void labPort::closePort()
 
 void labPort::initTimeout()
 {
+    _initTimer.stop();
     if( _initValueCounter < _numInitValues )
     {
         emit portError( "Initialization timeout!" );

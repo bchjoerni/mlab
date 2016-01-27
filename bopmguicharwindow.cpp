@@ -126,6 +126,8 @@ void bopmgUICharWindow::disconnectPort()
     _ui->lbl_status->setText( NOT_CONNECTED );
     _ui->lbl_status->setStyleSheet( STYLE_ERROR );
     _ui->btn_connect->setText( CONNECT_PORT );
+
+    emit changeWindowState( this->windowTitle(), false );
 }
 
 void bopmgUICharWindow::initFinished( const QString &idString )
@@ -183,7 +185,22 @@ void bopmgUICharWindow::setValues()
         _running = false;
         _tickCounter = 0;
         _ui->frame_setValues->setEnabled( true );
+        _ui->chb_setZeroWhenFinished->setEnabled( true );
         _ui->btn_startStop->setText( START );
+
+        if( _ui->chb_setZeroWhenFinished->isChecked() )
+        {
+            if( _ui->cob_setValue->currentText() == VOLTAGE )
+            {
+                _port.setValue( bopmgPort::setValueType::setTypeVoltage,
+                                0.0, false );
+            }
+            else if( _ui->cob_setValue->currentText() == CURRENT )
+            {
+                _port.setValue( bopmgPort::setValueType::setTypeCurrent,
+                                0.0, false );
+            }
+        }
     }
 }
 
@@ -202,6 +219,9 @@ void bopmgUICharWindow::startStop()
     _running = started;
     _tickCounter = 0;
     _ui->frame_setValues->setEnabled( !started );
+    _ui->chb_setZeroWhenFinished->setEnabled( !started );
+
+    emit changeWindowState( this->windowTitle(), started );
 }
 
 void bopmgUICharWindow::voltageUpdate( double voltage )
@@ -343,21 +363,28 @@ void bopmgUICharWindow::portError( QString error )
               << error.toStdString();
     _ui->lbl_info->setText( error );
     _ui->lbl_info->setStyleSheet( STYLE_ERROR );
+
+    emit changeWindowState( this->windowTitle(), false );
 }
 
 void bopmgUICharWindow::resetInfo()
 {
-    _port.clearErrors();
+    _port.clearPort();
 
     if( _port.isRunning() )
     {
         _ui->lbl_info->setText( _port.idString() );
         _ui->lbl_info->setStyleSheet( "" );
+        _ui->btn_connect->setText( DISCONNECT_PORT );
+        _ui->btn_connect->setEnabled( true );
+
+        emit changeWindowState( this->windowTitle(), true );
     }
     else
     {
         _ui->lbl_info->setText( "-" );
         _ui->lbl_info->setStyleSheet( "" );
+        _ui->btn_connect->setText( CONNECT_PORT );
+        refreshPortList();
     }
-    refreshPortList();
 }

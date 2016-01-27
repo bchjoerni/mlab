@@ -122,6 +122,8 @@ void bopmgWindow::disconnectPort()
     _ui->lbl_status->setStyleSheet( STYLE_ERROR );
     _ui->btn_connect->setText( CONNECT_PORT );
     _ui->lbl_setValueSet->setText( "-" );
+
+    emit changeWindowState( this->windowTitle(), false );
 }
 
 void bopmgWindow::initFinished( const QString &idString )
@@ -135,6 +137,7 @@ void bopmgWindow::initFinished( const QString &idString )
     _ui->lbl_status->setStyleSheet( STYLE_OK );
     _ui->btn_connect->setText( DISCONNECT_PORT );
 
+    emit changeWindowState( this->windowTitle(), true );
     updateUnitRange();
 }
 
@@ -388,21 +391,28 @@ void bopmgWindow::portError( QString error )
               << error.toStdString();
     _ui->lbl_info->setText( error );
     _ui->lbl_info->setStyleSheet( STYLE_ERROR );
+
+    emit changeWindowState( this->windowTitle(), false );
 }
 
 void bopmgWindow::resetInfo()
 {
-    _port.clearErrors();
+    _port.clearPort();
 
     if( _port.isRunning() )
     {
         _ui->lbl_info->setText( _port.idString() );
         _ui->lbl_info->setStyleSheet( "" );
+        _ui->btn_connect->setText( DISCONNECT_PORT );
+        _ui->btn_connect->setEnabled( true );
+
+        emit changeWindowState( this->windowTitle(), true );
     }
     else
     {
         _ui->lbl_info->setText( "-" );
         _ui->lbl_info->setStyleSheet( "" );
+        _ui->btn_connect->setText( CONNECT_PORT );
+        refreshPortList();
     }
-    refreshPortList();
 }

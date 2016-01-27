@@ -1,10 +1,12 @@
 #include "bopmgport.h"
 
 bopmgPort::bopmgPort( QObject *parent ) : labPort( parent ),
+    _setValueType( setValueType::setTypeNone ),
+    _sendCounter( 0 ), _answerPending( -1 ),
     _minVoltage( -100.0 ), _maxVoltage( 100.0 ),
     _minCurrent( -10.0 ), _maxCurrent( 10.0 ),
     _lastVoltage( 0.0 ), _lastCurrent( 0.0 ), _lastPower( 0.0 ),
-    _setValueType( setValueType::setTypeNone ), _autoAdjust( false ),
+    _autoAdjust( false ),
     _emitVoltage( false ), _emitCurrent( false ), _emitPower( false )
 {
     setSerialValues();
@@ -12,6 +14,8 @@ bopmgPort::bopmgPort( QObject *parent ) : labPort( parent ),
 
     connect( this, SIGNAL( dataReceived( QByteArray ) ), this,
                            SLOT( receivedMsg( QByteArray ) ) );
+    connect( &_checkForAnswerTimer, SIGNAL( timeout() ), this,
+             SLOT( nextMsg() ) );
 }
 
 void bopmgPort::setSerialValues()
@@ -28,7 +32,7 @@ void bopmgPort::setLabPortVariables()
     _initValueCounter   = 0;
     _numInitValues      = 1;
     _minBytesRead       = -10;
-    _writingPauseMs     = 100;
+    _writingPauseMs     = 50;
     _bytesError         = 20;
     _inTimeValueCounter = 0;
     _numInTimeValues    = 0;
@@ -37,11 +41,8 @@ void bopmgPort::setLabPortVariables()
 void bopmgPort::getInitValues()
 {    
     setCls();
-    _expectedAnswer.push_back( CMD_OTHER );
     setRemoteControl( true );
-    _expectedAnswer.push_back( CMD_OTHER );
     setOutput( true );
-    _expectedAnswer.push_back( CMD_IDN );
     getIdn();
 }
 
@@ -62,7 +63,6 @@ void bopmgPort::updateValues()
     {
         getCurrent();
     }
-    updateNumInTimeValues();
 
     if( _setValueType != setValueType::setTypeNone
             && _autoAdjust )
@@ -86,63 +86,44 @@ void bopmgPort::setEmitPower( bool emitPower )
     _emitPower = emitPower;
 }
 
-void bopmgPort::updateNumInTimeValues()
-{
-    _numInTimeValues = 0;
-    /*
-    if( _emitVoltage )
-    {
-        _numInTimeValues++;
-    }
-    if( _emitCurrent )
-    {
-        _numInTimeValues++;
-    }
-    if( _emitPower )
-    {
-        _numInTimeValues++;
-    }
-    */
-}
-
 void bopmgPort::setCls()
 {
-    sendBopmgCmd( "*CLS" );
+    sendBopmgCmd( "*CLS", false );
 }
 
 void bopmgPort::setRemoteControl( bool on )
 {
-    sendBopmgCmd( QString( "SYST:REM " ) + (on ? "ON" : "OFF") );
+    sendBopmgCmd( QString( "SYST:REM " ) + (on ? "ON" : "OFF"), false );
 }
 
 void bopmgPort::setOutput( bool on )
 {
-    sendBopmgCmd( QString( "OUTP " ) + (on ? "ON" : "OFF") );
+    sendBopmgCmd( QString( "OUTP " ) + (on ? "ON" : "OFF"), false );
 }
 
 void bopmgPort::getIdn()
 {
-    sendBopmgCmd( CMD_IDN );
+    sendBopmgCmd( CMD_IDN, true );
 }
 
 void bopmgPort::getMinVoltage()
 {
-    sendBopmgCmd( CMD_VOLTAGE_MIN );
+    sendBopmgCmd( CMD_VOLTAGE_MIN, true );
 }
 
 void bopmgPort::getMaxVoltage()
 {
-    sendBopmgCmd( CMD_VOLTAGE_MAX );
+    sendBopmgCmd( CMD_VOLTAGE_MAX, true );
 }
 
 void bopmgPort::getMinCurrent()
 {
-    sendBopmgCmd( CMD_CURRENT_MIN );
+    sendBopmgCmd( CMD_CURRENT_MIN, true );
 }
 
 void bopmgPort::getMaxCurrent()
 {
-    sendBopmgCmd( CMD_CURRENT_MAX );
+    sendBopmgCmd( CMD_CURRENT_MAX, true );
 }
 
 double bopmgPort::minVoltage() const
@@ -257,46 +238,125 @@ void bopmgPort::setValue( setValueType type, double value, bool autoAdjust )
 
 void bopmgPort::setVoltage( double voltage )
 {
-    _expectedAnswer.push_back( CMD_OTHER );
-    sendBopmgCmd( "VOLT " + QString::number( voltage ) );
+    sendBopmgCmd( "VOLT " + QString::number( voltage ), false );
 }
 
 void bopmgPort::setCurrent( double current )
 {
-    _expectedAnswer.push_back( CMD_OTHER );
-    sendBopmgCmd( "CURR " + QString::number( current ) );
+    sendBopmgCmd( "CURR " + QString::number( current ), false );
 }
 
 void bopmgPort::getVoltage()
 {
-    sendBopmgCmd( CMD_VOLTAGE );
+    sendBopmgCmd( CMD_VOLTAGE, true );
 }
 
 void bopmgPort::getCurrent()
 {
-    sendBopmgCmd( CMD_CURRENT );
+    sendBopmgCmd( CMD_CURRENT, true );
 }
 
-void bopmgPort::sendBopmgCmd( QString cmd, bool inTime )
+void bopmgPort::sendBopmgCmd( QString cmd, bool answer )
 {
-    QString msg = cmd + ";\r\n";
-    if( cmd.contains( "?" ) )
+    if( answer )
     {
-        _expectedAnswer.push_back( cmd );
+        if( cmd != CMD_IDN
+                && cmd != CMD_VOLTAGE
+                && cmd != CMD_CURRENT
+                && cmd != CMD_VOLTAGE_MIN
+                && cmd != CMD_VOLTAGE_MAX
+                && cmd != CMD_CURRENT_MIN
+                && cmd != CMD_CURRENT_MAX )
+        {
+            _expectedAnswer.push_back( CMD_OTHER );
+        }
+        else
+        {
+            _expectedAnswer.push_back( cmd );
+        }
     }
-    sendMsg( msg.toStdString().c_str(), msg.size(), false ); // todo: in time not working properly
+    _msgToSend.push_back( (answer ? "y" : "n") + cmd + "\r\n" );    
+
+    if( !_checkForAnswerTimer.isActive() )
+    {
+        _answerPending = -1;
+        nextMsg();
+    }
+}
+
+void bopmgPort::nextMsg()
+{
+    if( _answerPending == 1 )
+    {
+        noAnswerReceived();
+    }
+    else
+    {
+        if( _msgToSend.size() == 0 )
+        {
+            _checkForAnswerTimer.stop();
+        }
+        sendNextMessage();
+    }
+}
+
+void bopmgPort::noAnswerReceived()
+{
+    if( _sendCounter < TRIES_SEND_MSG )
+    {
+        _sendCounter++;
+        sendMsg( _msgToSend[0].toStdString().c_str(), _msgToSend[0].size(),
+                 false );
+        _checkForAnswerTimer.start( _writingPauseMs*2 );
+    }
+    else
+    {
+        emit portError( "No answer after several requests!" );
+        _sendCounter = 0;
+        _msgToSend.erase( _msgToSend.begin() );
+        _expectedAnswer.erase( _expectedAnswer.begin() );
+        _answerPending = -1;
+        if( _msgToSend.size() > 0 )
+        {
+            _checkForAnswerTimer.start( _writingPauseMs*2 );
+        }
+    }
+}
+
+void bopmgPort::sendNextMessage()
+{
+    _sendCounter = 0;
+    if( _answerPending != -1 && _msgToSend.size() > 0 )
+    {
+        _msgToSend.erase( _msgToSend.begin() );
+    }
+
+    if( _msgToSend.size() > 0 )
+    {
+        _answerPending = (_msgToSend[0].at( 0 ) == 'n') ? 0 : 1;
+        _msgToSend[0] = _msgToSend[0].mid( 1, -1 );
+        sendMsg( _msgToSend[0].toStdString().c_str(), _msgToSend[0].size(),
+                 false );
+        _checkForAnswerTimer.start( _writingPauseMs*2 );
+    }
 }
 
 void bopmgPort::receivedMsg( QByteArray msg )
 {
+    msg.replace( 0x0A, "" ).replace( 0x0B, "" ).replace( 0x0D, "" )
+            .replace( 0x11, "" ).replace( 0x13, "" );
+    if( msg.isEmpty() )
+    {
+        return;
+    }
+
     if( _expectedAnswer.size() == 0 )
     {
         emit portError( "Unexpected answer!" );
         return;
     }
 
-    msg.replace( 0x0A, "" ).replace( 0x0B, "" ).replace( 0x0D, "" )
-            .replace( 0x11, "" ).replace( 0x13, "" );
+    _answerPending = 0;   
     bool conversionSuccessful = false;
     if( _expectedAnswer[0] == CMD_VOLTAGE )
     {

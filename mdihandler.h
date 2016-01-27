@@ -5,14 +5,18 @@
 #include <QMdiArea>
 #include <QMdiSubWindow>
 #include <QStringList>
+#include <QIcon>
 
 #include "easylogging++.h"
 #include "bopmgwindow.h"
 #include "powermetertestwindow.h"
 #include "pairsavewindow.h"
+#include "allsavewindow.h"
 #include "eapswindow.h"
 #include "simplegraphwindow.h"
 #include "bopmguicharwindow.h"
+#include "temperaturecalcwindow.h"
+#include "tsh071window.h"
 
 class mdiHandler : public QObject
 {
@@ -22,15 +26,19 @@ public:
     void doUpdates();
     void addPowerMeterTestWindow( const QString& title );
     void addPairSaveWindow( const QString& title );
+    void addAllSaveWindow( const QString& title );
     void addSimpleGraph( const QString& title );
+    void addCalcTemperatureWindow( const QString& title );
     void addBogMgWindow( const QString& title );
     void addEapsWindow( const QString& title );
     void addBopmgUICharWindow( const QString& title );
+    void addTsh071Window( const QString& title );
     QStringList getWindowNames();
 
 public slots:
     void windowClosed();
     void putValue( const QString& id, double value );
+    void changeWindowState( const QString& id, bool okay );
 
 signals:
     void windowNumberChanged( int change );

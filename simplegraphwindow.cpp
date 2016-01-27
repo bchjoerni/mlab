@@ -69,12 +69,16 @@ void simpleGraphWindow::startStop()
         _ui->btn_startStop->setText( STOP );
         _ui->lbl_status->setText( RUNNING );
         _ui->lbl_status->setStyleSheet( STYLE_OK );
+
+        emit changeWindowState( this->windowTitle(), true );
     }
     else if( _ui->btn_startStop->text() == STOP )
     {
         _ui->btn_startStop->setText( START );
         _ui->lbl_status->setText( PAUSING );
         _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+
+        emit changeWindowState( this->windowTitle(), false );
     }
 }
 

@@ -34,6 +34,7 @@ signals:
     void newValue( QString id, double value );
     void newString( QString id, QString string );
     void closing();
+    void changeWindowState( QString id, bool okay );
 };
 
 #endif // MLABWINDOW_H

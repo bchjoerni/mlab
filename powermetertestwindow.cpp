@@ -64,6 +64,8 @@ void powerMeterTestWindow::connectPort()
     _ui->btn_connect->setText( DISCONNECT_PORT );
     _ui->lbl_info->setText( "testport" );
     setInit( true );
+
+    emit changeWindowState( this->windowTitle(), true );
 }
 
 void powerMeterTestWindow::disconnectPort()
@@ -74,6 +76,8 @@ void powerMeterTestWindow::disconnectPort()
     _ui->btn_connect->setText( CONNECT_PORT );
     _ui->lbl_info->setText( "-" );
     setInit( false );
+
+    emit changeWindowState( this->windowTitle(), false );
 }
 
 void powerMeterTestWindow::setValue()
