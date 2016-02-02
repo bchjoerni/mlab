@@ -30,6 +30,7 @@ bool labPort::openPort( const QString& portName )
     {
         _initTimer.start( _initTimeoutMs );
     }
+    _initValueCounter = 0;
     getInitValues();
     return true;
 }
