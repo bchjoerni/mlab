@@ -51,8 +51,9 @@ private:
     void refreshPortList();
     void addItems();
     void setValues();
-    bool endOfLoop();
     void uiCharFinished();
+    bool endOfLoop();
+    bool inLoopInterval();
 
     Ui::bopmgUICharWindow *_ui;
     bopmgPort _port;

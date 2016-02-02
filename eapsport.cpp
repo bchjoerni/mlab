@@ -148,18 +148,18 @@ void eapsPort::adjustValues()
     }
     else if( _setValueType == setValueType::setTypeResistanceByVoltage )
     {
-        if( _lastVoltage > 0.0 && _lastCurrent > 0.0 )
+        if( _lastVoltage > 0.0 && _lastResistance > 0.0 )
         {
-            setVoltage( calcAdjustedValue( _setResistance,
-                        _lastVoltage/_lastCurrent )*_lastCurrent );
+            setVoltage( _lastVoltage*
+                        std::sqrt( _setResistance/_lastResistance ) );
         }
     }
     else if( _setValueType == setValueType::setTypeResistanceByCurrent )
     {
-        if( _lastVoltage > 0.0 && _lastCurrent > 0.0 )
+        if( _lastVoltage > 0.0 && _lastResistance > 0.0 )
         {
-            setCurrent( 1.0/(calcAdjustedValue( _setResistance,
-                        _lastVoltage/_lastCurrent )/_lastVoltage) );
+            setCurrent( _lastCurrent*
+                        std::sqrt( _setResistance/_lastResistance ) );
         }
     }
 }
@@ -224,16 +224,17 @@ void eapsPort::setValue( setValueType type, double value, bool autoAdjust )
                   << autoAdjust << " by voltage: "
                   << (type == setValueType::setTypeResistanceByVoltage);
         _setResistance = value;
-        _lastResistance = value;
-        if( _lastVoltage > 0.0 && _lastCurrent > 0.0 )
+        if( _lastVoltage > 0.0 && _lastCurrent > 0.0 && _lastResistance > 0.0 )
         {
             if( type == setValueType::setTypeResistanceByVoltage )
             {
-                setVoltage( _lastCurrent*value );
+                setVoltage( _lastVoltage*
+                            std::sqrt( _setResistance/_lastResistance ) );
             }
             else if( type == setValueType::setTypeResistanceByCurrent )
             {
-                setCurrent( _lastVoltage/value );
+                setCurrent( _lastCurrent*
+                            std::sqrt( _setResistance/_lastResistance ) );
             }
         }
         else
@@ -495,13 +496,15 @@ void eapsPort::answerGetCurrent( unsigned char* msgValues )
     emit newCurrent( _lastCurrent );
     if( _emitPower )
     {
+        _lastPower = _lastVoltage*_lastCurrent;
         _inTimeValueCounter++;
-        emit newPower( _lastVoltage*_lastCurrent );
+        emit newPower( _lastPower );
     }
     if( _emitResistance )
     {
+        _lastResistance = _lastVoltage/_lastCurrent;
         _inTimeValueCounter++;
-        emit newResistance( _lastVoltage/_lastCurrent );
+        emit newResistance( _lastResistance );
     }
 }
 

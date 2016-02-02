@@ -13,8 +13,6 @@ eapsWindow::eapsWindow( QWidget *parent ) :
     addItems();
     refreshPortList();
     visibilitySelectionChanged();
-
-    setPortEmits();
 }
 
 eapsWindow::~eapsWindow()
@@ -119,6 +117,7 @@ void eapsWindow::connectivityButtonPressed()
 
 void eapsWindow::connectPort()
 {
+    setPortEmits();
     _port.openPort( _ui->cob_ports->currentText() );
 }
 
@@ -164,6 +163,7 @@ void eapsWindow::setValue()
                         _ui->chb_adjustSetValue->isChecked() );
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_VOLT );
+        _ui->frame_voltage->setVisible( true );
     }
     else if( _ui->cob_setValue->currentText() == CURRENT )
     {
@@ -175,6 +175,7 @@ void eapsWindow::setValue()
                         _ui->chb_adjustSetValue->isChecked() );
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_AMPERE );
+        _ui->frame_current->setVisible( true );
     }
     else if( _ui->cob_setValue->currentText() == POWER_BY_VOLTAGE )
     {
@@ -186,6 +187,7 @@ void eapsWindow::setValue()
                         _ui->chb_adjustSetValue->isChecked() );
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_WATT );
+        _ui->frame_power->setVisible( true );
     }
     else if( _ui->cob_setValue->currentText() == POWER_BY_CURRENT )
     {
@@ -197,16 +199,30 @@ void eapsWindow::setValue()
                         _ui->chb_adjustSetValue->isChecked() );
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_WATT );
+        _ui->frame_power->setVisible( true );
     }
     else if( _ui->cob_setValue->currentText() == RESISTANCE_BY_VOLTAGE )
     {
+        if( !setResistanceConditionsMet() )
+        {
+            showResistanceSetHint();
+            return;
+        }
+
         _port.setValue( eapsPort::setValueType::setTypeResistanceByVoltage,
                         value, _ui->chb_adjustSetValue->isChecked() );
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_OHM );
+        _ui->frame_resistance->setVisible( true );
     }
     else if( _ui->cob_setValue->currentText() == RESISTANCE_BY_CURRENT )
     {
+        if( !setResistanceConditionsMet() )
+        {
+            showResistanceSetHint();
+            return;
+        }
+
         _port.setValue( eapsPort::setValueType::setTypeResistanceByCurrent,
                         value, _ui->chb_adjustSetValue->isChecked() );
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
@@ -216,6 +232,24 @@ void eapsWindow::setValue()
     _ui->lbl_setValueSet->setText( _ui->lbl_setValueSet->text() +
                                    (_ui->chb_adjustSetValue->isChecked() ?
                                         " (wa)" : " (na)") );
+    _ui->frame_resistance->setVisible( true );
+    setPortEmits();
+}
+
+bool eapsWindow::setResistanceConditionsMet()
+{
+    return _ui->chb_adjustSetValue->isChecked()
+            && _ui->txt_resistance->text().size() > 2;
+}
+
+void eapsWindow::showResistanceSetHint()
+{
+    QMessageBox msgBox;
+    msgBox.setWindowTitle( "Error!" );
+    msgBox.setText( "For setting resistance: Choose voltage and current values"
+                    " so that the resistance is about the wanted value."
+                    "Measure this and turn auto value on!" );
+    msgBox.exec();
 }
 
 void eapsWindow::doUpdate()

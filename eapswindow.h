@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QMessageBox>
 
 #include "easylogging++.h"
 #include "mlabwindow.h"
@@ -50,6 +51,8 @@ private:
     void refreshPortList();
     void addItems();
     void setPortEmits();
+    bool setResistanceConditionsMet();
+    void showResistanceSetHint();
 
     Ui::eapsWindow *_ui;
     eapsPort _port;

@@ -13,8 +13,6 @@ bopmgWindow::bopmgWindow( QWidget *parent ) :
     addItems();
     refreshPortList();
     visibilitySelectionChanged();
-
-    setPortEmits();
 }
 
 bopmgWindow::~bopmgWindow()
@@ -35,7 +33,7 @@ void bopmgWindow::connectPortFunctions()
     connect( &_port, SIGNAL( newPower( double ) ), this,
              SLOT( powerUpdate( double ) ) );
     connect( &_port, SIGNAL( newResistance( double ) ), this,
-             SLOT( resistanceUpdate() ) );
+             SLOT( resistanceUpdate( double ) ) );
 }
 
 void bopmgWindow::connectUiElements()
@@ -119,6 +117,7 @@ void bopmgWindow::connectivityButtonPressed()
 
 void bopmgWindow::connectPort()
 {
+    setPortEmits();
     _port.openPort( _ui->cob_ports->currentText() );
 }
 

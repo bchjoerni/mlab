@@ -269,7 +269,7 @@
          <item row="0" column="2">
           <widget class="QPushButton" name="btn_measuredValuesVisibility">
            <property name="text">
-            <string>show</string>
+            <string>hide</string>
            </property>
           </widget>
          </item>

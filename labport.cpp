@@ -102,6 +102,8 @@ void labPort::timeToSendMsg()
 
 void labPort::closePort()
 {
+    _sendTimer.stop();
+
     _port.clear();
     _port.clearError();
     _port.close();

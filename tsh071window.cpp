@@ -16,8 +16,6 @@ tsh071Window::tsh071Window( QWidget *parent ) :
     addItems();
     refreshPortList();
     visibilitySelectionChanged();
-
-    setPortEmits();
 }
 
 tsh071Window::~tsh071Window()
@@ -41,11 +39,6 @@ void tsh071Window::connectUiElements()
 {
     connect( _ui->cob_measuredValues, SIGNAL( currentTextChanged( QString ) ),
              this, SLOT( visibilitySelectionChanged() ) );
-
-    connect( _ui->chb_shareRpm, SIGNAL( stateChanged( int ) ), this,
-             SLOT( emitRpmChanged() ) );
-    connect( _ui->chb_sharePressure, SIGNAL( stateChanged( int ) ), this,
-             SLOT( emitPressureChanged() ) );
 
     connect( _ui->btn_connect, SIGNAL( clicked() ), this,
              SLOT( connectivityButtonPressed() ) );
@@ -113,6 +106,7 @@ void tsh071Window::connectivityButtonPressed()
 
 void tsh071Window::connectPort()
 {
+    setPortEmits();
     _port.setId( _ui->spb_id->value() );
     _port.openPort( _ui->cob_ports->currentText() );
 }

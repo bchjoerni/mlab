@@ -55,8 +55,10 @@ void allSaveWindow::putValue( const QString& id, double value )
 
 void allSaveWindow::selectFile()
 {
-    _fileName = QFileDialog::getSaveFileName( this, "Select file", "",
-                                  "txt files (*.txt)" );
+    QString name = "mlab_all_" +
+        QDateTime::currentDateTime().toString( "yyyy-MM-dd_hh:mm:ss" ) + ".txt";
+    _fileName = QFileDialog::getSaveFileName( this, "Select file", name,
+                                              "text files (*.txt)" );
     if( !_fileName.isEmpty() )
     {
         _ui->lbl_fileName->setText( _fileName );

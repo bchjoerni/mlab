@@ -191,8 +191,7 @@ void bopmgUICharWindow::setValues()
 
 bool bopmgUICharWindow::endOfLoop()
 {
-    if( (_increasing && (_setUiValue >= _ui->dsb_toValue->value()))
-    || (!_increasing && (_setUiValue <= _ui->dsb_fromValue->value())) )
+    if( inLoopInterval() )
     {
         if( _loopCounter < (_ui->chb_loop->isChecked() ? 1 : 0) +
                 _ui->spb_repeat->value()*(_ui->chb_loop->isChecked() ? 2 : 1) )
@@ -216,6 +215,20 @@ bool bopmgUICharWindow::endOfLoop()
     }
 
     return false;
+}
+
+bool bopmgUICharWindow::inLoopInterval()
+{
+    if( _ui->dsb_fromValue->value() <= _ui->dsb_toValue->value() )
+    {
+        return (_increasing && (_setUiValue >= _ui->dsb_toValue->value()))
+           || (!_increasing && (_setUiValue <= _ui->dsb_fromValue->value()));
+    }
+    else
+    {
+        return (_increasing && (_setUiValue >= _ui->dsb_fromValue->value()))
+           || (!_increasing && (_setUiValue <= _ui->dsb_toValue->value()));
+    }
 }
 
 void bopmgUICharWindow::uiCharFinished()
@@ -249,7 +262,7 @@ void bopmgUICharWindow::startStop()
     calculateRemainingTicks();
     bool started = (_ui->btn_startStop->text() == START);
 
-    _increasing = (_ui->dsb_fromValue->value() < _ui->dsb_toValue->value());
+    _increasing = (_ui->dsb_fromValue->value() <= _ui->dsb_toValue->value());
 
     _ui->btn_startStop->setText( started ? STOP : START );
     _running = started;

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>411</width>
-    <height>409</height>
+    <height>411</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -114,7 +114,7 @@
          <item row="0" column="2">
           <widget class="QPushButton" name="btn_measuredValuesVisibility">
            <property name="text">
-            <string>show</string>
+            <string>hide</string>
            </property>
           </widget>
          </item>

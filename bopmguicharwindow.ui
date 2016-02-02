@@ -291,7 +291,7 @@
          <item row="0" column="2">
           <widget class="QCheckBox" name="chb_shareCurrent">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string>share</string>
@@ -336,7 +336,7 @@
          <item row="0" column="2">
           <widget class="QCheckBox" name="chb_shareVoltage">
            <property name="enabled">
-            <bool>false</bool>
+            <bool>true</bool>
            </property>
            <property name="text">
             <string>share</string>
