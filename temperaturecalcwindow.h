@@ -29,6 +29,7 @@ private slots:
     void startStopPressed();
     void showShareChanged();
     void measureLinearInitValue();
+    void applyInitValues();
 
 private:
     Ui::temperatureCalcWindow *_ui;

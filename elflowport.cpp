@@ -1,8 +1,10 @@
 #include "elflowport.h"
 
 
-elFlowPort::elFlowPort( QObject* parent ) : labPort( parent ),
-    _id( 128 )
+elFlowPort::elFlowPort( QObject* parent ) : labPort( parent ), _inMsg( false ),
+    _maxCapacity( 0.0 ), _setValueType( setValueType::setTypeNone ),
+    _setFlowPercent( 0.0 ), _autoAdjust( false ),
+    _emitFlow( false ), _emitPressure( false ), _emitTemperature( false )
 {
     setSerialValues();
     setLabPortVariables();
@@ -33,22 +35,53 @@ void elFlowPort::setLabPortVariables()
 
 void elFlowPort::setId( int id )
 {
-    _id = id;
+    _protocol.setNode( id );
 }
 
 void elFlowPort::getInitValues()
 {
+//    sendCmd( _protocol.getFluidNameCmd() );
+//    sendCmd( _protocol.getCapacityUnitCmd() );
+    sendCmd( _protocol.getCapacityValueCmd() );
+    sendCmd( _protocol.getIdStringCmd() );
 }
 
 void elFlowPort::updateValues()
 {
+    // checkInTimeCount();
+
+    if( _emitFlow )
+    {
+        getFlow();
+    }
+    if( _emitPressure )
+    {
+        getPressure();
+    }
+    if( _emitTemperature )
+    {
+        getTemperature();
+    }
+    // updateNumInTimeValues();
+
+    if( _setValueType != setValueType::setTypeNone
+            && _autoAdjust )
+    {
+        // adjustValues();
+    }
 }
 
-void elFlowPort::setValue( setValueType type, double value )
+void elFlowPort::setValue( setValueType type, double value, bool autoAdjust )
 {
+    _autoAdjust = autoAdjust;
+
     if( type == setValueType::setTypeNone )
     {
         return;
+    }
+    else if( type == setValueType::setTypeFlow )
+    {
+        sendCmd( _protocol.getFlowValueSetCmd( value ) );
     }
     else
     {
@@ -61,7 +94,128 @@ QString elFlowPort::idString() const
     return _idString;
 }
 
-void elFlowPort::receivedMsg( QByteArray msg )
+double elFlowPort::maxCapacity() const
 {
+    return _maxCapacity;
 }
 
+void elFlowPort::sendCmd( const std::string& cmd )
+{
+    _port.write( cmd.c_str(), cmd.size() );
+}
+
+void elFlowPort::receivedMsg( QByteArray msg )
+{
+    while( msg.size() > 0 &&
+           (_inMsg || msg.contains( ":" )) )
+    {
+        int index = 0;
+        if( !_inMsg )
+        {
+            index = msg.indexOf( ":" );
+            if( index < 0 )
+            {
+                return;
+            }
+            _inMsg = true;
+        }
+
+        for( ; index < msg.size(); index++ )
+        {
+            if( msg.at( index ) == '\r' )
+            {
+                decodeMsg( _buffer );
+                _inMsg = false;
+                _buffer.clear();
+                break;
+            }
+            _buffer.append( msg.at( index) );
+        }
+        msg = msg.mid( index+1 );
+    }
+}
+
+void elFlowPort::setEmitFlow( bool emitFlow )
+{
+    _emitFlow = emitFlow;
+}
+
+void elFlowPort::setEmitPressure( bool emitPressure )
+{
+    _emitPressure = emitPressure;
+}
+
+void elFlowPort::setEmitTemperature( bool emitTemperature )
+{
+    _emitTemperature = emitTemperature;
+}
+
+void elFlowPort::getFlow()
+{
+    sendCmd( _protocol.getFlowValueCmd() );
+}
+
+void elFlowPort::getPressure()
+{
+    LOG(INFO) << "getpressure: " << _protocol.getPressureCmd();
+    sendCmd( _protocol.getPressureCmd() );
+}
+
+void elFlowPort::getTemperature()
+{
+    sendCmd( _protocol.getTemperatureCmd() );
+}
+
+void elFlowPort::decodeMsg( const QByteArray& msg )
+{
+    elFlowAnswer answer = _protocol.interpretAnswer( msg.toStdString() );
+
+    if( answer.type == elFlowAnswerType::elFlowError )
+    {
+        emit portError( "Invalid answer!" );
+    }
+    else if( answer.type == elFlowAnswerType::protocolError )
+    {
+        emit portError( "Protocol error!" );
+    }
+    else if( answer.type == elFlowAnswerType::elFlowStatus )
+    {
+        if( answer.text.find( "no error" ) == std::string::npos )
+        {
+            emit portError( QString::fromStdString( answer.text ) );
+        }
+    }
+    else if( answer.type == elFlowAnswerType::elFlowValue )
+    {
+        showParameter( answer.paramNum, answer.value, answer.text );
+    }
+    else
+    {
+        emit portError( "Warning: unhandled answer type!" );
+    }
+}
+
+void elFlowPort::showParameter( int paramNum, double value,
+                                const std::string& text )
+{
+    switch( paramNum )
+    {
+        case 1: _initValueCounter++;
+                emit initSuccessful( QString::fromStdString( text ) );
+            break;
+
+        case 8: emit newFlow( value/320.0 );
+            break;
+
+        case 21: _maxCapacity = value;
+            break;
+
+        case 107: emit newPressure( value );
+            break;
+
+        case 142: emit newTemperature( value );
+            break;
+        case 143: emit newPressure( value );
+            break;
+    }
+}

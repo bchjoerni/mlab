@@ -35,6 +35,7 @@ private slots:
     void timeToSendMsg();
     void signalError( const QSerialPort::SerialPortError& error );
     void initTimeout();
+    void logReadData( const QByteArray& received );
 
 protected:
     virtual void getInitValues();

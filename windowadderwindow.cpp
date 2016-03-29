@@ -60,6 +60,10 @@ void windowAdderWindow::ok()
     {
         _mdi->addTsh071Window( _ui->txt_tsh071->text() );
     }
+    if( _ui->chb_flowMeter->isChecked() )
+    {
+        _mdi->addFlowMeterWindow( _ui->txt_flowMeter->text() );
+    }
 
     accept();
 }
@@ -108,6 +112,10 @@ bool windowAdderWindow::checkWindowNames()
     if( _ui->chb_tsh071->isChecked() )
     {
         names.push_back( _ui->txt_tsh071->text() );
+    }
+    if( _ui->chb_flowMeter->isChecked() )
+    {
+        names.push_back( _ui->txt_flowMeter->text() );
     }
 
     return namesValid( names );

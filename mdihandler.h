@@ -18,6 +18,7 @@
 #include "bopmguicharwindow.h"
 #include "temperaturecalcwindow.h"
 #include "tsh071window.h"
+#include "elflowwindow.h"
 
 class mdiHandler : public QObject
 {
@@ -34,6 +35,7 @@ public:
     void addEapsWindow( const QString& title );
     void addBopmgUICharWindow( const QString& title );
     void addTsh071Window( const QString& title );
+    void addFlowMeterWindow( const QString& title );
     QStringList getWindowNames();
     void addUiCharWindows();
 

@@ -227,7 +227,9 @@ void bopmgWindow::doUpdate()
 
 void bopmgWindow::voltageUpdate( double voltage )
 {
-    LOG(INFO) << this->windowTitle().toStdString() << ": voltage update: "
+    CLOG(INFO, "v") << this->windowTitle().toStdString()
+                    << ": voltage = " << voltage << " V";
+    LOG(INFO) << this->windowTitle().toStdString() << ": voltage : "
               << voltage;
     _ui->txt_voltage->setText( QString::number( voltage ) + " V" );
     emit newValue( this->windowTitle() + ": " + VOLTAGE, voltage );
@@ -235,6 +237,8 @@ void bopmgWindow::voltageUpdate( double voltage )
 
 void bopmgWindow::currentUpdate( double current )
 {
+    CLOG(INFO, "v") << this->windowTitle().toStdString()
+               << ": current = " << current << " A";
     LOG(INFO) << this->windowTitle().toStdString() << ": current update: "
               << current;
     _ui->txt_current->setText( QString::number( current ) + " A" );
@@ -243,6 +247,8 @@ void bopmgWindow::currentUpdate( double current )
 
 void bopmgWindow::powerUpdate( double power )
 {
+    CLOG(INFO, "v") << this->windowTitle().toStdString()
+                    << ": power = " << power << " W";
     LOG(INFO) << this->windowTitle().toStdString() << ": power update: "
               << power;
     _ui->txt_power->setText( QString::number( power ) + " W" );
@@ -251,6 +257,8 @@ void bopmgWindow::powerUpdate( double power )
 
 void bopmgWindow::resistanceUpdate( double resistance )
 {
+    CLOG(INFO, "v") << this->windowTitle().toStdString()
+                    << ": resistance = " << resistance << " Ohm";
     LOG(INFO) << this->windowTitle().toStdString() << ": resistance update: "
               << resistance;
     _ui->txt_resistance->setText( QString::number( resistance )

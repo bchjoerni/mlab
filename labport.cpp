@@ -10,6 +10,9 @@ labPort::labPort( QObject *parent ) : QObject( parent ),
              SLOT( signalError( QSerialPort::SerialPortError ) ) );
     connect( &_sendTimer, SIGNAL( timeout() ), this, SLOT( timeToSendMsg() ) );
     connect( &_initTimer, SIGNAL( timeout() ), this, SLOT( initTimeout() ) );
+
+    connect( this, SIGNAL( dataReceived( QByteArray ) ), this,
+             SLOT( logReadData( QByteArray ) ) );
 }
 
 bool labPort::openPort( const QString& portName )
@@ -87,6 +90,7 @@ void labPort::timeToSendMsg()
 
     if( _msgToSend.size() > 0 )
     {
+        LOG(INFO) << "write: " << _msgToSend[0].data();
         _port.write( _msgToSend[0].data(), _msgToSend[0].size() );
         _msgToSend.erase( _msgToSend.begin() );
     }
@@ -159,10 +163,15 @@ void labPort::read()
             }
             else
             {
-                emit dataReceived( QByteArray( _port.readAll() ) );
+                emit dataReceived( _port.readAll() );
             }
         }
     }
+}
+
+void labPort::logReadData( const QByteArray& received )
+{
+    LOG(INFO) << "read: " << received.toStdString();
 }
 
 void labPort::signalError( const QSerialPort::SerialPortError& error )

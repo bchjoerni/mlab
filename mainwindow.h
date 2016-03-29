@@ -6,7 +6,7 @@
 #include <QTimer>
 #include <QTime>
 
-#include <QDebug>
+#include <fstream>
 
 #include "easylogging++.h"
 #include "mdihandler.h"
@@ -37,7 +37,8 @@ private slots:
     void addUiCharWindows();
     void doUpdate();
     void timeUpdate();
-    void setLog();
+    void setValueLogger();
+    void setInfoLogger();
     void exit();
 
 private:
@@ -48,6 +49,9 @@ private:
     QTimer _clockTimer;
     QTime _clockTime;
     bool _running;
+    bool _infoLogRunning;
+    bool _valueLogRunning;
+    bool _infoLoggerCleared;
 
     void connectActions();
     void connectButtons();

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>300</width>
-    <height>300</height>
+    <width>332</width>
+    <height>290</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -79,23 +79,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="5">
-    <widget class="QPushButton" name="btn_selectFile">
-     <property name="text">
-      <string>select file</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0" colspan="5">
-    <widget class="QLabel" name="lbl_fileName">
-     <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No file selected. (You have to measure the values before you can select them!)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="2" colspan="3">
     <widget class="QComboBox" name="cob_delimiter"/>
    </item>
@@ -123,13 +106,30 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1" colspan="3">
+   <item row="1" column="1" colspan="2">
     <widget class="QLabel" name="lbl_status">
      <property name="styleSheet">
       <string notr="true">color:red;</string>
      </property>
      <property name="text">
       <string>pausing</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QPushButton" name="btn_selectFile">
+     <property name="text">
+      <string>select file</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="6">
+    <widget class="QLabel" name="lbl_fileName">
+     <property name="text">
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No file selected.&lt;/p&gt;&lt;p&gt;(Measure values before you can select them!)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

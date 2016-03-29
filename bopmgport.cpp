@@ -40,7 +40,7 @@ void bopmgPort::setLabPortVariables()
 }
 
 void bopmgPort::getInitValues()
-{    
+{
     setCls();
     setRemoteControl( true );
     setOutput( true );
@@ -348,6 +348,11 @@ void bopmgPort::nextMsg()
 
 void bopmgPort::noAnswerReceived()
 {
+    if( _msgToSend.size() == 0 )
+    {
+        return;
+    }
+
     if( _sendCounter < TRIES_SEND_MSG )
     {
         _sendCounter++;
@@ -389,6 +394,10 @@ void bopmgPort::sendNextMessage()
 
 void bopmgPort::receivedMsg( QByteArray msg )
 {
+    if( msg.isNull() )
+    {
+        return;
+    }
     msg.replace( 0x0A, "" ).replace( 0x0B, "" ).replace( 0x0D, "" )
             .replace( 0x11, "" ).replace( 0x13, "" );
     if( msg.isEmpty() )
@@ -402,7 +411,7 @@ void bopmgPort::receivedMsg( QByteArray msg )
         return;
     }
 
-    _answerPending = 0;   
+    _answerPending = 0;
     bool conversionSuccessful = false;
     if( _expectedAnswer[0] == CMD_VOLTAGE )
     {
@@ -481,5 +490,6 @@ void bopmgPort::receivedMsg( QByteArray msg )
     {
         emit portError( "Undefined answer!" );
     }
+
     _expectedAnswer.erase( _expectedAnswer.begin() );
 }

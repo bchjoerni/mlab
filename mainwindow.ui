@@ -20,7 +20,14 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="0" colspan="9">
-     <widget class="QMdiArea" name="mdiArea"/>
+     <widget class="QMdiArea" name="mdiArea">
+      <property name="verticalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+      <property name="horizontalScrollBarPolicy">
+       <enum>Qt::ScrollBarAsNeeded</enum>
+      </property>
+     </widget>
     </item>
     <item row="0" column="8">
      <widget class="QPushButton" name="btn_addWindow">
@@ -132,7 +139,8 @@
     <property name="title">
      <string>Program</string>
     </property>
-    <addaction name="act_log"/>
+    <addaction name="act_logValues"/>
+    <addaction name="act_logInfos"/>
     <addaction name="separator"/>
     <addaction name="act_exit"/>
    </widget>
@@ -157,17 +165,28 @@
     <string>&amp;Exit</string>
    </property>
   </action>
-  <action name="act_log">
+  <action name="act_logValues">
    <property name="checkable">
     <bool>true</bool>
    </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
    <property name="text">
-    <string>&amp;Log</string>
+    <string>&amp;Log values</string>
    </property>
   </action>
   <action name="act_addUiCharWindows">
    <property name="text">
     <string>Add UI-&amp;Char Windows</string>
+   </property>
+  </action>
+  <action name="act_logInfos">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Log infos</string>
    </property>
   </action>
  </widget>

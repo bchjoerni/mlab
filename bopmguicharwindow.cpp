@@ -279,6 +279,8 @@ void bopmgUICharWindow::startStop()
 
 void bopmgUICharWindow::voltageUpdate( double voltage )
 {
+    CLOG(INFO, "v") << this->windowTitle().toStdString()
+                    << ": voltage = " << voltage << " V";
     LOG(INFO) << this->windowTitle().toStdString() << ": voltage update: "
               << voltage;
 
@@ -296,6 +298,8 @@ void bopmgUICharWindow::voltageUpdate( double voltage )
 
 void bopmgUICharWindow::currentUpdate( double current )
 {
+    CLOG(INFO, "v") << this->windowTitle().toStdString()
+                    << ": current = " << current << " A";
     LOG(INFO) << this->windowTitle().toStdString() << ": current update: "
               << current;
 

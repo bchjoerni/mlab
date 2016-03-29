@@ -5,9 +5,12 @@ mainWindow::mainWindow( QWidget *parent ) :
     QMainWindow( parent ),
     _ui( new Ui::mainWindow ),
     _clockTime( QTime( 0, 0, 0 ) ),
-    _running( false )
+    _running( false ), _infoLogRunning( false ), _valueLogRunning( true ),
+    _infoLoggerCleared( false )
 {
     _ui->setupUi( this );
+    _ui->act_logInfos->setChecked( _infoLogRunning );
+    _ui->act_logValues->setChecked( _valueLogRunning );
 
     _statusBarNumWindows = new QLabel;
     _ui->statusBar->addPermanentWidget( _statusBarNumWindows );
@@ -37,8 +40,10 @@ void mainWindow::connectActions()
              SLOT( addWindow() ) );
     connect( _ui->act_addUiCharWindows, SIGNAL( triggered() ), this,
              SLOT( addUiCharWindows() ) );
-    connect( _ui->act_log, SIGNAL( triggered( bool ) ), this,
-             SLOT( setLog() ) );
+    connect( _ui->act_logInfos, SIGNAL( triggered( bool ) ), this,
+             SLOT( setInfoLogger() ) );
+    connect( _ui->act_logValues, SIGNAL( triggered( bool ) ), this,
+             SLOT( setValueLogger() ) );
 }
 
 void mainWindow::connectButtons()
@@ -92,6 +97,7 @@ void mainWindow::addUiCharWindows()
 {
     if( _mdi->getWindowNames().isEmpty() )
     {
+        LOG(INFO) << "add UI-Characterization windows";
         _mdi->addUiCharWindows();
     }
     else
@@ -146,25 +152,71 @@ void mainWindow::timeUpdate()
     _ui->time_timeRunning->setTime( _clockTime );
 }
 
-void mainWindow::setLog()
+void mainWindow::setValueLogger()
 {
+    if( _valueLogRunning == _ui->act_logValues->isChecked() )
+    {
+        return;
+    }
+    else
+    {
+        _valueLogRunning = _ui->act_logValues->isChecked();
+    }
+
+    if( !_ui->act_logValues->isChecked() )
+    {
+        CLOG(INFO, "v") << "logger disabled";
+    }
     el::Configurations config;
     config.setToDefault();
-    std::string enabled( "* GLOBAL:\n"
+    std::string enabled( "*GLOBAL:\n"
+                          " FORMAT = %datetime{%H:%m:%s.%g}: %msg\n"
+                          " FILENAME = log_values.txt\n"
+                          " ENABLED = true\n"
+                          " TO_FILE = true\n"
+                          " TO_STANDARD_OUTPUT = false\n"
+                          " MILLISECONDS_WIDTH = 3\n"
+                          " MAX_LOG_FILE_SIZE = 67108864\n" );
+    std::string disabled( "*GLOBAL:\n ENABLED = false\n TO_FILE = false\n "
+                            "TO_STANDARD_OUTPUT = false" );
+    config.parseFromText( _ui->act_logInfos->isChecked() ? enabled : disabled );
+    el::Loggers::reconfigureLogger( "v", config );
+    CLOG(INFO, "v") << "logger enabled";
+}
+
+void mainWindow::setInfoLogger()
+{
+    if( _infoLogRunning == _ui->act_logInfos->isChecked() )
+    {
+        return;
+    }
+    else
+    {
+        _infoLogRunning = _ui->act_logInfos->isChecked();
+    }
+    if( _infoLogRunning && !_infoLoggerCleared )
+    {
+        std::fstream logFile;
+        logFile.open( "log_info.txt", std::ios_base::out );
+        logFile.close();
+        _infoLoggerCleared = true;
+    }
+
+    el::Configurations config;
+    config.setToDefault();
+    std::string enabled( "*GLOBAL:\n"
                             " FORMAT = %datetime{%Y-%M-%d %H:%m:%s.%g} %level "
                             "in %func: %msg\n"
-                            " FILENAME = log.txt\n"
+                            " FILENAME = log_info.txt\n"
                             " ENABLED = true\n"
                             " TO_FILE = true\n"
                             " TO_STANDARD_OUTPUT = false\n"
                             " MILLISECONDS_WIDTH = 3\n"
-                            " PERFORMANCE_TRACKING = true\n"
-                            " MAX_LOG_FILE_SIZE = 67108864\n"
-                            " LOG_FLUSH_THRESHOLD = 256" );
+                            " MAX_LOG_FILE_SIZE = 67108864\n" );
     std::string disabled( "*GLOBAL:\n ENABLED = false\n TO_FILE = false\n "
                             "TO_STANDARD_OUTPUT = false" );
-    config.parseFromText( _ui->act_log->isChecked() ? enabled : disabled );
-    el::Loggers::reconfigureAllLoggers( config );
+    config.parseFromText( _ui->act_logInfos->isChecked() ? enabled : disabled );
+    el::Loggers::reconfigureLogger( "default", config );
     LOG(INFO) << "Logger enabled, "
               << _statusBarNumWindows->text().toStdString();
 }

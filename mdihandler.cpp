@@ -119,6 +119,13 @@ void mdiHandler::addTsh071Window( const QString &title )
     addWindow( window, window->windowFlags(), title );
 }
 
+void mdiHandler::addFlowMeterWindow( const QString& title )
+{
+    LOG(INFO) << "add flowMeterWindow";
+    elFlowWindow* window = new elFlowWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
                             const QString& title )
 {

@@ -6,28 +6,21 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>305</width>
-    <height>154</height>
+    <width>324</width>
+    <height>179</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>all saver</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="6">
+   <item row="0" column="0" colspan="5">
     <widget class="QLabel" name="lbl_fileName">
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No file selected.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;No file selected.&lt;/p&gt;&lt;p&gt;Select a file and start recording.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="wordWrap">
       <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="6">
-    <widget class="QPushButton" name="btn_selectFile">
-     <property name="text">
-      <string>select file</string>
      </property>
     </widget>
    </item>
@@ -38,13 +31,20 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="1" colspan="3">
+   <item row="1" column="1" colspan="2">
     <widget class="QLabel" name="lbl_status">
      <property name="styleSheet">
       <string notr="true">color:red;</string>
      </property>
      <property name="text">
       <string>pausing</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="4">
+    <widget class="QPushButton" name="btn_selectFile">
+     <property name="text">
+      <string>select file</string>
      </property>
     </widget>
    </item>
@@ -65,41 +65,41 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="5" colspan="2">
+   <item row="2" column="3">
     <widget class="QLabel" name="lbl_tick_lbl">
      <property name="text">
       <string>ticks</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="0" colspan="2">
-    <widget class="QLabel" name="lbl_numSaved_lbl">
-     <property name="text">
-      <string>values saved:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="2" colspan="3">
-    <widget class="QLabel" name="lbl_numSaved">
-     <property name="text">
-      <string>0</string>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="6">
-    <widget class="QPushButton" name="btn_resetCounter">
-     <property name="text">
-      <string>reset counter</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="6">
+   <item row="2" column="4">
     <widget class="QPushButton" name="btn_startStop">
      <property name="enabled">
       <bool>false</bool>
      </property>
      <property name="text">
       <string>start recording</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QLabel" name="lbl_numSaved_lbl">
+     <property name="text">
+      <string>values saved:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLabel" name="lbl_numSaved">
+     <property name="text">
+      <string>0</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="4">
+    <widget class="QPushButton" name="btn_resetCounter">
+     <property name="text">
+      <string>reset counter</string>
      </property>
     </widget>
    </item>

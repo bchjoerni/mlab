@@ -172,6 +172,8 @@ void tsh071Window::doUpdate()
 
 void tsh071Window::rpmUpdate( int rpm )
 {
+    CLOG(INFO, "v") << this->windowTitle().toStdString()
+                    << ": rpm = " << rpm << " /min";
     LOG(INFO) << this->windowTitle().toStdString() << ": rpm update: "
               << rpm;
     _ui->txt_rpm->setText( QString::number( rpm ) + " / min" );
@@ -185,6 +187,8 @@ void tsh071Window::rpmUpdate( int rpm )
 
 void tsh071Window::pressureUpdate( double pressure )
 {
+    CLOG(INFO, "v") << this->windowTitle().toStdString()
+               << ": pressure = " << pressure << " mbar";
     LOG(INFO) << this->windowTitle().toStdString() << ": pressure update: "
               << pressure;
     _ui->txt_pressure->setText( QString::number( pressure ) + " mbar" );

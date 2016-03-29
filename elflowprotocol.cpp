@@ -10,9 +10,15 @@ void elFlowProtocol::setNode( int node )
     _node = node;
 }
 
+
 std::string elFlowProtocol::getStatusCmd()
 {
     return ":02" + byteConverter::asciiToHexString( _node, 2 ) + "01\r\n";
+}
+
+std::string elFlowProtocol::getIdStringCmd()
+{
+    return getSingleGetParamCmd( 1 );
 }
 
 std::string elFlowProtocol::getFlowValueCmd()
@@ -40,8 +46,26 @@ std::string elFlowProtocol::getAliasCmd()
     return getSingleGetParamCmd( 115 );
 }
 
+std::string elFlowProtocol::getPressureCmd()
+{
+    return getSingleGetParamCmd( 143 );
+}
+
+std::string elFlowProtocol::getTemperatureCmd()
+{
+    return getSingleGetParamCmd( 142 );
+}
+
 std::string elFlowProtocol::getFlowValueSetCmd( float percent )
 {
+    if( percent < 0.0 )
+    {
+        percent = 0;
+    }
+    if( percent > 100.0 )
+    {
+        percent = 100.0;
+    }
     return getSingleSendIntCmd( 9, static_cast<int>( percent*320 ) );
 }
 
@@ -117,7 +141,13 @@ int elFlowProtocol::getProcess( int paramNum )
         case 27: return 1;
         case 28: return 1;
 
+        case 107: return 116;
+
         case 115: return 113;
+
+        case 142: return 33;
+        case 143: return 33;
+
         default: throw elFlowProtocolException(
                     "Process number of parameter not found!" );
     }
@@ -156,7 +186,13 @@ int elFlowProtocol::getFBnr( int paramNum )
         case 27: return 19;
         case 28: return 20;
 
+        case 107: return 8;
+
         case 115: return 6;
+
+        case 142: return 7;
+        case 143: return 8;
+
         default: throw elFlowProtocolException(
                     "FB number of parameter not found!" );
     }
@@ -195,7 +231,13 @@ char elFlowProtocol::getParamType( int paramNum )
         case 27: return 'c';
         case 28: return 'c';
 
+        case 107: return 'f';
+
         case 115: return 's';
+
+        case 142: return 'f';
+        case 143: return 'f';
+
         default: throw elFlowProtocolException(
                     "FB number of parameter not found!" );
     }
@@ -354,7 +396,7 @@ std::string elFlowProtocol::getValueString( const std::string& hexString,
         }
     }
 
-    if( hexString[0] > hexString.size()-1 )
+    if( hexString[0] > static_cast<int>( hexString.size() )-1 )
     {
         (*ok) = false;
         return "Length error!";
@@ -672,4 +714,285 @@ std::string elFlowProtocol::getStringInterpretation( const std::string& answer,
         return error;
     }
     return s;
+}
+
+elFlowAnswer elFlowProtocol::interpretAnswer( const std::string& msg )
+{
+    elFlowAnswer answer;
+    answer.paramNum = 0;
+    answer.value = 0.0;
+
+    if( !checkAnswerFormat( msg ) )
+    {
+        answer.type = elFlowAnswerType::elFlowError;
+        answer.text = "Error: Format error!";
+        return answer;
+    }
+
+    std::string hexAnswer = ":" + byteConverter::hexStringToString(
+                msg.substr( 1, msg.length()-1 ) );
+
+    if( isErrorMsg( hexAnswer ) )
+    {
+        answer.type = elFlowAnswerType::elFlowError;
+        answer.text = getErrorMsg( hexAnswer[2] );
+        return answer;
+    }
+
+    if( isStatusMsg( hexAnswer ) )
+    {
+        answer.type = elFlowAnswerType::elFlowStatus;
+        answer.text = getStatusMessage( hexAnswer[3] );
+        return answer;
+    }
+
+    if( !isParameterMsg( hexAnswer ) )
+    {
+        answer.type = elFlowAnswerType::protocolError;
+        answer.text = "Error: unhandled answer typ!";
+        return answer;
+    }
+
+    if( answerIsChained( hexAnswer ) )
+    {
+        answer.type = elFlowAnswerType::protocolError;
+        answer.text = "Error: the current protocol does not support "
+                      "chained answers!";
+        return answer;
+    }
+
+    try
+    {
+        answer = getAnswerParameter( hexAnswer );
+        answer.type = elFlowAnswerType::elFlowValue;
+    }
+    catch( elFlowProtocolException &e )
+    {
+        answer.type = elFlowAnswerType::protocolError;
+        answer.text = e.what();
+        return answer;
+    }
+    catch(...)
+    {
+        answer.type = elFlowAnswerType::protocolError;
+        answer.text = "Error when getting answer parameter!";
+        return answer;
+    }
+
+    return answer;
+}
+
+bool elFlowProtocol::checkAnswerFormat( const std::string& answer )
+{
+    if( answer[0] != 0x3A )
+    {
+        return false;
+    }
+    if( answer.size() < 5 )
+    {
+        return false;
+    }
+
+    return true;
+}
+
+bool elFlowProtocol::isErrorMsg( const std::string& hexAnswer )
+{
+    return hexAnswer[1] == 0x01;
+}
+
+bool elFlowProtocol::isStatusMsg( const std::string& hexAnswer )
+{
+    return hexAnswer[1] == 0x04 && hexAnswer[3] == 0x0;
+}
+
+bool elFlowProtocol::isParameterMsg( const std::string& hexAnswer )
+{
+    return hexAnswer[3] == 0x02;
+}
+
+bool elFlowProtocol::answerIsChained( const std::string& hexAnswer )
+{
+    return hexAnswer[5] < 0;
+}
+
+elFlowAnswer elFlowProtocol::getAnswerParameter( const std::string& hexAnswer )
+{
+    checkAnswerLength( hexAnswer, 6 );
+
+    elFlowAnswer answer;
+    answer.paramNum = getParamNum( hexAnswer[4] < 0 ?
+                hexAnswer[4] + 128 : hexAnswer[4], hexAnswer[5] % 32 );
+
+    switch( getParamType( answer.paramNum ) )
+    {
+        case 'c': answer.value = static_cast<double>(
+                    getSingleCharFromAnswer( hexAnswer ) );
+            break;
+        case 'i': answer.value = static_cast<double>(
+                    getSingleIntFromAnswer( hexAnswer ) );
+            break;
+        case 'l': answer.value = static_cast<double>(
+                    getSingleLongFromAnswer( hexAnswer ) );
+            break;
+        case 'f': answer.value = static_cast<double>(
+                    getSingleFloatFromAnswer( hexAnswer ) );
+            break;
+        case 's': answer.text = getSingleStringFromAnswer( hexAnswer );
+            break;
+        default: throw elFlowProtocolException( "Unknown parameter type!" );
+    }
+
+    return answer;
+}
+
+char elFlowProtocol::getSingleCharFromAnswer( const std::string& hexAnswer )
+{
+    checkAnswerLength( hexAnswer, 7 );
+    return hexAnswer[6];
+}
+
+int elFlowProtocol::getSingleIntFromAnswer( const std::string& hexAnswer )
+{
+    checkAnswerLength( hexAnswer, 8 );
+    byteConverter conv;
+    return conv.bytesToInt( hexAnswer.substr( 6, 2 ) );
+}
+
+int elFlowProtocol::getSingleLongFromAnswer( const std::string& hexAnswer )
+{
+    checkAnswerLength( hexAnswer, 10 );
+    byteConverter conv;
+    return conv.bytesToInt( hexAnswer.substr( 6, 4 ) );
+}
+
+float elFlowProtocol::getSingleFloatFromAnswer( const std::string& hexAnswer )
+{
+    checkAnswerLength( hexAnswer, 10 );
+    byteConverter conv;
+    return conv.bytesToFloat( hexAnswer.substr( 6, 4 ) );
+}
+
+std::string elFlowProtocol::getSingleStringFromAnswer( const std::string&
+                                                       hexAnswer )
+{
+    return getParameterString( hexAnswer.substr( 6 ) );
+}
+
+std::string elFlowProtocol::getParameterString( const std::string& hexString )
+{
+    char zero = 0x0;
+
+    if( hexString[0] == zero )
+    {
+        unsigned int stringEnd; // std::string::find takes 0x30 as 0x00
+        for( stringEnd = 1; stringEnd < hexString.size(); stringEnd++ )
+        {
+            if( hexString[stringEnd] == zero )
+            {
+                break;
+            }
+        }
+        if( stringEnd < hexString.size() )
+        {
+            return hexString.substr( 1, stringEnd-1 );
+        }
+        else
+        {
+            throw elFlowProtocolException( "String format error!" );
+        }
+    }
+
+    if( hexString[0] > static_cast<int>( hexString.size() )-1 )
+    {
+        throw elFlowProtocolException( "String length error!" );
+    }
+
+    return hexString.substr( 1, hexString[0] );
+}
+
+void elFlowProtocol::checkAnswerLength( const std::string& hexAnswer,
+                                        unsigned int minLength )
+{
+    if( hexAnswer.length() < minLength )
+    {
+        throw elFlowProtocolException( "Answer too short!" );
+    }
+}
+
+int elFlowProtocol::getParamNum( int processNum, int paramIndex )
+{
+    switch( processNum )
+    {
+        case 0:
+        {
+            switch( paramIndex )
+            {
+                case 0: return 1;
+                case 1: return 2;
+                case 2: return 3;
+                case 3: return 4;
+                case 4: return 5;
+                case 5: return 6;
+                case 6: return 326;
+                case 7: return 327;
+                case 8: return 337;
+                case 10: return 7;
+                case 12: return 29;
+                case 13: return 30;
+                case 14: return 31;
+                default: throw elFlowProtocolException( "Invalid parameter "
+                                                        "index!" );
+            }
+        }
+        case 1:
+        {
+            switch( paramIndex )
+            {
+                case 0: return 8;
+                case 1: return 9;
+                case 2: return 10;
+                case 3: return 11;
+                case 4: return 12;
+                case 5: return 13;
+                case 6: return 14;
+                case 7: return 15;
+                case 8: return 16;
+                case 9: return 17;
+                case 10: return 18;
+                case 11: return 19;
+                case 12: return 20;
+                case 13: return 21;
+                case 14: return 22;
+                case 15: return 23;
+                case 16: return 24;
+                case 17: return 25;
+                case 18: return 26;
+                case 19: return 27;
+                case 20: return 28;
+                default: throw elFlowProtocolException( "Invalid parameter "
+                                                    "index!" );
+            }
+        }
+        case 33:
+        {
+            switch( paramIndex )
+            {
+                case 7: return 142;
+                case 8: return 143;
+                default: throw elFlowProtocolException( "Invalid parameter "
+                                                    "index!" );
+            }
+        }
+        case 116:
+        {
+            switch( paramIndex )
+            {
+                case 8: return 107;
+                default: throw elFlowProtocolException( "Invalid parameter "
+                                                    "index!" );
+            }
+        }
+        default: throw elFlowProtocolException( "Invalid processNum" );
+    }
 }

@@ -13,6 +13,8 @@ temperatureCalcWindow::temperatureCalcWindow( QWidget *parent ) :
              SLOT( startStopPressed() ) );
     connect( _ui->btn_measureInitValue, SIGNAL( clicked() ), this,
              SLOT( measureLinearInitValue() ) );
+    connect( _ui->btn_applyInitValues, SIGNAL( clicked() ), this,
+             SLOT( applyInitValues() ) );
 
     connect( _ui->chb_linear, SIGNAL( stateChanged( int ) ), this,
              SLOT( showShareChanged() ) );
@@ -117,14 +119,20 @@ void temperatureCalcWindow::showShareChanged()
 
 void temperatureCalcWindow::measureLinearInitValue()
 {
-    if( _lastResistance < 1E-10 )
+    _ui->dsp_initResistance->setValue( _lastResistance );
+}
+
+void temperatureCalcWindow::applyInitValues()
+{
+    double resistance = _ui->dsp_initResistance->value();
+    if( resistance < 1E-10 )
     {
-        _ui->lbl_status->setText( "Invalid init value!" );
+        _ui->lbl_status->setText( "Invalid resistance value!" );
         _ui->lbl_status->setStyleSheet( STYLE_ERROR );
         return;
     }
 
-    _linearInitResistance = _lastResistance;
+    _linearInitResistance = resistance;
     _linearInitTemperature = _ui->dsb_initTemperature->value();
 
     _ui->lbl_linearInitValues->setText( "init values: T = " +
