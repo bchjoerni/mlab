@@ -76,7 +76,7 @@ void pairSaveWindow::putValue( const QString& id, double value )
 void pairSaveWindow::selectFile()
 {
     QString name = "mlab_ui_" +
-        QDateTime::currentDateTime().toString( "yyyy-MM-dd_hh:mm:ss" ) + ".txt";
+        QDateTime::currentDateTime().toString( "yyyy-MM-dd_hh_mm_ss" ) + ".txt";
     _fileName = QFileDialog::getSaveFileName( this, "Select file", name,
                                               "text files (*.txt)" );
     if( !_fileName.isEmpty() )

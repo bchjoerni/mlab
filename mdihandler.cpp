@@ -126,6 +126,13 @@ void mdiHandler::addFlowMeterWindow( const QString& title )
     addWindow( window, window->windowFlags(), title );
 }
 
+void mdiHandler::addThermocoupleWindow( const QString& title )
+{
+    LOG(INFO) << "add thermocoupleWindow";
+    thermocoupleWindow* window = new thermocoupleWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
                             const QString& title )
 {

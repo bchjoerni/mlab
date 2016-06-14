@@ -34,7 +34,9 @@ SOURCES += main.cpp\
     elflowport.cpp \
     elflowprotocol.cpp \
     byteconverter.cpp \
-    elflowwindow.cpp
+    elflowwindow.cpp \
+    thermocoupleport.cpp \
+    thermocouplewindow.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -58,7 +60,9 @@ HEADERS  += mainwindow.h \
     elflowport.h \
     elflowprotocol.h \
     byteconverter.h \
-    elflowwindow.h
+    elflowwindow.h \
+    thermocoupleport.h \
+    thermocouplewindow.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -71,7 +75,8 @@ FORMS    += mainwindow.ui \
     temperaturecalcwindow.ui \
     tsh071window.ui \
     allsavewindow.ui \
-    elflowwindow.ui
+    elflowwindow.ui \
+    thermocouplewindow.ui
 
 CONFIG   += c++11
 

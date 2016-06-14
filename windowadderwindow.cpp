@@ -64,6 +64,10 @@ void windowAdderWindow::ok()
     {
         _mdi->addFlowMeterWindow( _ui->txt_flowMeter->text() );
     }
+    if( _ui->chb_thermocouple->isChecked() )
+    {
+        _mdi->addThermocoupleWindow( _ui->txt_thermocouple->text() );
+    }
 
     accept();
 }
@@ -116,6 +120,10 @@ bool windowAdderWindow::checkWindowNames()
     if( _ui->chb_flowMeter->isChecked() )
     {
         names.push_back( _ui->txt_flowMeter->text() );
+    }
+    if( _ui->chb_thermocouple->isChecked() )
+    {
+        names.push_back( _ui->txt_thermocouple->text() );
     }
 
     return namesValid( names );
