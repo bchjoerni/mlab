@@ -47,12 +47,14 @@ private:
     bool _emitProbeTemperature;
     bool _emitAmbientTemperature;
     bool _idStringSet;
+    bool _probeTemperatureOnly;
 
     const int TRIES_SEND_MSG = 3;
 
-    const QString CMD_ID           = "ENQ";
-    const QString CMD_TEMPERATURES = "PA";
-    const QString CMD_OTHER        = "other";
+    const QString CMD_ID                = "ENQ";
+    const QString CMD_BOTH_TEMPERATURES = "PA";
+    const QString CMD_PROBE_TEMPERATURE = "C";
+    const QString CMD_OTHER             = "other";
 };
 
 #endif // THERMOCOUPLEPORT_H

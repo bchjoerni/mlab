@@ -3,7 +3,7 @@
 thermocouplePort::thermocouplePort( QObject *parent ) : labPort( parent ),
     _sendCounter( 0 ), _answerPending( -1 ),
     _emitProbeTemperature( false ), _emitAmbientTemperature( false ),
-    _idStringSet( false )
+    _idStringSet( false ), _probeTemperatureOnly( true )
 {
     setSerialValues();
     setLabPortVariables();
@@ -28,7 +28,7 @@ void thermocouplePort::setLabPortVariables()
     _initValueCounter   = 0;
     _numInitValues      = 1;
     _minBytesRead       = -10;
-    _writingPauseMs     = 50;
+    _writingPauseMs     = 150;
     _bytesError         = 20;
     _inTimeValueCounter = 0;
     _numInTimeValues    = 0;
@@ -77,14 +77,23 @@ QString thermocouplePort::idString() const
 
 void thermocouplePort::getTemperatures()
 {
-    sendUtcCmd( CMD_TEMPERATURES, 1 );
+    if( _probeTemperatureOnly )
+    {
+        sendUtcCmd( CMD_PROBE_TEMPERATURE, 1 );
+    }
+    else
+    {
+        sendUtcCmd( CMD_BOTH_TEMPERATURES, 1 );
+    }
 }
 
 void thermocouplePort::sendUtcCmd( QString cmd, int numAnswers )
 {
     for( int i = 0; i < numAnswers; i++ )
     {
-        if( cmd != CMD_ID && cmd != CMD_TEMPERATURES )
+        if( cmd != CMD_ID
+                && cmd != CMD_PROBE_TEMPERATURE
+                && cmd != CMD_BOTH_TEMPERATURES )
         {
             _expectedAnswer.push_back( CMD_OTHER );
         }
@@ -163,6 +172,10 @@ void thermocouplePort::sendNextMessage()
                  false );
         _checkForAnswerTimer.start( _writingPauseMs*2 );
     }
+    else
+    {
+        _checkForAnswerTimer.stop();
+    }
 }
 
 void thermocouplePort::receivedMsg( QByteArray msg )
@@ -172,7 +185,8 @@ void thermocouplePort::receivedMsg( QByteArray msg )
         return;
     }
     msg.replace( 0x0A, "" ).replace( 0x0B, "" ).replace( 0x0D, "" )
-            .replace( 0x11, "" ).replace( 0x13, "" );
+            .replace( 0x11, "" ).replace( 0x13, "" )
+            .replace( 0x3C, "" ).replace( 0x3E, "" ); // < and > - dont know why this is sent ...
     if( msg.isEmpty() )
     {
         return;
@@ -180,6 +194,10 @@ void thermocouplePort::receivedMsg( QByteArray msg )
 
     if( _expectedAnswer.size() == 0 )
     {
+        if( _sendCounter != 0 )
+        {
+            return;
+        }
         emit portError( "Unexpected answer!" );
         return;
     }
@@ -187,14 +205,42 @@ void thermocouplePort::receivedMsg( QByteArray msg )
 
     if( _expectedAnswer[0] == CMD_ID )
     {
-        if( !_idStringSet )
+        if( _idStringSet )
         {
+            bool conversionSuccessful = false;
+            int version = msg.toInt( &conversionSuccessful );
+            if( conversionSuccessful && version > 90615 )
+            {
+                _probeTemperatureOnly = false;
+            }
+        }
+        else
+        {
+            _idStringSet = true;
             _idString = msg;
             _initValueCounter++;
             emit initSuccessful( _idString );
         }
     }
-    else if( _expectedAnswer[0] == CMD_TEMPERATURES )
+    else if( _expectedAnswer[0] == CMD_PROBE_TEMPERATURE )
+    {
+        bool conversionSuccessful = false;
+
+        double probeTemperatureCelsius = msg.toDouble( &conversionSuccessful );
+
+        if( conversionSuccessful )
+        {
+            if( _emitProbeTemperature )
+            {
+                emit newProbeTemperature( probeTemperatureCelsius );
+            }
+        }
+        else
+        {
+            emit portError( "Could not get temperature from answer!" );
+        }
+    }
+    else if( _expectedAnswer[0] == CMD_BOTH_TEMPERATURES )
     {
         bool conversion1Successful = false;
         bool conversion2Successful = false;
@@ -235,6 +281,7 @@ void thermocouplePort::receivedMsg( QByteArray msg )
 
 double thermocouplePort::fahrenheitToCelsius( double temperatureFahrentheit )
 {
-    return (temperatureFahrentheit - 32.0)*5.0/9.0;
+    return (static_cast<int>( (temperatureFahrentheit - 32.0)*5.0/9.0*100 ))
+            /100.0; // return with max two decimals
 }
 

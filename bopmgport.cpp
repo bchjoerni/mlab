@@ -33,7 +33,7 @@ void bopmgPort::setLabPortVariables()
     _initValueCounter   = 0;
     _numInitValues      = 1;
     _minBytesRead       = -10;
-    _writingPauseMs     = 50;
+    _writingPauseMs     = 150;
     _bytesError         = 20;
     _inTimeValueCounter = 0;
     _numInTimeValues    = 0;
@@ -390,6 +390,10 @@ void bopmgPort::sendNextMessage()
                  false );
         _checkForAnswerTimer.start( _writingPauseMs*2 );
     }
+    else
+    {
+        _checkForAnswerTimer.stop();
+    }
 }
 
 void bopmgPort::receivedMsg( QByteArray msg )
@@ -407,6 +411,10 @@ void bopmgPort::receivedMsg( QByteArray msg )
 
     if( _expectedAnswer.size() == 0 )
     {
+        if( _sendCounter != 0 )
+        {
+            return;
+        }
         emit portError( "Unexpected answer!" );
         return;
     }
