@@ -26,7 +26,7 @@ void thermocouplePort::setLabPortVariables()
 {
     _initTimeoutMs      = 1500;
     _initValueCounter   = 0;
-    _numInitValues      = 1;
+    _numInitValues      = 2;
     _minBytesRead       = -10;
     _writingPauseMs     = 150;
     _bytesError         = 20;
@@ -213,13 +213,14 @@ void thermocouplePort::receivedMsg( QByteArray msg )
             {
                 _probeTemperatureOnly = false;
             }
+            _initValueCounter++;
+            emit initSuccessful( _idString );
         }
         else
         {
             _idStringSet = true;
             _idString = msg;
             _initValueCounter++;
-            emit initSuccessful( _idString );
         }
     }
     else if( _expectedAnswer[0] == CMD_PROBE_TEMPERATURE )

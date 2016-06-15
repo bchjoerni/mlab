@@ -146,7 +146,7 @@ void labPort::read()
 {
     if( _minBytesRead == -10 )
     {
-        if( _port.canReadLine() )
+        while( _port.canReadLine() )
         {
             emit dataReceived( _port.readLine() );
         }
