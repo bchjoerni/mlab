@@ -133,6 +133,20 @@ void mdiHandler::addThermocoupleWindow( const QString& title )
     addWindow( window, window->windowFlags(), title );
 }
 
+void mdiHandler::addScratchpadWindow( const QString &title )
+{
+    LOG(INFO) << "add scratchpadWindow";
+    scratchpadWindow* window = new scratchpadWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
+void mdiHandler::addScreenshotWindow( const QString &title )
+{
+    LOG(INFO) << "add screenshotWindow";
+    screenshotWindow* window = new screenshotWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
                             const QString& title )
 {
@@ -173,12 +187,16 @@ void mdiHandler::addUiCharWindows()
 {
     const int border = 1;
 
-    const QString s1 = "UI Characteristic";
-    const QString s2 = "Heating";
-    const QString s3 = "Temperature Calculator";
-    const QString s4 = "UI Value Saver";
-    const QString s5 = "All Value Saver";
-    const QString s6 = "Graph";
+    const QString s1  = "UI Characteristic";
+    const QString s2  = "Heating";
+    const QString s3  = "Thermocouple 1";
+    const QString s4  = "Thermocouple 2";
+    const QString s5  = "Temperature Calculator";
+    const QString s6  = "UI Value Saver";
+    const QString s7  = "All Value Saver";
+    const QString s8  = "Screenshot";
+    const QString s9  = "Scratchpad";
+    const QString s10 = "Graph";
 
     QRect r1;
     QRect r2;
@@ -186,13 +204,21 @@ void mdiHandler::addUiCharWindows()
     QRect r4;
     QRect r5;
     QRect r6;
+    QRect r7;
+    QRect r8;
+    QRect r9;
+    QRect r10;
 
     addBopmgUICharWindow(     s1 );
     addEapsWindow(            s2 );
-    addCalcTemperatureWindow( s3 );
-    addPairSaveWindow(        s4 );
-    addAllSaveWindow(         s5 );
-    addSimpleGraph(           s6 );
+    addThermocoupleWindow(    s3 );
+    addThermocoupleWindow(    s4 );
+    addCalcTemperatureWindow( s5 );
+    addPairSaveWindow(        s6 );
+    addAllSaveWindow(         s7 );
+    addScreenshotWindow(      s8 );
+    addScratchpadWindow(      s9 );
+    addSimpleGraph(           s10 );
 
     auto subWindows = _mdiArea->subWindowList();
     for( QMdiSubWindow* w : subWindows )
@@ -224,15 +250,41 @@ void mdiHandler::addUiCharWindows()
         }
         else if( w->windowTitle() == s5 )
         {
-            w->setGeometry( r3.x(), border + r4.y() + r4.height(),
+            w->setGeometry( r3.x(), border*3 + r3.height() + r4.height(),
                             w->geometry().width(), w->geometry().height() );
             r5 = w->geometry();
         }
         else if( w->windowTitle() == s6 )
         {
-            w->setGeometry( border + r3.x() + r3.width(), border,
-                            r1.width()*3/2, r1.width()*3/2 );
+            w->setGeometry( r3.x() + border +
+                            (r3.width() > r5.width() ? r3.width() : r5.width()),
+                            border,
+                            w->geometry().width(), w->geometry().height() );
             r6 = w->geometry();
+        }
+        else if( w->windowTitle() == s7 )
+        {
+            w->setGeometry( r6.x(), border*2 + r6.height(),
+                            w->geometry().width(), w->geometry().height() );
+            r7 = w->geometry();
+        }
+        else if( w->windowTitle() == s8 )
+        {
+            w->setGeometry( r6.x(), border*3 + r6.height() + r7.height(),
+                            w->geometry().width(), w->geometry().height() );
+            r8 = w->geometry();
+        }
+        else if( w->windowTitle() == s9 )
+        {
+            w->setGeometry( r6.x(), r8.y() + r8.height() + border,
+                            w->geometry().width(), w->geometry().height() );
+            r9 = w->geometry();
+        }
+        else if( w->windowTitle() == s10 )
+        {
+            w->setGeometry( r6.x() + border + r6.width(), border,
+                            r2.width(), r2.height() );
+            r10 = w->geometry();
         }
     }
 }

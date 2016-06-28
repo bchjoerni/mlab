@@ -87,7 +87,7 @@ void eapsWindow::refreshPortList()
         {
             _ui->cob_ports->addItem( info.portName() );
 
-            if( info.serialNumber() == "EAVI20R5" )
+            if( info.serialNumber().startsWith( "EAVI20R" ) )
             {
                 _ui->cob_ports->setCurrentText( info.portName() );
             }

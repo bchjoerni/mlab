@@ -20,6 +20,8 @@
 #include "tsh071window.h"
 #include "elflowwindow.h"
 #include "thermocouplewindow.h"
+#include "scratchpadwindow.h"
+#include "screenshotwindow.h"
 
 
 class mdiHandler : public QObject
@@ -39,6 +41,8 @@ public:
     void addTsh071Window( const QString& title );
     void addFlowMeterWindow( const QString& title );
     void addThermocoupleWindow( const QString& title );
+    void addScratchpadWindow( const QString& title );
+    void addScreenshotWindow( const QString& title );
     QStringList getWindowNames();
     void addUiCharWindows();
 

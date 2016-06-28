@@ -47,8 +47,7 @@ void thermocoupleWindow::refreshPortList()
         {
             _ui->cob_ports->addItem( info.portName() );
 
-            if( info.productIdentifier() == 6001
-                    || info.manufacturer() == "Omega Engineering" )
+            if( info.serialNumber().startsWith( "N160" ) )
             {
                 _ui->cob_ports->setCurrentText( info.portName() );
             }

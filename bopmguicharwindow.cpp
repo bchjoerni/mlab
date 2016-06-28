@@ -82,7 +82,7 @@ void bopmgUICharWindow::refreshPortList()
         {
             _ui->cob_ports->addItem( info.portName() );
 
-            if( info.serialNumber() == "FTV9UOK8" )
+            if( info.serialNumber().startsWith( "FTZ2Q2Q" ) )
             {
                 _ui->cob_ports->setCurrentText( info.portName() );
             }

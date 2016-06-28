@@ -36,7 +36,9 @@ SOURCES += main.cpp\
     byteconverter.cpp \
     elflowwindow.cpp \
     thermocoupleport.cpp \
-    thermocouplewindow.cpp
+    thermocouplewindow.cpp \
+    scratchpadwindow.cpp \
+    screenshotwindow.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -62,7 +64,9 @@ HEADERS  += mainwindow.h \
     byteconverter.h \
     elflowwindow.h \
     thermocoupleport.h \
-    thermocouplewindow.h
+    thermocouplewindow.h \
+    scratchpadwindow.h \
+    screenshotwindow.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -76,7 +80,9 @@ FORMS    += mainwindow.ui \
     tsh071window.ui \
     allsavewindow.ui \
     elflowwindow.ui \
-    thermocouplewindow.ui
+    thermocouplewindow.ui \
+    scratchpadwindow.ui \
+    screenshotwindow.ui
 
 CONFIG   += c++11
 

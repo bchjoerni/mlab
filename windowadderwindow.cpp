@@ -68,6 +68,14 @@ void windowAdderWindow::ok()
     {
         _mdi->addThermocoupleWindow( _ui->txt_thermocouple->text() );
     }
+    if( _ui->chb_scratchpad->isChecked() )
+    {
+        _mdi->addScratchpadWindow( _ui->txt_scratchpad->text() );
+    }
+    if( _ui->chb_screenshot->isChecked() )
+    {
+        _mdi->addScreenshotWindow( _ui->txt_screenshot->text() );
+    }
 
     accept();
 }
@@ -124,6 +132,14 @@ bool windowAdderWindow::checkWindowNames()
     if( _ui->chb_thermocouple->isChecked() )
     {
         names.push_back( _ui->txt_thermocouple->text() );
+    }
+    if( _ui->chb_scratchpad->isChecked() )
+    {
+        names.push_back( _ui->txt_scratchpad->text() );
+    }
+    if( _ui->chb_screenshot->isChecked() )
+    {
+        names.push_back( _ui->txt_screenshot->text() );
     }
 
     return namesValid( names );
