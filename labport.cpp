@@ -108,6 +108,7 @@ void labPort::timeToSendMsg()
 void labPort::closePort()
 {
     _sendTimer.stop();
+    qApp->processEvents();
 
     _port.clear();
     _port.clearError();

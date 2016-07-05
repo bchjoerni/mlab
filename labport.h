@@ -1,6 +1,7 @@
 #ifndef LABPORT_H
 #define LABPORT_H
 
+#include <QApplication>
 #include <QSerialPort>
 #include <QTimer>
 #include <QByteArray>

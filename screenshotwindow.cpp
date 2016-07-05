@@ -47,7 +47,8 @@ void screenshotWindow::screenshot()
 
     QString format = "png";
     QString fileName = _path + "/mlab_screens_" +
-        QDateTime::currentDateTime().toString( "yyyy-MM-dd_hh_mm_ss" ) + format;
+        QDateTime::currentDateTime().toString( "yyyy-MM-dd_hh_mm_ss" ) +
+            "." + format;
     originalPixmap.save( fileName, format.toLatin1().constData() );
     _ui->lbl_status->setText( "Screenshot saved at " +
             QDateTime::currentDateTime().toString( "yyyy-MM-dd hh:mm:ss" ) );
