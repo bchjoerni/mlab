@@ -53,7 +53,10 @@ void bopmgPort::updateValues()
     if( _expectedAnswer.size() != 0 )
     {
         _expectedAnswer.clear();
-        emit portError( "Answer missing!" );
+        if( !_closing )
+        {
+            emit portError( "Answer missing!" );
+        }
     }
 
     if( _emitVoltage || _emitPower || _emitResistance )
@@ -362,7 +365,10 @@ void bopmgPort::noAnswerReceived()
     }
     else
     {
-        emit portError( "No answer after several requests!" );
+        if( !_closing )
+        {
+            emit portError( "No answer after several requests!" );
+        }
         _sendCounter = 0;
         _msgToSend.erase( _msgToSend.begin() );
         _expectedAnswer.erase( _expectedAnswer.begin() );

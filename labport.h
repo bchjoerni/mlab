@@ -51,12 +51,13 @@ protected:
     int _bytesError;
     int _inTimeValueCounter;
     int _numInTimeValues;
+    bool _closing;
 
 private:    
     QTimer _sendTimer;
     QTimer _initTimer;
     std::vector<QByteArray> _msgToSend;
-    char _buffer[512];
+    char _buffer[512];    
 };
 
 #endif // LABPORT_H

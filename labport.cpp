@@ -3,7 +3,8 @@
 labPort::labPort( QObject *parent ) : QObject( parent ),
     _initTimeoutMs( 0 ), _initValueCounter( 0 ), _numInitValues( 0 ),
     _minBytesRead( 0 ), _writingPauseMs( 100 ), _bytesError( 100 ),
-    _inTimeValueCounter( 0 ), _numInTimeValues( 0 )
+    _inTimeValueCounter( 0 ), _numInTimeValues( 0 ),
+    _closing( false )
 {    
     connect( &_port, SIGNAL( readyRead() ), this, SLOT( read() ) );
     connect( &_port, SIGNAL( error( QSerialPort::SerialPortError ) ), this,
@@ -17,6 +18,7 @@ labPort::labPort( QObject *parent ) : QObject( parent ),
 
 bool labPort::openPort( const QString& portName )
 {
+    _closing = false;
     if( _port.isOpen() )
     {
         _port.close();
@@ -82,6 +84,11 @@ void labPort::sendMsg( const char* msg, int numChars, bool inTime )
 
 void labPort::timeToSendMsg()
 {
+    if( _closing )
+    {
+        return;
+    }
+
     if( !_port.isOpen() )
     {
         emit portError( "Port not open (writing failed)!" );
@@ -107,6 +114,7 @@ void labPort::timeToSendMsg()
 
 void labPort::closePort()
 {
+    _closing = true;
     _sendTimer.stop();
     qApp->processEvents();
 
@@ -136,6 +144,11 @@ void labPort::updateValues()
 
 void labPort::checkInTimeCount()
 {
+    if( _closing )
+    {
+        return;
+    }
+
     if( _inTimeValueCounter < _numInTimeValues )
     {
         emit portError( "Value not read!" );
@@ -145,6 +158,11 @@ void labPort::checkInTimeCount()
 
 void labPort::read()
 {
+    if( _closing )
+    {
+        return;
+    }
+
     if( _minBytesRead == -10 )
     {
         while( _port.canReadLine() )
