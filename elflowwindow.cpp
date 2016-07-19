@@ -154,7 +154,7 @@ void elFlowWindow::setValue()
     {
         if( _ui->cob_setValueUnit->currentText() == UNIT_SCCM )
         {
-            value /= _port.maxCapacity();
+            value *= 100.0/_port.maxCapacity();
         }
         _port.setValue( elFlowPort::setValueType::setTypeFlow, value,
                         _ui->chb_adjustSetValue->isChecked() );

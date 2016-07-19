@@ -39,6 +39,8 @@ public:
     elFlowAnswer interpretAnswer( const std::string& answer );
 
     std::string getStatusCmd();
+    std::string getListenToAllCmd();
+    std::string getListenToRS232Cmd();
     std::string getIdStringCmd();
     std::string getFlowValueCmd();
     std::string getCapacityValueCmd();

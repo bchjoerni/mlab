@@ -37,6 +37,11 @@ void simpleGraphWidget::paintEvent( QPaintEvent *event )
 
 int simpleGraphWidget::getXPosition( double value, double min, double max )
 {
+    if( min == max )
+    {
+        return LEFT_BORDER + (this->height() - LEFT_BORDER - RIGHT_BORDER)/2;
+    }
+
     return static_cast<int>( LEFT_BORDER + 1 + (value - min)/
                              (max-min)*(this->width() - LEFT_BORDER
                                         - RIGHT_BORDER - 2) );
@@ -44,6 +49,11 @@ int simpleGraphWidget::getXPosition( double value, double min, double max )
 
 int simpleGraphWidget::getYPosition( double value, double min, double max )
 {
+    if( min == max )
+    {
+        return TOP_BORDER + (this->height() - BOTTOM_BORDER - TOP_BORDER)/2;
+    }
+
     return static_cast<int>( this->height() - BOTTOM_BORDER - 2 - (value - min)/
                               (max-min)*(this->height() - TOP_BORDER
                                          - BOTTOM_BORDER - 2) );

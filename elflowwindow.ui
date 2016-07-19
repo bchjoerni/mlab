@@ -130,10 +130,10 @@
             <set>Qt::AlignCenter</set>
            </property>
            <property name="decimals">
-            <number>2</number>
+            <number>1</number>
            </property>
            <property name="maximum">
-            <double>999.990000000000009</double>
+            <double>999.000000000000000</double>
            </property>
            <property name="value">
             <double>1.000000000000000</double>

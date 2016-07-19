@@ -16,6 +16,16 @@ std::string elFlowProtocol::getStatusCmd()
     return ":02" + byteConverter::asciiToHexString( _node, 2 ) + "01\r\n";
 }
 
+std::string elFlowProtocol::getListenToAllCmd()
+{
+    return ":05" + byteConverter::asciiToHexString( _node, 2 ) + "01010400\r\n";
+}
+
+std::string elFlowProtocol::getListenToRS232Cmd()
+{
+    return ":05" + byteConverter::asciiToHexString( _node, 2 ) + "01010412\r\n";
+}
+
 std::string elFlowProtocol::getIdStringCmd()
 {
     return getSingleGetParamCmd( 1 );

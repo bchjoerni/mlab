@@ -40,6 +40,7 @@ void elFlowPort::setId( int id )
 
 void elFlowPort::getInitValues()
 {
+    sendCmd( _protocol.getListenToAllCmd() );
 //    sendCmd( _protocol.getFluidNameCmd() );
 //    sendCmd( _protocol.getCapacityUnitCmd() );
     sendCmd( _protocol.getCapacityValueCmd() );
