@@ -182,18 +182,18 @@ void elFlowWindow::doUpdate()
 void elFlowWindow::flowUpdate( double flow )
 {
     CLOG(INFO, "v") << this->windowTitle().toStdString()
-                    << ": flow = " << flow*_port.maxCapacity() << " sccm / "
-                    << flow << " %";
+                    << ": flow = " << flow*_port.maxCapacity()/100.0
+                    << " sccm / "  << flow << " %";
     LOG(INFO) << this->windowTitle().toStdString() << ": flow update: "
               << flow;
-    _ui->txt_flow->setText( QString::number( flow*_port.maxCapacity() )
+    _ui->txt_flow->setText( QString::number( flow*_port.maxCapacity()/100.0 )
                             + " " + UNIT_SCCM + " / " +
                             QString::number( flow ) + " " + UNIT_PERCENT );
 
     if( _ui->chb_shareFlow->isChecked() )
     {
         emit newValue( this->windowTitle() + ": " + FLOW,
-                       flow*_port.maxCapacity() );
+                       flow*_port.maxCapacity()/100.0 );
     }
 }
 
