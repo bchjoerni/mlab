@@ -55,6 +55,13 @@ void mdiHandler::changeWindowState( const QString &id, bool okay )
     }
 }
 
+void mdiHandler::addGeneralPortWindow( const QString &title )
+{
+    LOG(INFO) << "add generalPortWindow";
+    generalPortWindow* window = new generalPortWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addPowerMeterTestWindow( const QString &title )
 {
     LOG(INFO) << "add powerMeterTestWindow";

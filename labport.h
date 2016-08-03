@@ -27,6 +27,13 @@ public:
     void clearPort();
     virtual void updateValues();
 
+    // settings for using enabling using raw labport!:
+    void setBaudRate( QSerialPort::BaudRate baudRate );
+    void setDataBits( QSerialPort::DataBits dataBits );
+    void setStopBits( QSerialPort::StopBits stopBits );
+    void setParity( QSerialPort::Parity parity );
+    void setFlowControl( QSerialPort::FlowControl flowControl );
+
 signals:
     void portError( QString error );
     void dataReceived( QByteArray msg );
@@ -56,6 +63,7 @@ protected:
 private:    
     QTimer _sendTimer;
     QTimer _initTimer;
+    QTimer _closeTimer;
     std::vector<QByteArray> _msgToSend;
     char _buffer[512];    
 };

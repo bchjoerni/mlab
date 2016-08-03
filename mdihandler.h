@@ -9,6 +9,7 @@
 #include <QRect>
 
 #include "easylogging++.h"
+#include "generalportwindow.h"
 #include "bopmgwindow.h"
 #include "powermetertestwindow.h"
 #include "pairsavewindow.h"
@@ -30,6 +31,7 @@ class mdiHandler : public QObject
 public:
     explicit mdiHandler( QMdiArea* mdiArea, QObject *parent );
     void doUpdates();
+    void addGeneralPortWindow( const QString& title );
     void addPowerMeterTestWindow( const QString& title );
     void addPairSaveWindow( const QString& title );
     void addAllSaveWindow( const QString& title );

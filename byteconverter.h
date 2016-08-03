@@ -12,6 +12,8 @@ public:
     static std::string asciiToHexString( char binaryByte,
                                          unsigned int hexSize = 2 );
     static std::string hexStringToString( const std::string& s, int base = 2 );
+    static std::string uCharToReadableHex( unsigned char uc );
+    static char hexChar( unsigned char c );
 
     int   bytesToInt(   const std::string& s );
     float bytesToFloat( const std::string& s );

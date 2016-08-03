@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     thermocoupleport.cpp \
     thermocouplewindow.cpp \
     scratchpadwindow.cpp \
-    screenshotwindow.cpp
+    screenshotwindow.cpp \
+    generalportwindow.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -66,7 +67,8 @@ HEADERS  += mainwindow.h \
     thermocoupleport.h \
     thermocouplewindow.h \
     scratchpadwindow.h \
-    screenshotwindow.h
+    screenshotwindow.h \
+    generalportwindow.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -82,7 +84,8 @@ FORMS    += mainwindow.ui \
     elflowwindow.ui \
     thermocouplewindow.ui \
     scratchpadwindow.ui \
-    screenshotwindow.ui
+    screenshotwindow.ui \
+    generalportwindow.ui
 
 CONFIG   += c++11
 

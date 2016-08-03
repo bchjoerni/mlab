@@ -24,6 +24,10 @@ void windowAdderWindow::ok()
         return;
     }
 
+    if( _ui->chb_generalPort->isChecked() )
+    {
+        _mdi->addGeneralPortWindow( _ui->txt_generalPort->text() );
+    }
     if( _ui->chb_powerMeterTest->isChecked() )
     {
         _mdi->addPowerMeterTestWindow( _ui->txt_test->text() );
@@ -89,6 +93,10 @@ bool windowAdderWindow::checkWindowNames()
 {
     QStringList names;
 
+    if( _ui->chb_generalPort->isChecked() )
+    {
+        names.push_back( _ui->txt_generalPort->text() );
+    }
     if( _ui->chb_powerMeterTest->isChecked() )
     {
         names.push_back( _ui->txt_test->text() );

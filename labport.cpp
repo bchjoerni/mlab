@@ -16,13 +16,46 @@ labPort::labPort( QObject *parent ) : QObject( parent ),
              SLOT( logReadData( QByteArray ) ) );
 }
 
+void labPort::setBaudRate( QSerialPort::BaudRate baudRate )
+{
+    _port.setBaudRate( baudRate );
+}
+
+void labPort::setDataBits( QSerialPort::DataBits dataBits )
+{
+    _port.setDataBits( dataBits );
+}
+
+void labPort::setStopBits( QSerialPort::StopBits stopBits )
+{
+    _port.setStopBits( stopBits );
+}
+
+void labPort::setParity( QSerialPort::Parity parity )
+{
+    _port.setParity( parity );
+}
+
+void labPort::setFlowControl( QSerialPort::FlowControl flowControl )
+{
+    _port.setFlowControl( flowControl );
+}
+
 bool labPort::openPort( const QString& portName )
 {
-    _closing = false;
+    if( _closeTimer.isActive() )
+    {
+        emit portError( "Port is still closing, please retry!" );
+        return false;
+    }
+
     if( _port.isOpen() )
     {
         _port.close();
-    }
+    }    
+    _port.clear();
+    _port.clearError();
+    _closing = false;
     _port.setPortName( portName );
 
     if( !_port.open( QSerialPort::ReadWrite ) )
@@ -118,9 +151,7 @@ void labPort::closePort()
     _sendTimer.stop();
     qApp->processEvents();
 
-    _port.clear();
-    _port.clearError();
-    _port.close();
+    _closeTimer.singleShot( _writingPauseMs*5/4, &_port, SLOT( close() ) ); // interval > than writing pause
 }
 
 void labPort::initTimeout()

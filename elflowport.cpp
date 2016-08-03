@@ -40,7 +40,7 @@ void elFlowPort::setId( int id )
 
 void elFlowPort::getInitValues()
 {
-    sendCmd( _protocol.getListenToAllCmd() );
+    sendCmd( _protocol.getListenToRS232Cmd() );
 //    sendCmd( _protocol.getFluidNameCmd() );
 //    sendCmd( _protocol.getCapacityUnitCmd() );
     sendCmd( _protocol.getCapacityValueCmd() );
@@ -102,7 +102,7 @@ double elFlowPort::maxCapacity() const
 
 void elFlowPort::sendCmd( const std::string& cmd )
 {
-    _port.write( cmd.c_str(), cmd.size() );
+    sendMsg( cmd.c_str(), cmd.size(), false );
 }
 
 void elFlowPort::receivedMsg( QByteArray msg )
