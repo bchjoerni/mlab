@@ -44,6 +44,7 @@ private slots:
     void signalError( const QSerialPort::SerialPortError& error );
     void initTimeout();
     void logReadData( const QByteArray& received );
+    void finishPortClose();
 
 protected:
     virtual void getInitValues();

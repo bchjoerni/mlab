@@ -51,9 +51,10 @@ bool labPort::openPort( const QString& portName )
 
     if( _port.isOpen() )
     {
+        _port.clear();
         _port.close();
     }    
-    _port.clear();
+
     _port.clearError();
     _closing = false;
     _port.setPortName( portName );
@@ -151,7 +152,14 @@ void labPort::closePort()
     _sendTimer.stop();
     qApp->processEvents();
 
-    _closeTimer.singleShot( _writingPauseMs*5/4, &_port, SLOT( close() ) ); // interval > than writing pause
+    _closeTimer.singleShot( _writingPauseMs*5/4, this, SLOT( finishPortClose() ) ); // interval > than writing pause
+}
+
+void labPort::finishPortClose()
+{
+    _port.clear();
+    _port.clearError();
+    _port.close();
 }
 
 void labPort::initTimeout()

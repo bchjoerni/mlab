@@ -8,6 +8,7 @@ generalPortWindow::generalPortWindow( QWidget *parent ) :
     _ui->setupUi( this );
 
     addPortSettingItems();
+    refreshPortList();
 
     connectPortFunctions();
     connectUiElements();
@@ -111,8 +112,8 @@ void generalPortWindow::addFlowControlItems()
 
 void generalPortWindow::appendText( const QString& text )
 {
-    _ui->txt_output->append( _ui->chb_showTime->isChecked() ?
-            QTime::currentTime().toString( "hh:mm:ss.zzz: " ) : "" + text );
+    _ui->txt_output->append( (_ui->chb_showTime->isChecked() ?
+            QTime::currentTime().toString( "hh:mm:ss.zzz: " ) : "") + text );
 }
 
 void generalPortWindow::refreshPortList()
@@ -409,6 +410,18 @@ void generalPortWindow::resetInfo()
 
 void generalPortWindow::receivedMsg( QByteArray data )
 {
+    if( _ui->rad_displayReceivedOnClick->isChecked() )
+    {
+        _receivedMsgBuffer.append( data );
+    }
+    else
+    {
+        decodeAndDisplayReceived( data );
+    }
+}
+
+void generalPortWindow::decodeAndDisplayReceived( const QByteArray& data )
+{
     std::string decMsg;
     std::string hexMsg;
     for( int i = 0; i < data.size(); i++ )
@@ -434,14 +447,7 @@ void generalPortWindow::receivedMsg( QByteArray data )
         receivedString += "\n\t hex: " + QString::fromStdString( hexMsg );
     }
 
-    if( _ui->rad_displayReceivedOnClick )
-    {
-        _receivedMsgBuffer.append( receivedString );
-    }
-    else
-    {
-        appendText( receivedString );
-    }
+    appendText( receivedString );
 }
 
 void generalPortWindow::showReceivedMsg()
@@ -452,10 +458,10 @@ void generalPortWindow::showReceivedMsg()
     }
     else
     {
-        appendText( _receivedMsgBuffer );
+        decodeAndDisplayReceived( _receivedMsgBuffer );
     }
 
-    _receivedMsgBuffer = "";
+    _receivedMsgBuffer.clear();
 }
 
 void generalPortWindow::sendMsg()

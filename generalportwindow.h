@@ -65,10 +65,11 @@ private:
     void connectPort();
     void disconnectPort();
     void sendChars();
+    void decodeAndDisplayReceived( const QByteArray& data );
 
     Ui::generalPortWindow *_ui;
     labPort _port;
-    QString _receivedMsgBuffer;
+    QByteArray _receivedMsgBuffer;
 
 
     const QString PORT_BAUD_1200   = "1200";
