@@ -1,5 +1,5 @@
-#ifndef EAPSWINDOW_H
-#define EAPSWINDOW_H
+#ifndef EAPS8000USBWINDOW_H
+#define EAPS8000USBWINDOW_H
 
 #include <QWidget>
 #include <QSerialPort>
@@ -8,27 +8,29 @@
 
 #include "easylogging++.h"
 #include "mlabwindow.h"
-#include "eapsport.h"
+#include "eaps8000usbport.h"
 
 namespace Ui
 {
-    class eapsWindow;
+    class eaps8000UsbWindow;
 }
 
-class eapsWindow : public mLabWindow
+class eaps8000UsbWindow : public mLabWindow
 {
     Q_OBJECT
 
 public:
-    explicit eapsWindow( QWidget *parent = 0 );
-    ~eapsWindow();
+    explicit eaps8000UsbWindow( QWidget *parent = 0 );
+    ~eaps8000UsbWindow();
     void doUpdate() override;
     bool isReceiver() const override
     {
         return false;
     }
+    void mLabSignal( char signal ) override;
 
 private slots:
+    void emergencyStop();
     void connectivityButtonPressed();
     void connectPort();
     void disconnectPort();
@@ -54,15 +56,13 @@ private:
     bool setResistanceConditionsMet();
     void showResistanceSetHint();
 
-    Ui::eapsWindow *_ui;
-    eapsPort _port;
+    Ui::eaps8000UsbWindow *_ui;
+    eaps8000UsbPort _port;
 
     const QString VOLTAGE               = "voltage";
     const QString CURRENT               = "current";
     const QString POWER                 = "power";
     const QString RESISTANCE            = "resistance";
-    const QString POWER_BY_VOLTAGE      = "power (V)";
-    const QString POWER_BY_CURRENT      = "power (I)";
     const QString RESISTANCE_BY_VOLTAGE = "resistance (V)";
     const QString RESISTANCE_BY_CURRENT = "resistance (I)";
 
@@ -75,4 +75,4 @@ private:
     const QString UNIT_OHM         = "Ω";
 };
 
-#endif // EAPSWINDOW_H
+#endif // EAPS8000USBWINDOW_H

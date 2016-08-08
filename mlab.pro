@@ -20,9 +20,7 @@ SOURCES += main.cpp\
     windowadderwindow.cpp \
     powermetertestwindow.cpp \
     pairsavewindow.cpp \
-    eapsport.cpp \
     labport.cpp \
-    eapswindow.cpp \
     bopmgport.cpp \
     simplegraphwindow.cpp \
     simplegraphwidget.cpp \
@@ -39,7 +37,12 @@ SOURCES += main.cpp\
     thermocouplewindow.cpp \
     scratchpadwindow.cpp \
     screenshotwindow.cpp \
-    generalportwindow.cpp
+    generalportwindow.cpp \
+    eapsuta12port.cpp \
+    eaps3000window.cpp \
+    eaps8000usbport.cpp \
+    eaps8000usbwindow.cpp \
+    eaps8000usbuicharwindow.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -48,9 +51,7 @@ HEADERS  += mainwindow.h \
     windowadderwindow.h \
     powermetertestwindow.h \
     pairsavewindow.h \
-    eapsport.h \
     labport.h \
-    eapswindow.h \
     easylogging++.h \
     bopmgport.h \
     simplegraphwindow.h \
@@ -68,14 +69,18 @@ HEADERS  += mainwindow.h \
     thermocouplewindow.h \
     scratchpadwindow.h \
     screenshotwindow.h \
-    generalportwindow.h
+    generalportwindow.h \
+    eapsuta12port.h \
+    eaps3000window.h \
+    eaps8000usbport.h \
+    eaps8000usbwindow.h \
+    eaps8000usbuicharwindow.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
     windowadderwindow.ui \
     powermetertestwindow.ui \
     pairsavewindow.ui \
-    eapswindow.ui \
     simplegraphwindow.ui \
     bopmguicharwindow.ui \
     temperaturecalcwindow.ui \
@@ -85,7 +90,10 @@ FORMS    += mainwindow.ui \
     thermocouplewindow.ui \
     scratchpadwindow.ui \
     screenshotwindow.ui \
-    generalportwindow.ui
+    generalportwindow.ui \
+    eaps3000window.ui \
+    eaps8000usbwindow.ui \
+    eaps8000usbuicharwindow.ui
 
 CONFIG   += c++11
 

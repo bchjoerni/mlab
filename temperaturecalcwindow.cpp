@@ -29,6 +29,30 @@ temperatureCalcWindow::~temperatureCalcWindow()
     delete _ui;
 }
 
+void temperatureCalcWindow::mLabSignal( char signal )
+{
+    if( signal == SHUTDOWN_SIGNAL )
+    {
+        if( _running )
+        {
+            _running = false;
+            _ui->lbl_status->setText( EMERGENCY_STOP );
+            _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+            emit changeWindowState( this->windowTitle(), false );
+        }
+    }
+    else if( signal == STOP_SIGNAL )
+    {
+        if( _running )
+        {
+            _running = false;
+            _ui->lbl_status->setText( STOP_RECEIVED );
+            _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+            emit changeWindowState( this->windowTitle(), false );
+        }
+    }
+}
+
 void temperatureCalcWindow::doUpdate()
 {
     if( _running )

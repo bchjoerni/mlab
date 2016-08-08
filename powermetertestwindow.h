@@ -27,8 +27,10 @@ public:
     {
         return false;
     }
+    void mLabSignal( char signal ) override;
 
 private slots:
+    void emergencyStop();
     void connectivityButtonPressed();
     void connectPort();
     void disconnectPort();

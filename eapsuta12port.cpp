@@ -1,6 +1,6 @@
-#include "eapsport.h"
+#include "eapsuta12port.h"
 
-eapsPort::eapsPort( QObject *parent ) : labPort( parent ), _id( 0 ),
+eapsUta12Port::eapsUta12Port( QObject *parent ) : labPort( parent ), _id( 0 ),
     _maxVoltageOut( 0 ), _maxCurrentOut( 0 ),
     _maxVoltageIn( 1 ), _maxCurrentIn( 1 ),
     _minVoltageValue( 0.0 ), _maxVoltageValue( 10.0 ),
@@ -18,7 +18,7 @@ eapsPort::eapsPort( QObject *parent ) : labPort( parent ), _id( 0 ),
                            SLOT( receivedMsg( QByteArray ) ) );
 }
 
-void eapsPort::setSerialValues()
+void eapsUta12Port::setSerialValues()
 {
     _port.setBaudRate( QSerialPort::Baud57600 );
     _port.setDataBits( QSerialPort::Data8 );
@@ -26,7 +26,7 @@ void eapsPort::setSerialValues()
     _port.setParity(   QSerialPort::NoParity );
 }
 
-void eapsPort::setLabPortVariables()
+void eapsUta12Port::setLabPortVariables()
 {
     _initTimeoutMs      = 1500;
     _initValueCounter   = 0;
@@ -38,12 +38,12 @@ void eapsPort::setLabPortVariables()
     _numInTimeValues    = 0;
 }
 
-void eapsPort::getInitValues()
+void eapsUta12Port::getInitValues()
 {
     getIdn();
 }
 
-void eapsPort::updateValues()
+void eapsUta12Port::updateValues()
 {
     checkInTimeCount();
 
@@ -64,42 +64,42 @@ void eapsPort::updateValues()
     }
 }
 
-double eapsPort::maxVoltage() const
+double eapsUta12Port::maxVoltage() const
 {
     return _maxVoltageValue;
 }
 
-double eapsPort::maxCurrent() const
+double eapsUta12Port::maxCurrent() const
 {
     return _maxCurrentValue;
 }
 
-QString eapsPort::idString() const
+QString eapsUta12Port::idString() const
 {
     return _idString;
 }
 
-void eapsPort::setEmitVoltage( bool emitVoltage )
+void eapsUta12Port::setEmitVoltage( bool emitVoltage )
 {
     _emitVoltage = emitVoltage;
 }
 
-void eapsPort::setEmitCurrent( bool emitCurrent )
+void eapsUta12Port::setEmitCurrent( bool emitCurrent )
 {
     _emitCurrent = emitCurrent;
 }
 
-void eapsPort::setEmitPower( bool emitPower )
+void eapsUta12Port::setEmitPower( bool emitPower )
 {
     _emitPower = emitPower;
 }
 
-void eapsPort::setEmitResistance( bool emitResistance )
+void eapsUta12Port::setEmitResistance( bool emitResistance )
 {
     _emitResistance = emitResistance;
 }
 
-void eapsPort::updateNumInTimeValues()
+void eapsUta12Port::updateNumInTimeValues()
 {
     _numInTimeValues = 0;
     if( _emitVoltage )
@@ -120,9 +120,9 @@ void eapsPort::updateNumInTimeValues()
     }
 }
 
-void eapsPort::adjustValues()
+void eapsUta12Port::adjustValues()
 {
-    if( _setValueType == setValueType::setTypePowerByVoltage )
+    if( _setValueType == setValueType::setTypeVoltage )
     {
         setVoltage( calcAdjustedValue( _setVoltage, _lastVoltage ) );
     }
@@ -164,12 +164,12 @@ void eapsPort::adjustValues()
     }
 }
 
-double eapsPort::calcAdjustedValue( double setValue, double lastValue )
+double eapsUta12Port::calcAdjustedValue( double setValue, double lastValue )
 {
     return (setValue - (lastValue - setValue)*adjustmentFactor);
 }
 
-void eapsPort::setValue( setValueType type, double value, bool autoAdjust )
+void eapsUta12Port::setValue( setValueType type, double value, bool autoAdjust )
 {    
     _setValueType = type;
     if( type == setValueType::setTypeNone )
@@ -180,14 +180,16 @@ void eapsPort::setValue( setValueType type, double value, bool autoAdjust )
 
     if( type == setValueType::setTypeVoltage )
     {
-        LOG(INFO) << "eaps set voltage: " << value << " adjust: " << autoAdjust;
+        LOG(INFO) << "eaps uta 12 set voltage: " << value
+                  << " adjust: " << autoAdjust;
         _setVoltage = value;
         _lastVoltage = value;
         setVoltage( value );
     }
     else if( type == setValueType::setTypeCurrent )
     {
-        LOG(INFO) << "eaps set current: " << value << " adjust: " << autoAdjust;
+        LOG(INFO) << "eaps uta 12 set current: " << value
+                  << " adjust: " << autoAdjust;
         _setCurrent = value;
         _lastCurrent = value;
         setCurrent( value );
@@ -195,8 +197,8 @@ void eapsPort::setValue( setValueType type, double value, bool autoAdjust )
     else if( type == setValueType::setTypePowerByVoltage
              || type == setValueType::setTypePowerByCurrent )
     {
-        LOG(INFO) << "eaps set power: " << value << " adjust: " << autoAdjust
-                  << " by voltage: "
+        LOG(INFO) << "eaps uta 12 set power: " << value
+                  << " adjust: " << autoAdjust << " by voltage: "
                   << (type == setValueType::setTypePowerByVoltage);
         _setPower = value;
         _lastPower = value;
@@ -220,7 +222,7 @@ void eapsPort::setValue( setValueType type, double value, bool autoAdjust )
     else if( type == setValueType::setTypeResistanceByVoltage
              || type == setValueType::setTypeResistanceByCurrent )
     {
-        LOG(INFO) << "eaps set resistance: " << value << " adjust: "
+        LOG(INFO) << "eaps uta 12 set resistance: " << value << " adjust: "
                   << autoAdjust << " by voltage: "
                   << (type == setValueType::setTypeResistanceByVoltage);
         _setResistance = value;
@@ -244,7 +246,7 @@ void eapsPort::setValue( setValueType type, double value, bool autoAdjust )
     }
 }
 
-void eapsPort::setVoltage( double voltage )
+void eapsUta12Port::setVoltage( double voltage )
 {
     unsigned char msg[MESSAGE_LENGTH];
     setToPrototype( msg );
@@ -257,7 +259,7 @@ void eapsPort::setVoltage( double voltage )
     sendMsg( ((char*) &msg), MESSAGE_LENGTH, false );
 }
 
-void eapsPort::setCurrent( double current )
+void eapsUta12Port::setCurrent( double current )
 {
     unsigned char msg[MESSAGE_LENGTH];
     setToPrototype( msg );
@@ -270,7 +272,7 @@ void eapsPort::setCurrent( double current )
     sendMsg( ((char*) &msg), MESSAGE_LENGTH, false );
 }
 
-void eapsPort::setRemoteControl( bool on )
+void eapsUta12Port::setRemoteControl( bool on )
 {
     unsigned char msg[MESSAGE_LENGTH];
     setToPrototype( msg );
@@ -281,7 +283,7 @@ void eapsPort::setRemoteControl( bool on )
     sendMsg( ((char*) &msg), MESSAGE_LENGTH, false );
 }
 
-void eapsPort::getIdString()
+void eapsUta12Port::getIdString()
 {
     unsigned char msg[MESSAGE_LENGTH];
     setToPrototype( msg );
@@ -291,7 +293,7 @@ void eapsPort::getIdString()
     sendMsg( ((char*) &msg), MESSAGE_LENGTH, false );
 }
 
-void eapsPort::getVoltage()
+void eapsUta12Port::getVoltage()
 {
     unsigned char msg[MESSAGE_LENGTH];
     setToPrototype( msg );
@@ -301,7 +303,7 @@ void eapsPort::getVoltage()
     sendMsg( ((char*) &msg), MESSAGE_LENGTH, true );
 }
 
-void eapsPort::getCurrent()
+void eapsUta12Port::getCurrent()
 {
     unsigned char msg[MESSAGE_LENGTH];
     setToPrototype( msg );
@@ -311,7 +313,7 @@ void eapsPort::getCurrent()
     sendMsg( ((char*) &msg), MESSAGE_LENGTH, true );
 }
 
-void eapsPort::getIdn()
+void eapsUta12Port::getIdn()
 {
     unsigned char msg[MESSAGE_LENGTH];
     setToPrototype( msg );
@@ -320,7 +322,7 @@ void eapsPort::getIdn()
     sendMsg( ((char*) &msg), MESSAGE_LENGTH, false );
 }
 
-void eapsPort::getMaxValues()
+void eapsUta12Port::getMaxValues()
 {
     unsigned char msg[MESSAGE_LENGTH];
     setToPrototype( msg );
@@ -330,7 +332,7 @@ void eapsPort::getMaxValues()
     sendMsg( ((char*) &msg), MESSAGE_LENGTH, false );
 }
 
-void eapsPort::setToPrototype( unsigned char *msg )
+void eapsUta12Port::setToPrototype( unsigned char *msg )
 {
     for( int i = 0; i < MESSAGE_LENGTH; i++ )
     {
@@ -338,14 +340,14 @@ void eapsPort::setToPrototype( unsigned char *msg )
     }
 }
 
-void eapsPort::setCheckBytes( unsigned char* msg )
+void eapsUta12Port::setCheckBytes( unsigned char* msg )
 {
     int checksum = calcCheckBytes( msg );
     msg[MESSAGE_LENGTH - 2] = checksum/256;
     msg[MESSAGE_LENGTH - 1] = checksum%256;
 }
 
-int eapsPort::calcCheckBytes( unsigned char *msg )
+int eapsUta12Port::calcCheckBytes( unsigned char *msg )
 {
     int checksum = 0;
     for( int i = 0; i < MESSAGE_LENGTH - 2; i++ )
@@ -355,13 +357,13 @@ int eapsPort::calcCheckBytes( unsigned char *msg )
     return (256*256 - 1 - checksum);
 }
 
-bool eapsPort::checkMsgBytes( unsigned char *msg )
+bool eapsUta12Port::checkMsgBytes( unsigned char *msg )
 {
     return calcCheckBytes( msg )/256 == msg[MESSAGE_LENGTH - 2]
             && calcCheckBytes( msg )%256 == msg[MESSAGE_LENGTH - 1];
 }
 
-bool eapsPort::checkAnswerFormat( QByteArray msg, unsigned char* msgValues )
+bool eapsUta12Port::checkAnswerFormat( QByteArray msg, unsigned char* msgValues )
 {
     if( msg.size() != MESSAGE_LENGTH )
     {
@@ -374,13 +376,13 @@ bool eapsPort::checkAnswerFormat( QByteArray msg, unsigned char* msgValues )
     }
     if( !checkMsgBytes( msgValues ) )
     {
-        LOG(INFO) << "eaps check bytes wrong!";
+        LOG(INFO) << "eaps uta 12 check bytes wrong!";
         return false;
     }
     return true;
 }
 
-void eapsPort::receivedMsg( QByteArray msg )
+void eapsUta12Port::receivedMsg( QByteArray msg )
 {
     unsigned char msgValues[MESSAGE_LENGTH];
     if( !checkAnswerFormat( msg, msgValues ) )
@@ -470,12 +472,12 @@ void eapsPort::receivedMsg( QByteArray msg )
     }
 }
 
-void eapsPort::answerSetVoltage()
+void eapsUta12Port::answerSetVoltage()
 {
-    LOG(INFO) << "eaps answer: set voltage";
+    LOG(INFO) << "eaps uta 12 answer: set voltage";
 }
 
-void eapsPort::answerGetVoltage( unsigned char* msgValues )
+void eapsUta12Port::answerGetVoltage( unsigned char* msgValues )
 {
     int value = msgValues[4]*256 + msgValues[5];
     _lastVoltage = _maxVoltageValue*value/_maxVoltageIn;
@@ -483,12 +485,12 @@ void eapsPort::answerGetVoltage( unsigned char* msgValues )
     emit newVoltage( _lastVoltage );
 }
 
-void eapsPort::answerSetCurrent()
+void eapsUta12Port::answerSetCurrent()
 {
-    LOG(INFO) << "eaps answer: set current";
+    LOG(INFO) << "eaps uta 12 answer: set current";
 }
 
-void eapsPort::answerGetCurrent( unsigned char* msgValues )
+void eapsUta12Port::answerGetCurrent( unsigned char* msgValues )
 {
     int value = msgValues[4]*256 + msgValues[5];
     _lastCurrent = _maxCurrentValue*value/_maxCurrentIn;
@@ -508,23 +510,23 @@ void eapsPort::answerGetCurrent( unsigned char* msgValues )
     }
 }
 
-void eapsPort::answerSetStatus()
+void eapsUta12Port::answerSetStatus()
 {
     _initValueCounter++;
     emit initSuccessful( _idString );
 }
 
-void eapsPort::answerGetStatus( unsigned char* msgValues )
+void eapsUta12Port::answerGetStatus( unsigned char* msgValues )
 {
-    LOG(INFO) << "eaps answer: get status";
+    LOG(INFO) << "eaps uta 12 answer: get status";
 }
 
-void eapsPort::answerSetIdString()
+void eapsUta12Port::answerSetIdString()
 {
-    LOG(INFO) << "eaps answer: set ID string";
+    LOG(INFO) << "eaps uta 12 answer: set ID string";
 }
 
-void eapsPort::answerGetIdString( QByteArray msg )
+void eapsUta12Port::answerGetIdString( QByteArray msg )
 {
     _idString = msg.mid( 4, MESSAGE_LENGTH-6 );
     int pos = _idString.indexOf( "30" );
@@ -544,44 +546,45 @@ void eapsPort::answerGetIdString( QByteArray msg )
             _maxCurrentValue = imax;
         }
     }
-    LOG(INFO) << "eaps answer: get ID string: " << _idString.toStdString();
+    LOG(INFO) << "eaps  uta 12answer: get ID string: "
+              << _idString.toStdString();
     _idString = "ID string: " + _idString;
     _initValueCounter++;
     setRemoteControl( true );
 }
 
-void eapsPort::answerEcho( unsigned char* msgValues )
+void eapsUta12Port::answerEcho( unsigned char* msgValues )
 {
-    LOG(INFO) << "eaps answer: echo";
+    LOG(INFO) << "eaps uta 12  answer: echo";
 }
 
-void eapsPort::answerError( unsigned char* msgValues )
+void eapsUta12Port::answerError( unsigned char* msgValues )
 {
     emit portError( "Communication error! ("
                     + QString::number( msgValues[5] ) + ")" );
 }
 
-void eapsPort::answerSetIdn()
+void eapsUta12Port::answerSetIdn()
 {
-    LOG(INFO) << "eaps answer: set IDN";
+    LOG(INFO) << "eapsuta 12 answer: set IDN";
 }
 
-void eapsPort::answerGetIdn( unsigned char* msgValues )
+void eapsUta12Port::answerGetIdn( unsigned char* msgValues )
 {
     _id = msgValues[4];
     _initValueCounter++;
-    LOG(INFO) << "eaps answer: get IDN: " << _id;
+    LOG(INFO) << "eaps uta 12 answer: get IDN: " << _id;
     getMaxValues();
 }
 
-void eapsPort::answerGetMaxValues( unsigned char* msgValues )
+void eapsUta12Port::answerGetMaxValues( unsigned char* msgValues )
 {
     _maxVoltageOut = msgValues[4]*256 + msgValues[5];
     _maxCurrentOut = msgValues[6]*256 + msgValues[7];
     _maxVoltageIn  = msgValues[8]*256 + msgValues[9];
     _maxCurrentIn = msgValues[10]*256 + msgValues[11];
     _initValueCounter++;
-    LOG(INFO) << "eaps answer: get max values:"
+    LOG(INFO) << "eaps uta 12 answer: get max values:"
               << " maxVoltageOut: " << _maxVoltageOut
               << " maxCurrentOut: " << _maxCurrentOut
               << " maxVoltageIn: "  << _maxVoltageIn
@@ -589,12 +592,12 @@ void eapsPort::answerGetMaxValues( unsigned char* msgValues )
     getIdString();
 }
 
-void eapsPort::answerSetUserText()
+void eapsUta12Port::answerSetUserText()
 {
-    LOG(INFO) << "eaps answer: set user text";
+    LOG(INFO) << "eaps uta 12 answer: set user text";
 }
 
-void eapsPort::answerGetUserText( QByteArray msg )
+void eapsUta12Port::answerGetUserText( QByteArray msg )
 {
-    LOG(INFO) << "eaps answer: get user text";
+    LOG(INFO) << "eaps uta 12 answer: get user text";
 }

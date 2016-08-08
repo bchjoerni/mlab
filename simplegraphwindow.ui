@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>250</width>
-    <height>250</height>
+    <width>370</width>
+    <height>451</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -64,8 +64,21 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="4" colspan="2">
+    <widget class="QComboBox" name="cob_y"/>
+   </item>
    <item row="2" column="1" colspan="2">
     <widget class="QComboBox" name="cob_x"/>
+   </item>
+   <item row="3" column="0" colspan="3">
+    <widget class="QCheckBox" name="chb_saveAllValues">
+     <property name="text">
+      <string>save all values</string>
+     </property>
+     <property name="checked">
+      <bool>false</bool>
+     </property>
+    </widget>
    </item>
    <item row="2" column="3">
     <widget class="QLabel" name="lbl_y_lbl">
@@ -80,23 +93,20 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="4" colspan="2">
-    <widget class="QComboBox" name="cob_y"/>
-   </item>
-   <item row="3" column="0" colspan="3">
-    <widget class="QCheckBox" name="chb_saveAllValues">
-     <property name="text">
-      <string>save all values</string>
-     </property>
-     <property name="checked">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="5">
     <widget class="QPushButton" name="btn_clearGraph">
      <property name="text">
       <string>clear graph</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="6">
+    <widget class="QCheckBox" name="chb_setZeroAtStopSignal">
+     <property name="text">
+      <string>stop drawing at stop signal</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

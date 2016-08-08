@@ -38,6 +38,8 @@ void elFlowWindow::connectPortFunctions()
 
 void elFlowWindow::connectUiElements()
 {
+    connect( _ui->btn_emergencyStop, SIGNAL( clicked() ), this,
+             SLOT( emergencyStop() ) );
     connect( _ui->cob_measuredValues, SIGNAL( currentTextChanged( QString ) ),
              this, SLOT( visibilitySelectionChanged() ) );
     connect( _ui->cob_setValue, SIGNAL( currentTextChanged( QString ) ), this,
@@ -96,6 +98,34 @@ void elFlowWindow::refreshPortList()
     if( _ui->cob_ports->count() < 1 )
     {
         _ui->cob_ports->addItem( NO_PORTS_AVAILABLE );
+    }
+}
+
+void elFlowWindow::mLabSignal( char signal )
+{
+    if( signal == SHUTDOWN_SIGNAL )
+    {
+        emergencyStop();
+    }
+    else if( signal == STOP_SIGNAL && _port.isOpen() )
+    {
+        _port.setValue( elFlowPort::setValueType::setTypeFlow, 0, false );
+
+        _ui->lbl_status->setText( STOP_RECEIVED );
+        _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        emit changeWindowState( this->windowTitle(), false );
+    }
+}
+
+void elFlowWindow::emergencyStop()
+{
+    if( _port.isOpen() )
+    {
+        _port.setValue( elFlowPort::setValueType::setTypeFlow, 0, false );
+
+        _ui->lbl_status->setText( EMERGENCY_STOP );
+        _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        emit changeWindowState( this->windowTitle(), false );
     }
 }
 

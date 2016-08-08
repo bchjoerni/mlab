@@ -7,48 +7,268 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>555</height>
+    <height>590</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>add windows</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="10" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_calcTemperature">
-     <property name="text">
-      <string>temperature calculator</string>
+   <item row="3" column="0" colspan="3">
+    <widget class="QScrollArea" name="scrollArea">
+     <property name="widgetResizable">
+      <bool>true</bool>
      </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_bopmgUIChar">
-     <property name="text">
-      <string>UI Characteristic</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_thermocouple">
-     <property name="text">
-      <string>Thermocouple</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="0">
-    <widget class="QCheckBox" name="chb_flowMeter">
-     <property name="text">
-      <string>Flow Meter</string>
-     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>367</width>
+        <height>530</height>
+       </rect>
+      </property>
+      <layout class="QGridLayout" name="gridLayout_2">
+       <item row="0" column="0">
+        <widget class="QCheckBox" name="chb_bopmgUiChar">
+         <property name="text">
+          <string>BOP-MG UI Char</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QLineEdit" name="txt_bopmgUIChar">
+         <property name="text">
+          <string>UI Characteristic</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QCheckBox" name="chb_bopMg">
+         <property name="text">
+          <string>BOP-MG</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QLineEdit" name="txt_bogMg">
+         <property name="text">
+          <string>BOG-MG</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="0">
+        <widget class="QCheckBox" name="chb_eaps">
+         <property name="text">
+          <string>EA-PS 3000</string>
+         </property>
+        </widget>
+       </item>
+       <item row="2" column="1">
+        <widget class="QLineEdit" name="txt_eaps">
+         <property name="text">
+          <string>EA-PS 3000</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QCheckBox" name="chb_flowMeter">
+         <property name="text">
+          <string>Flow Meter</string>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="1">
+        <widget class="QLineEdit" name="txt_flowMeter">
+         <property name="text">
+          <string>Flow Meter</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QCheckBox" name="chb_thermocouple">
+         <property name="text">
+          <string>Thermocouple</string>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="txt_thermocouple">
+         <property name="text">
+          <string>Thermocouple</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="0">
+        <widget class="QCheckBox" name="chb_pairSave">
+         <property name="text">
+          <string>pair save</string>
+         </property>
+        </widget>
+       </item>
+       <item row="5" column="1">
+        <widget class="QLineEdit" name="txt_pairSave">
+         <property name="text">
+          <string>value saver (pair)</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="0">
+        <widget class="QCheckBox" name="chb_allSave">
+         <property name="text">
+          <string>all save</string>
+         </property>
+        </widget>
+       </item>
+       <item row="6" column="1">
+        <widget class="QLineEdit" name="txt_allSave">
+         <property name="text">
+          <string>value saver (all)</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="0">
+        <widget class="QCheckBox" name="chb_calcTemperature">
+         <property name="text">
+          <string>Temp. calculator</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QLineEdit" name="txt_calcTemperature">
+         <property name="text">
+          <string>temperature calculator</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="0">
+        <widget class="QCheckBox" name="chb_simpleGraph">
+         <property name="text">
+          <string>simple graph</string>
+         </property>
+        </widget>
+       </item>
+       <item row="8" column="1">
+        <widget class="QLineEdit" name="txt_simpleGraph">
+         <property name="text">
+          <string>simple graph</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="0">
+        <widget class="QCheckBox" name="chb_scratchpad">
+         <property name="text">
+          <string>scratchpad</string>
+         </property>
+        </widget>
+       </item>
+       <item row="9" column="1">
+        <widget class="QLineEdit" name="txt_scratchpad">
+         <property name="text">
+          <string>scratchpad</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="0">
+        <widget class="QCheckBox" name="chb_screenshot">
+         <property name="text">
+          <string>screenshot</string>
+         </property>
+        </widget>
+       </item>
+       <item row="10" column="1">
+        <widget class="QLineEdit" name="txt_screenshot">
+         <property name="text">
+          <string>screenshot</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="0">
+        <widget class="QCheckBox" name="chb_tsh071">
+         <property name="text">
+          <string>TSH071</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="1">
+        <widget class="QLineEdit" name="txt_tsh071">
+         <property name="text">
+          <string>Vacuum pump</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0">
+        <widget class="QCheckBox" name="chb_generalPort">
+         <property name="text">
+          <string>general port</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="1">
+        <widget class="QLineEdit" name="txt_generalPort">
+         <property name="text">
+          <string>general port</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="0">
+        <widget class="QCheckBox" name="chb_powerMeterTest">
+         <property name="text">
+          <string>TEST power meter</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="1">
+        <widget class="QLineEdit" name="txt_test">
+         <property name="text">
+          <string>TEST</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
     </widget>
    </item>
    <item row="0" column="0" colspan="3">
@@ -61,218 +281,17 @@
      </property>
     </widget>
    </item>
-   <item row="11" column="0">
-    <widget class="QCheckBox" name="chb_simpleGraph">
-     <property name="text">
-      <string>simple graph</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QCheckBox" name="chb_bopmgUiChar">
-     <property name="text">
-      <string>BOP-MG UI Char</string>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_allSave">
-     <property name="text">
-      <string>value saver (all)</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="11" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_simpleGraph">
-     <property name="text">
-      <string>simple graph</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="6" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_flowMeter">
-     <property name="text">
-      <string>Flow Meter</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="9" column="0">
-    <widget class="QCheckBox" name="chb_allSave">
-     <property name="text">
-      <string>all save</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_bogMg">
-     <property name="text">
-      <string>BOG-MG</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="18" column="0">
+   <item row="4" column="0">
     <widget class="QPushButton" name="btn_ok">
      <property name="text">
       <string>add selected windows</string>
      </property>
     </widget>
    </item>
-   <item row="14" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_tsh071">
-     <property name="text">
-      <string>Vacuum pump</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="18" column="1" colspan="2">
+   <item row="4" column="1" colspan="2">
     <widget class="QPushButton" name="btn_cancel">
      <property name="text">
       <string>cancel</string>
-     </property>
-    </widget>
-   </item>
-   <item row="16" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_test">
-     <property name="text">
-      <string>TEST</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="0">
-    <widget class="QCheckBox" name="chb_scratchpad">
-     <property name="text">
-      <string>scratchpad</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_pairSave">
-     <property name="text">
-      <string>value saver (pair)</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="13" column="0">
-    <widget class="QCheckBox" name="chb_screenshot">
-     <property name="text">
-      <string>screenshot</string>
-     </property>
-    </widget>
-   </item>
-   <item row="8" column="0">
-    <widget class="QCheckBox" name="chb_pairSave">
-     <property name="text">
-      <string>pair save</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_eaps">
-     <property name="text">
-      <string>EA-PS</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QCheckBox" name="chb_bopMg">
-     <property name="text">
-      <string>BOP-MG</string>
-     </property>
-    </widget>
-   </item>
-   <item row="7" column="0">
-    <widget class="QCheckBox" name="chb_thermocouple">
-     <property name="text">
-      <string>Thermocouple</string>
-     </property>
-    </widget>
-   </item>
-   <item row="14" column="0">
-    <widget class="QCheckBox" name="chb_tsh071">
-     <property name="text">
-      <string>TSH071</string>
-     </property>
-    </widget>
-   </item>
-   <item row="13" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_screenshot">
-     <property name="text">
-      <string>screenshot</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_scratchpad">
-     <property name="text">
-      <string>scratchpad</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0">
-    <widget class="QCheckBox" name="chb_calcTemperature">
-     <property name="text">
-      <string>Temp. calculator</string>
-     </property>
-    </widget>
-   </item>
-   <item row="16" column="0">
-    <widget class="QCheckBox" name="chb_powerMeterTest">
-     <property name="text">
-      <string>TEST power meter</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QCheckBox" name="chb_eaps">
-     <property name="text">
-      <string>EA-PS 3000</string>
-     </property>
-    </widget>
-   </item>
-   <item row="15" column="0">
-    <widget class="QCheckBox" name="chb_generalPort">
-     <property name="text">
-      <string>general port</string>
-     </property>
-    </widget>
-   </item>
-   <item row="15" column="1" colspan="2">
-    <widget class="QLineEdit" name="txt_generalPort">
-     <property name="text">
-      <string>general port</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>

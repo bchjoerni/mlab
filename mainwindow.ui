@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>900</width>
-    <height>600</height>
+    <width>1000</width>
+    <height>500</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,7 +19,7 @@
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QGridLayout" name="gridLayout">
-    <item row="1" column="0" colspan="9">
+    <item row="1" column="0" colspan="11">
      <widget class="QMdiArea" name="mdiArea">
       <property name="verticalScrollBarPolicy">
        <enum>Qt::ScrollBarAsNeeded</enum>
@@ -29,21 +29,34 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="8">
-     <widget class="QPushButton" name="btn_addWindow">
+    <item row="0" column="5">
+     <widget class="QPushButton" name="btn_startMeasurement">
       <property name="text">
-       <string>add &amp;Window</string>
+       <string>st&amp;art</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
+    <item row="0" column="3">
      <widget class="QLabel" name="txt_updateInterval">
       <property name="text">
        <string>interval (sec):</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="2">
+    <item row="0" column="7">
+     <widget class="QTimeEdit" name="time_timeRunning">
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="displayFormat">
+       <string>hh:mm:ss</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="4">
      <widget class="QDoubleSpinBox" name="dsp_updateInterval">
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -60,6 +73,30 @@
      </widget>
     </item>
     <item row="0" column="6">
+     <widget class="QPushButton" name="btn_stopMeasurement">
+      <property name="enabled">
+       <bool>false</bool>
+      </property>
+      <property name="text">
+       <string>st&amp;op</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="9">
+     <widget class="QPushButton" name="btn_addUiCharWindows">
+      <property name="text">
+       <string>add UI-&amp;Char Windows</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="10">
+     <widget class="QPushButton" name="btn_addWindow">
+      <property name="text">
+       <string>add &amp;Window</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="8">
      <spacer name="horizontalSpacer">
       <property name="orientation">
        <enum>Qt::Horizontal</enum>
@@ -72,37 +109,7 @@
       </property>
      </spacer>
     </item>
-    <item row="0" column="5">
-     <widget class="QTimeEdit" name="time_timeRunning">
-      <property name="alignment">
-       <set>Qt::AlignCenter</set>
-      </property>
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-      <property name="displayFormat">
-       <string>hh:mm:ss</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="3">
-     <widget class="QPushButton" name="btn_startMeasurement">
-      <property name="text">
-       <string>st&amp;art</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="4">
-     <widget class="QPushButton" name="btn_stopMeasurement">
-      <property name="enabled">
-       <bool>false</bool>
-      </property>
-      <property name="text">
-       <string>st&amp;op</string>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
+    <item row="0" column="2">
      <widget class="QLabel" name="lbl_updateStatus">
       <property name="font">
        <font>
@@ -117,10 +124,13 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="7">
-     <widget class="QPushButton" name="btn_addUiCharWindows">
+    <item row="0" column="0" colspan="2">
+     <widget class="QPushButton" name="btn_emergencyStop">
+      <property name="styleSheet">
+       <string notr="true">background-color: yellow</string>
+      </property>
       <property name="text">
-       <string>add UI-&amp;Char Windows</string>
+       <string>EMERGENCY STOP</string>
       </property>
      </widget>
     </item>
@@ -131,7 +141,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>900</width>
+     <width>1000</width>
      <height>27</height>
     </rect>
    </property>

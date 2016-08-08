@@ -14,7 +14,7 @@
 #include "powermetertestwindow.h"
 #include "pairsavewindow.h"
 #include "allsavewindow.h"
-#include "eapswindow.h"
+#include "eaps3000window.h"
 #include "simplegraphwindow.h"
 #include "bopmguicharwindow.h"
 #include "temperaturecalcwindow.h"
@@ -30,6 +30,7 @@ class mdiHandler : public QObject
     Q_OBJECT
 public:
     explicit mdiHandler( QMdiArea* mdiArea, QObject *parent );
+    void emergencyStop();
     void doUpdates();
     void addGeneralPortWindow( const QString& title );
     void addPowerMeterTestWindow( const QString& title );
@@ -51,6 +52,7 @@ public:
 public slots:
     void windowClosed();
     void putValue( const QString& id, double value );
+    void mLabSignal( char signal );
     void changeWindowState( const QString& id, bool okay );
 
 signals:

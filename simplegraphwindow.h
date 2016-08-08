@@ -27,6 +27,7 @@ public:
         return true;
     }
     void putValue( const QString& id, double value ) override;
+    void mLabSignal( char signal ) override;
 
 private slots:
     void startStop();

@@ -23,6 +23,23 @@ pairSaveWindow::~pairSaveWindow()
     delete _ui;
 }
 
+void pairSaveWindow::mLabSignal( char signal )
+{
+    _recording = false;
+    if( signal == SHUTDOWN_SIGNAL
+            || (signal == STOP_SIGNAL &&
+                _ui->chb_setZeroAtStopSignal->isChecked()) )
+    {
+        _ui->btn_startStop->setText( START_RECORDING );
+        _ui->lbl_status->setText( signal == SHUTDOWN_SIGNAL ?
+                                      EMERGENCY_STOP : STOP_RECEIVED );
+        _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        _ui->btn_selectFile->setEnabled( true );
+        _intervalCounter = 0;
+        emit changeWindowState( this->windowTitle(), false );
+    }
+}
+
 void pairSaveWindow::doUpdate()
 {
     if( _recording && _intervalCounter%_ui->spb_ticks->value() == 0 )

@@ -1,26 +1,27 @@
-#ifndef bopmgWINDOW_H
-#define bopmgWINDOW_H
+#ifndef EAPS3000WINDOW_H
+#define EAPS3000WINDOW_H
 
 #include <QWidget>
 #include <QSerialPort>
 #include <QSerialPortInfo>
+#include <QMessageBox>
 
 #include "easylogging++.h"
 #include "mlabwindow.h"
-#include "bopmgport.h"
+#include "eapsuta12port.h"
 
 namespace Ui
 {
-    class bopmgWindow;
+    class eaps3000Window;
 }
 
-class bopmgWindow : public mLabWindow
+class eaps3000Window : public mLabWindow
 {
     Q_OBJECT
 
 public:
-    explicit bopmgWindow( QWidget *parent = 0 );
-    ~bopmgWindow();
+    explicit eaps3000Window( QWidget *parent = 0 );
+    ~eaps3000Window();
     void doUpdate() override;
     bool isReceiver() const override
     {
@@ -52,9 +53,11 @@ private:
     void refreshPortList();
     void addItems();
     void setPortEmits();
+    bool setResistanceConditionsMet();
+    void showResistanceSetHint();
 
-    Ui::bopmgWindow *_ui;
-    bopmgPort _port;
+    Ui::eaps3000Window *_ui;
+    eapsUta12Port _port;
 
     const QString VOLTAGE               = "voltage";
     const QString CURRENT               = "current";
@@ -74,4 +77,4 @@ private:
     const QString UNIT_OHM         = "Ω";
 };
 
-#endif // bopmgWINDOW_H
+#endif // EAPS3000WINDOW_H

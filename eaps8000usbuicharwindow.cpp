@@ -1,9 +1,9 @@
-#include "bopmguicharwindow.h"
-#include "ui_bopmguicharwindow.h"
+#include "eaps8000usbuicharwindow.h"
+#include "ui_eaps8000usbuicharwindow.h"
 
-bopmgUICharWindow::bopmgUICharWindow( QWidget *parent ) :
+eaps8000UsbUICharWindow::eaps8000UsbUICharWindow( QWidget *parent ) :
     mLabWindow( parent ),
-    _ui( new Ui::bopmgUICharWindow ), _tickCounter( 0 ), _loopCounter( 0 ),
+    _ui( new Ui::eaps8000UsbUICharWindow ), _tickCounter( 0 ), _loopCounter( 0 ),
     _running( false ), _increasing( true ),
     _setUiValue( 0.0 ), _lastMeasuredValue( 0.0 )
 {
@@ -20,12 +20,12 @@ bopmgUICharWindow::bopmgUICharWindow( QWidget *parent ) :
     _port.setEmitCurrent( true );
 }
 
-bopmgUICharWindow::~bopmgUICharWindow()
+eaps8000UsbUICharWindow::~eaps8000UsbUICharWindow()
 {
     delete _ui;
 }
 
-void bopmgUICharWindow::connectPortFunctions()
+void eaps8000UsbUICharWindow::connectPortFunctions()
 {
     connect( &_port, SIGNAL( initSuccessful( QString ) ), this,
              SLOT( initFinished( QString ) ) );
@@ -37,7 +37,7 @@ void bopmgUICharWindow::connectPortFunctions()
              SLOT( currentUpdate( double ) ) );
 }
 
-void bopmgUICharWindow::connectUiElements()
+void eaps8000UsbUICharWindow::connectUiElements()
 {
     connect( _ui->btn_emergencyStop, SIGNAL( clicked() ), this,
              SLOT( emergencyStop() ) );
@@ -68,13 +68,14 @@ void bopmgUICharWindow::connectUiElements()
              SLOT( resetInfo() ) );
 }
 
-void bopmgUICharWindow::addItems()
+void eaps8000UsbUICharWindow::addItems()
 {
     _ui->cob_setValue->addItem( VOLTAGE );
     _ui->cob_setValue->addItem( CURRENT );
+    _ui->cob_setValue->addItem( POWER );
 }
 
-void bopmgUICharWindow::refreshPortList()
+void eaps8000UsbUICharWindow::refreshPortList()
 {
     _ui->cob_ports->clear();
 
@@ -84,7 +85,7 @@ void bopmgUICharWindow::refreshPortList()
         {
             _ui->cob_ports->addItem( info.portName() );
 
-            if( info.serialNumber().startsWith( "FTZ2Q2Q" ) )
+            if( info.serialNumber().startsWith( "EAV" ) )
             {
                 _ui->cob_ports->setCurrentText( info.portName() );
             }
@@ -100,7 +101,7 @@ void bopmgUICharWindow::refreshPortList()
     }
 }
 
-void bopmgUICharWindow::emergencyStop()
+void eaps8000UsbUICharWindow::emergencyStop()
 {
     _running = false;
     _tickCounter = 0;
@@ -110,9 +111,9 @@ void bopmgUICharWindow::emergencyStop()
 
     if( _port.isOpen() )
     {
-        _port.setValue( bopmgPort::setValueType::setTypeVoltage,
+        _port.setValue( eaps8000UsbPort::setValueType::setTypeVoltage,
                                 0.0, false );
-        _port.setValue( bopmgPort::setValueType::setTypeCurrent,
+        _port.setValue( eaps8000UsbPort::setValueType::setTypeCurrent,
                                 0.0, false );
     }
 
@@ -121,7 +122,7 @@ void bopmgUICharWindow::emergencyStop()
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void bopmgUICharWindow::mLabSignal( char signal )
+void eaps8000UsbUICharWindow::mLabSignal( char signal )
 {
     if( signal == SHUTDOWN_SIGNAL )
     {
@@ -139,7 +140,7 @@ void bopmgUICharWindow::mLabSignal( char signal )
     }
 }
 
-void bopmgUICharWindow::connectivityButtonPressed()
+void eaps8000UsbUICharWindow::connectivityButtonPressed()
 {
     if( _ui->btn_connect->text() == CONNECT_PORT )
     {
@@ -151,12 +152,12 @@ void bopmgUICharWindow::connectivityButtonPressed()
     }
 }
 
-void bopmgUICharWindow::connectPort()
+void eaps8000UsbUICharWindow::connectPort()
 {
     _port.openPort( _ui->cob_ports->currentText() );
 }
 
-void bopmgUICharWindow::disconnectPort()
+void eaps8000UsbUICharWindow::disconnectPort()
 {
     _port.closePort();
 
@@ -168,7 +169,7 @@ void bopmgUICharWindow::disconnectPort()
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void bopmgUICharWindow::initFinished( const QString &idString )
+void eaps8000UsbUICharWindow::initFinished( const QString &idString )
 {
     LOG(INFO) << this->windowTitle().toStdString() << ": init finished, id: "
               << idString.toStdString();
@@ -182,7 +183,7 @@ void bopmgUICharWindow::initFinished( const QString &idString )
     updateUnitRange();
 }
 
-void bopmgUICharWindow::doUpdate()
+void eaps8000UsbUICharWindow::doUpdate()
 {
     if( _port.isRunning() )
     {
@@ -198,7 +199,7 @@ void bopmgUICharWindow::doUpdate()
     }
 }
 
-void bopmgUICharWindow::setValues()
+void eaps8000UsbUICharWindow::setValues()
 {
     if( endOfLoop() )
     {
@@ -221,7 +222,7 @@ void bopmgUICharWindow::setValues()
         {
             _setUiValue /= 1000.0;
         }
-        _port.setValue( bopmgPort::setValueType::setTypeVoltage,
+        _port.setValue( eaps8000UsbPort::setValueType::setTypeVoltage,
                         _setUiValue, false );
     }
     else if( _ui->cob_setValue->currentText() == CURRENT )
@@ -230,12 +231,21 @@ void bopmgUICharWindow::setValues()
         {
             _setUiValue /= 1000.0;
         }
-        _port.setValue( bopmgPort::setValueType::setTypeCurrent,
+        _port.setValue( eaps8000UsbPort::setValueType::setTypeCurrent,
+                        _setUiValue, false );
+    }
+    else if( _ui->cob_setValue->currentText() == POWER )
+    {
+        if( _ui->cob_unit->currentText() == UNIT_MILLIWATT )
+        {
+            _setUiValue /= 1000.0;
+        }
+        _port.setValue( eaps8000UsbPort::setValueType::setTypePower,
                         _setUiValue, false );
     }
 }
 
-bool bopmgUICharWindow::endOfLoop()
+bool eaps8000UsbUICharWindow::endOfLoop()
 {
     if( inLoopInterval() )
     {
@@ -263,7 +273,7 @@ bool bopmgUICharWindow::endOfLoop()
     return false;
 }
 
-bool bopmgUICharWindow::inLoopInterval()
+bool eaps8000UsbUICharWindow::inLoopInterval()
 {
     if( _ui->dsb_fromValue->value() <= _ui->dsb_toValue->value() )
     {
@@ -277,7 +287,7 @@ bool bopmgUICharWindow::inLoopInterval()
     }
 }
 
-void bopmgUICharWindow::uiCharFinished()
+void eaps8000UsbUICharWindow::uiCharFinished()
 {
     _running = false;
     _tickCounter = 0;
@@ -289,12 +299,17 @@ void bopmgUICharWindow::uiCharFinished()
     {
         if( _ui->cob_setValue->currentText() == VOLTAGE )
         {
-            _port.setValue( bopmgPort::setValueType::setTypeVoltage,
+            _port.setValue( eaps8000UsbPort::setValueType::setTypeVoltage,
                             0.0, false );
         }
         else if( _ui->cob_setValue->currentText() == CURRENT )
         {
-            _port.setValue( bopmgPort::setValueType::setTypeCurrent,
+            _port.setValue( eaps8000UsbPort::setValueType::setTypeCurrent,
+                            0.0, false );
+        }
+        else if( _ui->cob_setValue->currentText() == POWER )
+        {
+            _port.setValue( eaps8000UsbPort::setValueType::setTypePower,
                             0.0, false );
         }
     }
@@ -302,7 +317,7 @@ void bopmgUICharWindow::uiCharFinished()
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void bopmgUICharWindow::startStop()
+void eaps8000UsbUICharWindow::startStop()
 {
     calculateRemainingTicks();
     bool started = (_ui->btn_startStop->text() == START);
@@ -321,7 +336,7 @@ void bopmgUICharWindow::startStop()
     emit changeWindowState( this->windowTitle(), started );
 }
 
-void bopmgUICharWindow::voltageUpdate( double voltage )
+void eaps8000UsbUICharWindow::voltageUpdate( double voltage )
 {
     CLOG(INFO, "v") << this->windowTitle().toStdString()
                     << ": voltage = " << voltage << " V";
@@ -340,7 +355,7 @@ void bopmgUICharWindow::voltageUpdate( double voltage )
     }
 }
 
-void bopmgUICharWindow::currentUpdate( double current )
+void eaps8000UsbUICharWindow::currentUpdate( double current )
 {
     CLOG(INFO, "v") << this->windowTitle().toStdString()
                     << ": current = " << current << " A";
@@ -359,7 +374,26 @@ void bopmgUICharWindow::currentUpdate( double current )
     }
 }
 
-void bopmgUICharWindow::setValueSelectionChanged()
+void eaps8000UsbUICharWindow::powerUpdate( double power )
+{
+    CLOG(INFO, "v") << this->windowTitle().toStdString()
+                    << ": power = " << power << " W";
+    LOG(INFO) << this->windowTitle().toStdString() << ": power update: "
+              << power;
+
+    if( _ui->cob_setValue->currentText() == POWER )
+    {
+        _lastMeasuredValue = power;
+    }
+    _ui->txt_power->setText( QString::number( power ) + " W" );
+
+    if( _ui->chb_sharePower->isChecked() )
+    {
+        emit newValue( this->windowTitle() + ": " + POWER, power );
+    }
+}
+
+void eaps8000UsbUICharWindow::setValueSelectionChanged()
 {
     _ui->cob_unit->clear();
 
@@ -373,28 +407,33 @@ void bopmgUICharWindow::setValueSelectionChanged()
         _ui->cob_unit->addItem( UNIT_AMPERE );
         _ui->cob_unit->addItem( UNIT_MILLIAMPERE );
     }
+    else if( _ui->cob_setValue->currentText() == POWER )
+    {
+        _ui->cob_unit->addItem( UNIT_WATT );
+        _ui->cob_unit->addItem( UNIT_MILLIWATT );
+    }
 
     updateUnitRange();
 }
 
-void bopmgUICharWindow::updateUnitRange()
+void eaps8000UsbUICharWindow::updateUnitRange()
 {
     if( _ui->cob_setValue->currentText() == VOLTAGE )
     {
         if( _ui->cob_unit->currentText() == UNIT_VOLT )
         {
-            _ui->dsb_fromValue->setMinimum( _port.minVoltage() );
+            _ui->dsb_fromValue->setMinimum( 0.0 );
             _ui->dsb_fromValue->setMaximum( _port.maxVoltage() );
 
-            _ui->dsb_toValue->setMinimum( _port.minVoltage() );
+            _ui->dsb_toValue->setMinimum( 0.0 );
             _ui->dsb_toValue->setMaximum( _port.maxVoltage() );
         }
         else if( _ui->cob_unit->currentText() == UNIT_MILLIVOLT )
         {
-            _ui->dsb_fromValue->setMinimum( _port.minVoltage()*1000 );
+            _ui->dsb_fromValue->setMinimum( 0.0 );
             _ui->dsb_fromValue->setMaximum( _port.maxVoltage()*1000 );
 
-            _ui->dsb_toValue->setMinimum( _port.minVoltage()*1000 );
+            _ui->dsb_toValue->setMinimum( 0.0 );
             _ui->dsb_toValue->setMaximum( _port.maxVoltage()*1000 );
         }
     }
@@ -402,24 +441,43 @@ void bopmgUICharWindow::updateUnitRange()
     {
         if( _ui->cob_unit->currentText() == UNIT_AMPERE )
         {
-            _ui->dsb_fromValue->setMinimum( _port.minCurrent() );
+            _ui->dsb_fromValue->setMinimum( 0.0 );
             _ui->dsb_fromValue->setMaximum( _port.maxCurrent() );
 
-            _ui->dsb_toValue->setMinimum( _port.minCurrent() );
+            _ui->dsb_toValue->setMinimum( 0.0 );
             _ui->dsb_toValue->setMaximum( _port.maxCurrent() );
         }
         else if( _ui->cob_unit->currentText() == UNIT_MILLIAMPERE )
         {
-            _ui->dsb_fromValue->setMinimum( _port.minCurrent()*1000 );
+            _ui->dsb_fromValue->setMinimum( 0.0 );
             _ui->dsb_fromValue->setMaximum( _port.maxCurrent()*1000 );
 
-            _ui->dsb_toValue->setMinimum( _port.minCurrent()*1000 );
+            _ui->dsb_toValue->setMinimum( 0.0 );
+            _ui->dsb_toValue->setMaximum( _port.maxCurrent()*1000 );
+        }
+    }
+    else if( _ui->cob_setValue->currentText() == POWER )
+    {
+        if( _ui->cob_unit->currentText() == UNIT_WATT )
+        {
+            _ui->dsb_fromValue->setMinimum( 0.0 );
+            _ui->dsb_fromValue->setMaximum( _port.maxPower() );
+
+            _ui->dsb_toValue->setMinimum( 0.0 );
+            _ui->dsb_toValue->setMaximum( _port.maxCurrent() );
+        }
+        else if( _ui->cob_unit->currentText() == UNIT_MILLIAMPERE )
+        {
+            _ui->dsb_fromValue->setMinimum( 0.0 );
+            _ui->dsb_fromValue->setMaximum( _port.maxCurrent()*1000 );
+
+            _ui->dsb_toValue->setMinimum( 0.0 );
             _ui->dsb_toValue->setMaximum( _port.maxCurrent()*1000 );
         }
     }
 }
 
-void bopmgUICharWindow::fixStepSizeChanged()
+void eaps8000UsbUICharWindow::fixStepSizeChanged()
 {
     _ui->lbl_ticksApprox->setVisible( !_ui->chb_calcValues->isChecked() );
     if( !_ui->chb_calcValues->isChecked() )
@@ -432,7 +490,7 @@ void bopmgUICharWindow::fixStepSizeChanged()
     }
 }
 
-void bopmgUICharWindow::calculateRemainingTicks()
+void eaps8000UsbUICharWindow::calculateRemainingTicks()
 {
     double steps = std::abs( _ui->dsb_toValue->value() -
                 _ui->dsb_fromValue->value() )/_ui->dsb_stepSize->value();
@@ -449,7 +507,7 @@ void bopmgUICharWindow::calculateRemainingTicks()
                                      static_cast<int>( steps ) + 1 ) );
 }
 
-void bopmgUICharWindow::portError( QString error )
+void eaps8000UsbUICharWindow::portError( QString error )
 {
     LOG(INFO) << this->windowTitle().toStdString() << ": port error: "
               << error.toStdString();
@@ -459,7 +517,7 @@ void bopmgUICharWindow::portError( QString error )
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void bopmgUICharWindow::resetInfo()
+void eaps8000UsbUICharWindow::resetInfo()
 {
     _port.clearPort();
 

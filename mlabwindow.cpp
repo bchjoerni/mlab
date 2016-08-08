@@ -16,3 +16,4 @@ void mLabWindow::closeEvent( QCloseEvent *event )
     Q_UNUSED( event );
     emit closing();
 }
+

@@ -6,6 +6,16 @@ mdiHandler::mdiHandler( QMdiArea* mdiArea, QObject *parent )
 
 }
 
+void mdiHandler::emergencyStop()
+{
+    auto subWindows = _mdiArea->subWindowList();
+    for( QMdiSubWindow* window : subWindows )
+    {
+        mLabWindow* labWindow = qobject_cast<mLabWindow*>( window->widget() );
+        labWindow->mLabSignal( 0 );
+    }
+}
+
 void mdiHandler::doUpdates()
 {
     auto subWindows = _mdiArea->subWindowList();
@@ -31,6 +41,16 @@ void mdiHandler::putValue( const QString &id, double value )
         {
             labWindow->putValue( id, value );
         }
+    }
+}
+
+void mdiHandler::mLabSignal( char signal )
+{
+    auto subWindows = _mdiArea->subWindowList();
+    for( QMdiSubWindow* window : subWindows )
+    {
+        mLabWindow* labWindow = qobject_cast<mLabWindow*>( window->widget() );
+        labWindow->mLabSignal( signal );
     }
 }
 
@@ -115,7 +135,7 @@ void mdiHandler::addBopmgUICharWindow( const QString& title )
 void mdiHandler::addEapsWindow( const QString &title )
 {
     LOG(INFO) << "add eapsWindow";
-    eapsWindow* window = new eapsWindow;
+    eaps3000Window* window = new eaps3000Window;
     addWindow( window, window->windowFlags(), title );
 }
 
@@ -167,6 +187,8 @@ void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
     connect( window, SIGNAL( closing() ), this, SLOT( windowClosed() ) );
     connect( window, SIGNAL( newValue( QString, double ) ), this,
              SLOT( putValue( QString, double ) ) );
+    connect( window, SIGNAL( newSignal( char ) ), this,
+             SLOT( mLabSignal(char) ) );
     connect( window, SIGNAL( changeWindowState( QString, bool ) ), this,
              SLOT( changeWindowState( QString, bool ) ) );
 }

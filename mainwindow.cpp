@@ -48,6 +48,8 @@ void mainWindow::connectActions()
 
 void mainWindow::connectButtons()
 {
+    connect( _ui->btn_emergencyStop, SIGNAL( clicked() ), this,
+             SLOT( emergencyStop() ) );
     connect( _ui->btn_startMeasurement, SIGNAL( clicked() ), this,
              SLOT( startMeasurement() ) );
     connect( _ui->btn_stopMeasurement, SIGNAL( clicked() ), this,
@@ -63,6 +65,14 @@ void mainWindow::connectTimers()
 {
     connect( &_updateTimer, SIGNAL( timeout() ), this, SLOT( doUpdate() ) );
     connect( &_clockTimer, SIGNAL( timeout() ), this, SLOT( timeUpdate() ) );
+}
+
+void mainWindow::emergencyStop()
+{
+    _mdi->emergencyStop();
+    QMessageBox::critical( this, "Emergency stop", "Emergency stop pressed. "
+                                                   "The program tries to stop "
+                                                   "all devices." );
 }
 
 void mainWindow::startMeasurement()

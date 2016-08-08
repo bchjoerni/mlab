@@ -22,6 +22,25 @@ simpleGraphWindow::~simpleGraphWindow()
     delete _ui;
 }
 
+
+void simpleGraphWindow::mLabSignal( char signal )
+{
+    if( signal == SHUTDOWN_SIGNAL
+            || (signal == STOP_SIGNAL &&
+                _ui->chb_setZeroAtStopSignal->isChecked()) )
+    {
+        if( _ui->btn_startStop->text() == STOP )
+        {
+            _ui->btn_startStop->setText( START );
+            _ui->lbl_status->setText( signal == SHUTDOWN_SIGNAL ?
+                                          EMERGENCY_STOP : STOP_RECEIVED  );
+            _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+
+            emit changeWindowState( this->windowTitle(), false );
+        }
+    }
+}
+
 void simpleGraphWindow::doUpdate()
 {
     if( _ui->btn_startStop->text() == STOP )

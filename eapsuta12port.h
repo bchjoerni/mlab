@@ -1,5 +1,5 @@
-#ifndef EAPSPORT_H
-#define EAPSPORT_H
+#ifndef EAPSUTA12PORT_H
+#define EAPSUTA12PORT_H
 
 #include <QObject>
 #include <QString>
@@ -10,7 +10,7 @@
 #include "easylogging++.h"
 #include "labport.h"
 
-class eapsPort : public labPort
+class eapsUta12Port : public labPort
 {
     Q_OBJECT
 
@@ -19,7 +19,7 @@ public:
                        setTypePowerByVoltage, setTypePowerByCurrent,
                        setTypeResistanceByVoltage, setTypeResistanceByCurrent };
 
-    explicit eapsPort( QObject *parent = 0 );
+    explicit eapsUta12Port( QObject *parent = 0 );
     void updateValues() override;
     void setValue( setValueType type, double value, bool autoAdjust = false );
     double maxVoltage() const;
@@ -109,4 +109,4 @@ private:
                 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 };
 
-#endif // EAPSPORT_H
+#endif // EAPSUTA12PORT_H

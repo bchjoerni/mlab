@@ -1,9 +1,9 @@
-#include "eapswindow.h"
-#include "ui_eapswindow.h"
+#include "eaps3000window.h"
+#include "ui_eaps3000window.h"
 
-eapsWindow::eapsWindow( QWidget *parent ) :
+eaps3000Window::eaps3000Window( QWidget *parent ) :
     mLabWindow( parent ),
-    _ui( new Ui::eapsWindow )
+    _ui( new Ui::eaps3000Window )
 {
     _ui->setupUi( this );
 
@@ -15,12 +15,12 @@ eapsWindow::eapsWindow( QWidget *parent ) :
     visibilitySelectionChanged();
 }
 
-eapsWindow::~eapsWindow()
+eaps3000Window::~eaps3000Window()
 {
     delete _ui;
 }
 
-void eapsWindow::connectPortFunctions()
+void eaps3000Window::connectPortFunctions()
 {
     connect( &_port, SIGNAL( initSuccessful( QString ) ), this,
              SLOT( initFinished( QString ) ) );
@@ -36,8 +36,11 @@ void eapsWindow::connectPortFunctions()
              SLOT( resistanceUpdate( double ) ) );
 }
 
-void eapsWindow::connectUiElements()
+void eaps3000Window::connectUiElements()
 {
+    connect( _ui->btn_emergencyStop, SIGNAL( clicked() ), this,
+             SLOT( emergencyStop() ) );
+
     connect( _ui->cob_measuredValues, SIGNAL( currentTextChanged( QString ) ),
              this, SLOT( visibilitySelectionChanged() ) );
     connect( _ui->cob_setValue, SIGNAL( currentTextChanged( QString ) ), this,
@@ -54,7 +57,7 @@ void eapsWindow::connectUiElements()
              SLOT( resetInfo() ) );
 }
 
-void eapsWindow::addItems()
+void eaps3000Window::addItems()
 {
     _ui->cob_setValue->addItem( VOLTAGE );
     _ui->cob_setValue->addItem( CURRENT );
@@ -69,7 +72,7 @@ void eapsWindow::addItems()
     _ui->cob_measuredValues->addItem( RESISTANCE );
 }
 
-void eapsWindow::setPortEmits()
+void eaps3000Window::setPortEmits()
 {
     _port.setEmitVoltage(    _ui->frame_voltage->isVisible() );
     _port.setEmitCurrent(    _ui->frame_current->isVisible() );
@@ -77,7 +80,7 @@ void eapsWindow::setPortEmits()
     _port.setEmitResistance( _ui->frame_resistance->isVisible() );
 }
 
-void eapsWindow::refreshPortList()
+void eaps3000Window::refreshPortList()
 {
     _ui->cob_ports->clear();
 
@@ -103,7 +106,37 @@ void eapsWindow::refreshPortList()
     }
 }
 
-void eapsWindow::connectivityButtonPressed()
+void eaps3000Window::mLabSignal( char signal )
+{
+    if( signal == SHUTDOWN_SIGNAL )
+    {
+        emergencyStop();
+    }
+    else if( signal == STOP_SIGNAL && _port.isOpen() )
+    {
+        _port.setValue( eapsUta12Port::setValueType::setTypeVoltage, 0, false );
+        _port.setValue( eapsUta12Port::setValueType::setTypeCurrent, 0, false );
+
+        _ui->lbl_status->setText( STOP_RECEIVED );
+        _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        emit changeWindowState( this->windowTitle(), false );
+    }
+}
+
+void eaps3000Window::emergencyStop()
+{
+    if( _port.isOpen() )
+    {
+        _port.setValue( eapsUta12Port::setValueType::setTypeVoltage, 0, false );
+        _port.setValue( eapsUta12Port::setValueType::setTypeCurrent, 0, false );
+
+        _ui->lbl_status->setText( EMERGENCY_STOP );
+        _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        emit changeWindowState( this->windowTitle(), false );
+    }
+}
+
+void eaps3000Window::connectivityButtonPressed()
 {
     if( _ui->btn_connect->text() == CONNECT_PORT )
     {
@@ -115,13 +148,13 @@ void eapsWindow::connectivityButtonPressed()
     }
 }
 
-void eapsWindow::connectPort()
+void eaps3000Window::connectPort()
 {
     setPortEmits();
     _port.openPort( _ui->cob_ports->currentText() );
 }
 
-void eapsWindow::disconnectPort()
+void eaps3000Window::disconnectPort()
 {
     _port.closePort();
 
@@ -134,7 +167,7 @@ void eapsWindow::disconnectPort()
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void eapsWindow::initFinished( const QString &idString )
+void eaps3000Window::initFinished( const QString &idString )
 {
     LOG(INFO) << this->windowTitle().toStdString() << ": init finished, id: "
               << idString.toStdString();
@@ -149,7 +182,7 @@ void eapsWindow::initFinished( const QString &idString )
     updateUnitRange();
 }
 
-void eapsWindow::setValue()
+void eaps3000Window::setValue()
 {
     double value = _ui->dsp_setValue->value();
 
@@ -159,7 +192,7 @@ void eapsWindow::setValue()
         {
             value /= 1000.0;
         }
-        _port.setValue( eapsPort::setValueType::setTypeVoltage, value,
+        _port.setValue( eapsUta12Port::setValueType::setTypeVoltage, value,
                         _ui->chb_adjustSetValue->isChecked() );
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_VOLT );
@@ -171,7 +204,7 @@ void eapsWindow::setValue()
         {
             value /= 1000.0;
         }
-        _port.setValue( eapsPort::setValueType::setTypeCurrent, value,
+        _port.setValue( eapsUta12Port::setValueType::setTypeCurrent, value,
                         _ui->chb_adjustSetValue->isChecked() );
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_AMPERE );
@@ -183,7 +216,7 @@ void eapsWindow::setValue()
         {
             value /= 1000.0;
         }
-        _port.setValue( eapsPort::setValueType::setTypePowerByVoltage, value,
+        _port.setValue( eapsUta12Port::setValueType::setTypePowerByVoltage, value,
                         _ui->chb_adjustSetValue->isChecked() );
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_WATT );
@@ -195,7 +228,7 @@ void eapsWindow::setValue()
         {
             value /= 1000.0;
         }
-        _port.setValue( eapsPort::setValueType::setTypePowerByCurrent, value,
+        _port.setValue( eapsUta12Port::setValueType::setTypePowerByCurrent, value,
                         _ui->chb_adjustSetValue->isChecked() );
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_WATT );
@@ -209,7 +242,7 @@ void eapsWindow::setValue()
             return;
         }
 
-        _port.setValue( eapsPort::setValueType::setTypeResistanceByVoltage,
+        _port.setValue( eapsUta12Port::setValueType::setTypeResistanceByVoltage,
                         value, _ui->chb_adjustSetValue->isChecked() );
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_OHM );
@@ -223,7 +256,7 @@ void eapsWindow::setValue()
             return;
         }
 
-        _port.setValue( eapsPort::setValueType::setTypeResistanceByCurrent,
+        _port.setValue( eapsUta12Port::setValueType::setTypeResistanceByCurrent,
                         value, _ui->chb_adjustSetValue->isChecked() );
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_OHM );
@@ -236,13 +269,13 @@ void eapsWindow::setValue()
     setPortEmits();
 }
 
-bool eapsWindow::setResistanceConditionsMet()
+bool eaps3000Window::setResistanceConditionsMet()
 {
     return _ui->chb_adjustSetValue->isChecked()
             && _ui->txt_resistance->text().size() > 2;
 }
 
-void eapsWindow::showResistanceSetHint()
+void eaps3000Window::showResistanceSetHint()
 {
     QMessageBox msgBox;
     msgBox.setWindowTitle( "Error!" );
@@ -252,7 +285,7 @@ void eapsWindow::showResistanceSetHint()
     msgBox.exec();
 }
 
-void eapsWindow::doUpdate()
+void eaps3000Window::doUpdate()
 {
     if( _port.isRunning() )
     {
@@ -260,7 +293,7 @@ void eapsWindow::doUpdate()
     }
 }
 
-void eapsWindow::voltageUpdate( double voltage )
+void eaps3000Window::voltageUpdate( double voltage )
 {
     CLOG(INFO, "v") << this->windowTitle().toStdString()
                     << ": voltage = " << voltage << " V";
@@ -274,7 +307,7 @@ void eapsWindow::voltageUpdate( double voltage )
     }
 }
 
-void eapsWindow::currentUpdate( double current )
+void eaps3000Window::currentUpdate( double current )
 {
     CLOG(INFO, "v") << this->windowTitle().toStdString()
                     << ": current = " << current << " A";
@@ -288,7 +321,7 @@ void eapsWindow::currentUpdate( double current )
     }
 }
 
-void eapsWindow::powerUpdate( double power )
+void eaps3000Window::powerUpdate( double power )
 {
     CLOG(INFO, "v") << this->windowTitle().toStdString()
                     << ": power = " << power << " W";
@@ -302,7 +335,7 @@ void eapsWindow::powerUpdate( double power )
     }
 }
 
-void eapsWindow::resistanceUpdate( double resistance )
+void eaps3000Window::resistanceUpdate( double resistance )
 {
     CLOG(INFO, "v") << this->windowTitle().toStdString()
                     << ": resistance = " << resistance << " Ohm";
@@ -317,7 +350,7 @@ void eapsWindow::resistanceUpdate( double resistance )
     }
 }
 
-void eapsWindow::visibilitySelectionChanged()
+void eaps3000Window::visibilitySelectionChanged()
 {
     QString text = _ui->cob_measuredValues->currentText();
 
@@ -367,7 +400,7 @@ void eapsWindow::visibilitySelectionChanged()
     }
 }
 
-void eapsWindow::changeVisibility()
+void eaps3000Window::changeVisibility()
 {
     QString text = _ui->cob_measuredValues->currentText();
 
@@ -399,7 +432,7 @@ void eapsWindow::changeVisibility()
     setPortEmits();
 }
 
-void eapsWindow::setValueSelectionChanged()
+void eaps3000Window::setValueSelectionChanged()
 {
     _ui->cob_setValueUnit->clear();
     _ui->btn_setValue->setEnabled( _port.isRunning() );
@@ -437,7 +470,7 @@ void eapsWindow::setValueSelectionChanged()
     updateUnitRange();
 }
 
-void eapsWindow::updateUnitRange()
+void eaps3000Window::updateUnitRange()
 {
     _ui->dsp_setValue->setValue( 0.0 );
 
@@ -487,7 +520,7 @@ void eapsWindow::updateUnitRange()
     }
 }
 
-void eapsWindow::portError( QString error )
+void eaps3000Window::portError( QString error )
 {
     LOG(INFO) << this->windowTitle().toStdString() << ": port error: "
               << error.toStdString();
@@ -497,7 +530,7 @@ void eapsWindow::portError( QString error )
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void eapsWindow::resetInfo()
+void eaps3000Window::resetInfo()
 {
     _port.clearPort();
 

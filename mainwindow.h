@@ -31,6 +31,7 @@ public slots:
     void windowNumberChanged( int change );
 
 private slots:
+    void emergencyStop();
     void startMeasurement();
     void stopMeasurement();
     void addWindow();

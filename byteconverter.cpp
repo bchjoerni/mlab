@@ -17,7 +17,8 @@ std::string byteConverter::asciiToHexString( char binaryByte,
                                              unsigned int hexSize )
 {
     std::stringstream ss;
-    ss << std::hex << static_cast<int>( binaryByte );
+    ss << std::hex << static_cast<int>(
+              reinterpret_cast<unsigned char&>( binaryByte ) );
     std::string s = ss.str();
 
     while( s.size() < hexSize )
@@ -101,8 +102,8 @@ std::string byteConverter::intToBytes( int param )
 
     if( littleEndian() )
     {
-        intStr += bytes[sizeof(int)-1];
-        intStr += bytes[sizeof(int)-2];
+        intStr += bytes[1];
+        intStr += bytes[0];
     }
     else
     {
@@ -120,10 +121,10 @@ std::string byteConverter::longToBytes( int param )
 
     if( littleEndian() )
     {
-        intStr += bytes[sizeof(int)-1];
-        intStr += bytes[sizeof(int)-2];
-        intStr += bytes[sizeof(int)-3];
-        intStr += bytes[sizeof(int)-4];
+        intStr += bytes[3];
+        intStr += bytes[2];
+        intStr += bytes[1];
+        intStr += bytes[0];
     }
     else
     {
@@ -143,10 +144,10 @@ std::string byteConverter::floatToBytes( float param )
 
     if( littleEndian() )
     {
-        floatStr += bytes[sizeof(int)-1];
-        floatStr += bytes[sizeof(int)-2];
-        floatStr += bytes[sizeof(int)-3];
-        floatStr += bytes[sizeof(int)-4];
+        floatStr += bytes[3];
+        floatStr += bytes[2];
+        floatStr += bytes[1];
+        floatStr += bytes[0];
     }
     else
     {

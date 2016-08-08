@@ -7,14 +7,14 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>420</height>
+    <height>450</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>TEST Power Meter</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_8">
-   <item row="0" column="0">
+   <item row="0" column="0" colspan="2">
     <widget class="QFrame" name="frame_connection">
      <property name="frameShape">
       <enum>QFrame::Box</enum>
@@ -61,6 +61,23 @@
     </widget>
    </item>
    <item row="1" column="0">
+    <widget class="QCheckBox" name="chb_setZeroAtStopSignal">
+     <property name="text">
+      <string>set 0 at stop signal</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="btn_emergencyStop">
+     <property name="text">
+      <string>EMERGENCY STOP</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
     <widget class="QFrame" name="frame_values">
      <property name="enabled">
       <bool>true</bool>

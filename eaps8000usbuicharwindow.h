@@ -1,5 +1,5 @@
-#ifndef BOPMGUICHARWINDOW_H
-#define BOPMGUICHARWINDOW_H
+#ifndef EAPS8000USBUICHARWINDOW_H
+#define EAPS8000USBUICHARWINDOW_H
 
 #include <QSerialPort>
 #include <QSerialPortInfo>
@@ -8,22 +8,22 @@
 #include <cmath>
 
 #include "easylogging++.h"
-#include "bopmgport.h"
+#include "eaps8000usbport.h"
 #include "mlabwindow.h"
 
 
 namespace Ui
 {
-    class bopmgUICharWindow;
+    class eaps8000UsbUICharWindow;
 }
 
-class bopmgUICharWindow : public mLabWindow
+class eaps8000UsbUICharWindow : public mLabWindow
 {
     Q_OBJECT
 
 public:
-    explicit bopmgUICharWindow(QWidget *parent = 0);
-    ~bopmgUICharWindow();
+    explicit eaps8000UsbUICharWindow(QWidget *parent = 0);
+    ~eaps8000UsbUICharWindow();
     void doUpdate() override;
     bool isReceiver() const override
     {
@@ -39,6 +39,7 @@ private slots:
     void initFinished( const QString& idString );
     void voltageUpdate( double voltage );
     void currentUpdate( double current );
+    void powerUpdate( double power);
     void portError( QString error );
     void resetInfo();
     void updateUnitRange();
@@ -57,8 +58,8 @@ private:
     bool endOfLoop();
     bool inLoopInterval();
 
-    Ui::bopmgUICharWindow *_ui;
-    bopmgPort _port;
+    Ui::eaps8000UsbUICharWindow *_ui;
+    eaps8000UsbPort _port;
     int _tickCounter;
     int _loopCounter;
     bool _running;
@@ -68,6 +69,7 @@ private:
 
     const QString VOLTAGE          = "voltage";
     const QString CURRENT          = "current";
+    const QString POWER            = "power";
 
     const QString START            = "start";
     const QString STOP             = "stop";
@@ -76,7 +78,8 @@ private:
     const QString UNIT_VOLT        = "V";
     const QString UNIT_MILLIAMPERE = "mA";
     const QString UNIT_AMPERE      = "A";
+    const QString UNIT_WATT        = "W";
+    const QString UNIT_MILLIWATT   = "mW";
 };
 
-
-#endif // BOPMGUICHARWINDOW_H
+#endif // EAPS8000USBUICHARWINDOW_H

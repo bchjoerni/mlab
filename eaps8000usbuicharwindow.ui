@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>bopmgUICharWindow</class>
- <widget class="QWidget" name="bopmgUICharWindow">
+ <class>eaps8000UsbUICharWindow</class>
+ <widget class="QWidget" name="eaps8000UsbUICharWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>486</width>
-    <height>439</height>
+    <height>496</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>UI-Characteristics</string>
+   <string>Form</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_3">
+  <layout class="QGridLayout" name="gridLayout_7">
    <item row="0" column="0" colspan="2">
     <widget class="QFrame" name="frame_connection">
      <property name="frameShape">
@@ -85,15 +85,53 @@
      <property name="frameShape">
       <enum>QFrame::Box</enum>
      </property>
-     <layout class="QGridLayout" name="gridLayout_7">
-      <item row="1" column="2">
-       <widget class="QLabel" name="lbl_atFinish">
-        <property name="text">
-         <string>at finish:</string>
+     <layout class="QGridLayout" name="gridLayout_6">
+      <item row="2" column="0" colspan="6">
+       <widget class="QFrame" name="frame_voltage">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
         </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QGridLayout" name="gridLayout">
+         <item row="0" column="0">
+          <widget class="QLabel" name="lbl_voltage_lbl">
+           <property name="text">
+            <string>voltage:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
+          <widget class="QLineEdit" name="txt_voltage">
+           <property name="text">
+            <string>-</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="2">
+          <widget class="QCheckBox" name="chb_shareVoltage">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
+           <property name="text">
+            <string>share</string>
+           </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
+          </widget>
+         </item>
+        </layout>
        </widget>
       </item>
-      <item row="0" column="0" colspan="5">
+      <item row="0" column="0" colspan="6">
        <widget class="QFrame" name="frame_setValues">
         <layout class="QGridLayout" name="gridLayout_5">
          <item row="0" column="0">
@@ -260,24 +298,24 @@
         </layout>
        </widget>
       </item>
-      <item row="2" column="0" colspan="5">
-       <widget class="QFrame" name="frame_voltage">
+      <item row="4" column="0" colspan="6">
+       <widget class="QFrame" name="frame_power">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
         <property name="frameShadow">
          <enum>QFrame::Raised</enum>
         </property>
-        <layout class="QGridLayout" name="gridLayout">
+        <layout class="QGridLayout" name="gridLayout_3">
          <item row="0" column="0">
-          <widget class="QLabel" name="lbl_voltage_lbl">
+          <widget class="QLabel" name="lbl_power_lbl">
            <property name="text">
-            <string>voltage:</string>
+            <string>power:</string>
            </property>
           </widget>
          </item>
          <item row="0" column="1">
-          <widget class="QLineEdit" name="txt_voltage">
+          <widget class="QLineEdit" name="txt_power">
            <property name="text">
             <string>-</string>
            </property>
@@ -290,7 +328,7 @@
           </widget>
          </item>
          <item row="0" column="2">
-          <widget class="QCheckBox" name="chb_shareVoltage">
+          <widget class="QCheckBox" name="chb_sharePower">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -305,17 +343,14 @@
         </layout>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QPushButton" name="btn_startStop">
-        <property name="enabled">
-         <bool>false</bool>
-        </property>
+      <item row="1" column="5">
+       <widget class="QCheckBox" name="chb_emitStopSignal">
         <property name="text">
-         <string>start</string>
+         <string>emit stop signal</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="5">
+      <item row="3" column="0" colspan="6">
        <widget class="QFrame" name="frame_current">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
@@ -360,20 +395,30 @@
         </layout>
        </widget>
       </item>
+      <item row="1" column="0">
+       <widget class="QPushButton" name="btn_startStop">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="text">
+         <string>start</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="3">
+       <widget class="QLabel" name="lbl_atFinish">
+        <property name="text">
+         <string>at finish:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="4">
        <widget class="QCheckBox" name="chb_setZeroWhenFinished">
         <property name="text">
          <string>set 0</string>
         </property>
         <property name="checked">
          <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="4">
-       <widget class="QCheckBox" name="chb_emitStopSignal">
-        <property name="text">
-         <string>emit stop signal</string>
         </property>
        </widget>
       </item>
