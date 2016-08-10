@@ -55,8 +55,8 @@ void powerMeterTestWindow::mLabSignal( char signal )
     else if( signal == STOP_SIGNAL && getInit() )
     {
         _setValueStr = "stop";
-        _ui->lbl_status->setText( STOP_RECEIVED );
-        _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        _ui->lbl_info->setText( STOP_RECEIVED );
+        _ui->lbl_info->setStyleSheet( STYLE_ERROR );
         emit changeWindowState( this->windowTitle(), false );
     }
 }
@@ -66,8 +66,8 @@ void powerMeterTestWindow::emergencyStop()
     if( getInit() )
     {
         _setValueStr = "emergencyStop";
-        _ui->lbl_status->setText( EMERGENCY_STOP );
-        _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        _ui->lbl_info->setText( EMERGENCY_STOP );
+        _ui->lbl_info->setStyleSheet( STYLE_ERROR );
         emit changeWindowState( this->windowTitle(), false );
     }
 }

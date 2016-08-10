@@ -58,10 +58,13 @@ private:
 
     Ui::eaps8000UsbWindow *_ui;
     eaps8000UsbPort _port;
+    bool _setPowerDirectly;
 
     const QString VOLTAGE               = "voltage";
     const QString CURRENT               = "current";
-    const QString POWER                 = "power";
+    const QString POWER                 = "power";    
+    const QString POWER_BY_VOLTAGE      = "power (V)";
+    const QString POWER_BY_CURRENT      = "power (I)";
     const QString RESISTANCE            = "resistance";
     const QString RESISTANCE_BY_VOLTAGE = "resistance (V)";
     const QString RESISTANCE_BY_CURRENT = "resistance (I)";

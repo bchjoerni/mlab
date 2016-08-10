@@ -23,6 +23,8 @@
 #include "thermocouplewindow.h"
 #include "scratchpadwindow.h"
 #include "screenshotwindow.h"
+#include "eaps8000usbwindow.h"
+#include "eaps8000usbuicharwindow.h"
 
 
 class mdiHandler : public QObject
@@ -39,7 +41,9 @@ public:
     void addSimpleGraph( const QString& title );
     void addCalcTemperatureWindow( const QString& title );
     void addBogMgWindow( const QString& title );
-    void addEapsWindow( const QString& title );
+    void addEaps3000Window( const QString& title );
+    void addEaps8000UsbWindow( const QString& title );
+    void addEaps8000UsbUICharWindow( const QString& title );
     void addBopmgUICharWindow( const QString& title );
     void addTsh071Window( const QString& title );
     void addFlowMeterWindow( const QString& title );
@@ -47,7 +51,8 @@ public:
     void addScratchpadWindow( const QString& title );
     void addScreenshotWindow( const QString& title );
     QStringList getWindowNames();
-    void addUiCharWindows();
+    void addUICharWindowsNew();
+    void addUICharWindowsOld();
 
 public slots:
     void windowClosed();

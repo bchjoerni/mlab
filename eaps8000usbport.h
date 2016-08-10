@@ -1,6 +1,8 @@
 #ifndef EAPS8000USBPORT_H
 #define EAPS8000USBPORT_H
 
+#include <QDebug>
+
 #include <QObject>
 #include <QString>
 #include <QApplication>
@@ -17,7 +19,8 @@ class eaps8000UsbPort : public labPort
 
 public:
     enum setValueType{ setTypeNone, setTypeVoltage, setTypeCurrent,
-                       setTypePower, setTypeResistanceByVoltage,
+                       setTypePower, setTypePowerByVoltage,
+                       setTypePowerByCurrent, setTypeResistanceByVoltage,
                        setTypeResistanceByCurrent };
 
     explicit eaps8000UsbPort( QObject *parent = 0 );
@@ -30,6 +33,7 @@ public:
     void setEmitCurrent( bool emitCurrent );
     void setEmitPower( bool emitPower );
     void setEmitResistance( bool emitResistance );
+    void setPowerType( bool isAbleToSetPowerDirectly );
     QString idString() const;
 
 signals:
@@ -66,32 +70,34 @@ private:
     void sendSetValue( int object, int value );
     void sendGetValue( int object, bool inTime = false );
 
-    void answerDeviceType();
-    void answerDeviceSerial();
-    void answerNominalVoltage();
-    void answerNominalCurrent();
-    void answerNominalPower();
-    void answerArticleNumber();
-    void answerUserText();
-    void answerManufacturer();
-    void answerSoftwareVersion();
-    void answerInterfaceType();
-    void answerInterfaceSerial();
-    void answerInterfaceArticleNumber();
-    void answerInterfaceFirmwareVersion();
-    void answerDeviceClass();
-    void answerSetVoltage();
-    void answerSetCurrent();
-    void answerSetPower();
-    void answerDeviceState();
-    void answerActualValues();
-    void answerSetValues();
-    void unhandledAnswer();
+    void answerDeviceType( const QByteArray& msg );
+    void answerDeviceSerial( const QByteArray& msg );
+    void answerNominalVoltage( const QByteArray& msg );
+    void answerNominalCurrent( const QByteArray& msg );
+    void answerNominalPower( const QByteArray& msg );
+    void answerArticleNumber( const QByteArray& msg );
+    void answerUserText( const QByteArray& msg );
+    void answerManufacturer( const QByteArray& msg );
+    void answerSoftwareVersion( const QByteArray& msg );
+    void answerInterfaceType( const QByteArray& msg );
+    void answerInterfaceSerial( const QByteArray& msg );
+    void answerInterfaceArticleNumber( const QByteArray& msg );
+    void answerInterfaceFirmwareVersion( const QByteArray& msg );
+    void answerDeviceClass( const QByteArray& msg );
+    void answerSetVoltage( const QByteArray& msg );
+    void answerSetCurrent( const QByteArray& msg );
+    void answerSetPower( const QByteArray& msg );
+    void answerDeviceState( const QByteArray& msg );
+    void answerActualValues( const QByteArray& msg );
+    void answerSetValues( const QByteArray& msg );
+    void answerError( const QByteArray& msg );
+    void unhandledAnswer( const QByteArray& msg );
 
     QString _idString;
     QByteArray _bufferReceived;
     bool _inMsg;
     int _id;
+    bool _setPowerDirectly;
     double _maxVoltage;
     double _maxCurrent;
     double _maxPower;

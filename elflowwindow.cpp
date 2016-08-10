@@ -111,8 +111,8 @@ void elFlowWindow::mLabSignal( char signal )
     {
         _port.setValue( elFlowPort::setValueType::setTypeFlow, 0, false );
 
-        _ui->lbl_status->setText( STOP_RECEIVED );
-        _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        _ui->lbl_info->setText( STOP_RECEIVED );
+        _ui->lbl_info->setStyleSheet( STYLE_ERROR );
         emit changeWindowState( this->windowTitle(), false );
     }
 }
@@ -123,8 +123,8 @@ void elFlowWindow::emergencyStop()
     {
         _port.setValue( elFlowPort::setValueType::setTypeFlow, 0, false );
 
-        _ui->lbl_status->setText( EMERGENCY_STOP );
-        _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        _ui->lbl_info->setText( EMERGENCY_STOP );
+        _ui->lbl_info->setStyleSheet( STYLE_ERROR );
         emit changeWindowState( this->windowTitle(), false );
     }
 }

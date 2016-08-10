@@ -131,7 +131,13 @@ void labPort::timeToSendMsg()
 
     if( _msgToSend.size() > 0 )
     {
-        LOG(INFO) << "write: " << _msgToSend[0].data();
+        LOG(INFO) << "write " << _msgToSend[0].size() << " bytes:";
+        for( int i = 0; i < _msgToSend[0].size(); i++ )
+        {
+            char c = _msgToSend[0].at( i );
+            LOG(INFO) << "write (dec): " << static_cast<int>(
+                             reinterpret_cast<unsigned char&>( c ) );
+        }
         _port.write( _msgToSend[0].data(), _msgToSend[0].size() );
         _msgToSend.erase( _msgToSend.begin() );
     }
@@ -229,7 +235,13 @@ void labPort::read()
 
 void labPort::logReadData( const QByteArray& received )
 {
-    LOG(INFO) << "read: " << received.toStdString();
+    LOG(INFO) << "read " << received.size() << " bytes:";
+    for( int i = 0; i < received.size(); i++ )
+    {
+        char c = received.at( i );
+        LOG(INFO) << "read (dec): " << static_cast<int>(
+                         reinterpret_cast<unsigned char&>( c ) );
+    }
 }
 
 void labPort::signalError( const QSerialPort::SerialPortError& error )

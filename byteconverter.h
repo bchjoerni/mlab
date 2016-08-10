@@ -14,6 +14,7 @@ public:
     static std::string hexStringToString( const std::string& s, int base = 2 );
     static std::string uCharToReadableHex( unsigned char uc );
     static char hexChar( unsigned char c );
+    static int highLowCharsToInt( char highChar, char lowChar );
 
     int   bytesToInt(   const std::string& s );
     float bytesToFloat( const std::string& s );

@@ -38,8 +38,10 @@ void mainWindow::connectActions()
     connect( _ui->act_exit, SIGNAL( triggered() ), this, SLOT( exit() ) );
     connect( _ui->act_addWindow, SIGNAL( triggered() ), this,
              SLOT( addWindow() ) );
-    connect( _ui->act_addUiCharWindows, SIGNAL( triggered() ), this,
-             SLOT( addUiCharWindows() ) );
+    connect( _ui->act_addUiCharWindows_old, SIGNAL( triggered() ), this,
+             SLOT( addUICharWindowsOld() ) );
+    connect( _ui->act_addUICharWindows_new, SIGNAL( triggered() ), this,
+             SLOT( addUICharWindowsNew() ) );
     connect( _ui->act_logInfos, SIGNAL( triggered( bool ) ), this,
              SLOT( setInfoLogger() ) );
     connect( _ui->act_logValues, SIGNAL( triggered( bool ) ), this,
@@ -57,8 +59,8 @@ void mainWindow::connectButtons()
 
     connect( _ui->btn_addWindow, SIGNAL( clicked() ), this,
              SLOT( addWindow() ) );
-    connect( _ui->btn_addUiCharWindows, SIGNAL( clicked() ), this,
-             SLOT( addUiCharWindows() ) );
+    connect( _ui->btn_addUiCharWindows_new, SIGNAL( clicked() ), this,
+             SLOT( addUICharWindowsNew() ) );
 }
 
 void mainWindow::connectTimers()
@@ -103,12 +105,29 @@ void mainWindow::addWindow()
     waw.exec();
 }
 
-void mainWindow::addUiCharWindows()
+void mainWindow::addUICharWindowsNew()
 {
     if( _mdi->getWindowNames().isEmpty() )
     {
-        LOG(INFO) << "add UI-Characterization windows";
-        _mdi->addUiCharWindows();
+        LOG(INFO) << "add UI-Characterization windows (new)";
+        _mdi->addUICharWindowsNew();
+    }
+    else
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle( "Error!" );
+        msgBox.setText( "UI Windows can only be added if there are no other "
+                        "windows!" );
+        msgBox.exec();
+    }
+}
+
+void mainWindow::addUICharWindowsOld()
+{
+    if( _mdi->getWindowNames().isEmpty() )
+    {
+        LOG(INFO) << "add UI-Characterization windows (old)";
+        _mdi->addUICharWindowsOld();
     }
     else
     {

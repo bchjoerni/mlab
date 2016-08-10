@@ -83,7 +83,7 @@
      </widget>
     </item>
     <item row="0" column="9">
-     <widget class="QPushButton" name="btn_addUiCharWindows">
+     <widget class="QPushButton" name="btn_addUiCharWindows_new">
       <property name="text">
        <string>add UI-&amp;Char Windows</string>
       </property>
@@ -159,7 +159,8 @@
      <string>Windows</string>
     </property>
     <addaction name="act_addWindow"/>
-    <addaction name="act_addUiCharWindows"/>
+    <addaction name="act_addUiCharWindows_old"/>
+    <addaction name="act_addUICharWindows_new"/>
    </widget>
    <addaction name="menuProgram"/>
    <addaction name="menuWindows"/>
@@ -186,9 +187,9 @@
     <string>&amp;Log values</string>
    </property>
   </action>
-  <action name="act_addUiCharWindows">
+  <action name="act_addUiCharWindows_old">
    <property name="text">
-    <string>Add UI-&amp;Char Windows</string>
+    <string>Add UI-Char Windows (old)</string>
    </property>
   </action>
   <action name="act_logInfos">
@@ -197,6 +198,11 @@
    </property>
    <property name="text">
     <string>Log infos</string>
+   </property>
+  </action>
+  <action name="act_addUICharWindows_new">
+   <property name="text">
+    <string>Add UI-Char Windows new</string>
    </property>
   </action>
  </widget>

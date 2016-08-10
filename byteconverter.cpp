@@ -44,6 +44,14 @@ std::string byteConverter::hexStringToString( const std::string& s, int base )
     return convertedString;
 }
 
+int byteConverter::highLowCharsToInt( char highChar, char lowChar )
+{
+    int high = static_cast<int>( reinterpret_cast<unsigned char&>( highChar ) );
+    int low = static_cast<int>( reinterpret_cast<unsigned char&>( lowChar ) );
+
+    return high*256 + low;
+}
+
 int byteConverter::bytesToInt( const std::string& s )
 {
     stringToBuffer( s, sizeof( int ) - s.length() );

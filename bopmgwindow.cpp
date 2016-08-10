@@ -117,8 +117,8 @@ void bopmgWindow::mLabSignal( char signal )
         _port.setValue( bopmgPort::setValueType::setTypeVoltage, 0, false );
         _port.setValue( bopmgPort::setValueType::setTypeCurrent, 0, false );
 
-        _ui->lbl_status->setText( STOP_RECEIVED );
-        _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        _ui->lbl_info->setText( STOP_RECEIVED );
+        _ui->lbl_info->setStyleSheet( STYLE_ERROR );
         emit changeWindowState( this->windowTitle(), false );
     }
 }
@@ -130,8 +130,8 @@ void bopmgWindow::emergencyStop()
         _port.setValue( bopmgPort::setValueType::setTypeVoltage, 0, false );
         _port.setValue( bopmgPort::setValueType::setTypeCurrent, 0, false );
 
-        _ui->lbl_status->setText( EMERGENCY_STOP );
-        _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        _ui->lbl_info->setText( EMERGENCY_STOP );
+        _ui->lbl_info->setStyleSheet( STYLE_ERROR );
         emit changeWindowState( this->windowTitle(), false );
     }
 }

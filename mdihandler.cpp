@@ -132,10 +132,24 @@ void mdiHandler::addBopmgUICharWindow( const QString& title )
     addWindow( window, window->windowFlags(), title );
 }
 
-void mdiHandler::addEapsWindow( const QString &title )
+void mdiHandler::addEaps3000Window( const QString &title )
+{
+    LOG(INFO) << "add eaps3000Window";
+    eaps3000Window* window = new eaps3000Window;
+    addWindow( window, window->windowFlags(), title );
+}
+
+void mdiHandler::addEaps8000UsbWindow( const QString &title )
+{
+    LOG(INFO) << "add eaps8000UsbWindow";
+    eaps8000UsbWindow* window = new eaps8000UsbWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
+void mdiHandler::addEaps8000UsbUICharWindow( const QString &title )
 {
     LOG(INFO) << "add eapsWindow";
-    eaps3000Window* window = new eaps3000Window;
+    eaps8000UsbUICharWindow* window = new eaps8000UsbUICharWindow;
     addWindow( window, window->windowFlags(), title );
 }
 
@@ -212,7 +226,124 @@ void mdiHandler::windowClosed()
     emit windowNumberChanged( -1 );
 }
 
-void mdiHandler::addUiCharWindows()
+void mdiHandler::addUICharWindowsNew()
+{
+    const int border = 1;
+
+    const QString s1  = "UI Characteristic";
+    const QString s2  = "Thermocouple 1";
+    const QString s3  = "Thermocouple 2";
+    const QString s4  = "Heating";
+    const QString s5  = "Temperature Calculator";
+    const QString s6  = "Flow Meter";
+    const QString s7  = "UI Value Saver";
+    const QString s8  = "Scratchpad";
+    const QString s9  = "All Value Saver";
+    const QString s10 = "Screenshot";
+    const QString s11 = "Graph";
+
+    QRect r1;
+    QRect r2;
+    QRect r3;
+    QRect r4;
+    QRect r5;
+    QRect r6;
+    QRect r7;
+    QRect r8;
+    QRect r9;
+    QRect r10;
+    QRect r11;
+
+    addEaps8000UsbUICharWindow( s1 );
+    addThermocoupleWindow(      s2 );
+    addThermocoupleWindow(      s3 );
+    addEaps8000UsbWindow(       s4 );
+    addCalcTemperatureWindow(   s5 );
+    addFlowMeterWindow(         s6 );
+    addPairSaveWindow(          s7 );
+    addScratchpadWindow(        s8 );
+    addAllSaveWindow(           s9 );
+    addScreenshotWindow(        s10 );
+    addSimpleGraph(             s11 );
+
+    auto subWindows = _mdiArea->subWindowList();
+    for( QMdiSubWindow* w : subWindows )
+    {
+        if( w->windowTitle() == s1 )
+        {
+            w->setGeometry( border, border,
+                            w->geometry().width(), w->geometry().height() );
+            r1 = w->geometry();
+        }
+        else if( w->windowTitle() == s2 )
+        {
+            w->setGeometry( r1.x(), border*2 + r1.height(),
+                            w->geometry().width(), w->geometry().height() );
+            r2 = w->geometry();
+        }
+        else if( w->windowTitle() == s3 )
+        {
+            w->setGeometry( r1.x(), r1.height() + r2.height() + 3*border,
+                            w->geometry().width(), w->geometry().height() );
+            r3 = w->geometry();
+        }
+        else if( w->windowTitle() == s4 )
+        {
+            w->setGeometry( r1.x() + border + (r1.width() > r2.width() ?
+                                r1.width() : r2.width()), border,
+                            w->geometry().width(), w->geometry().height() );
+            r4 = w->geometry();
+        }
+        else if( w->windowTitle() == s5 )
+        {
+            w->setGeometry( r4.x(), r4.height() + 2*border,
+                            w->geometry().width(), w->geometry().height() );
+            r5 = w->geometry();
+        }
+        else if( w->windowTitle() == s6 )
+        {
+            w->setGeometry( r4.x() + border + (r4.width() > r5.width() ?
+                                r4.width() : r5.width()), border,
+                            w->geometry().width(), w->geometry().height() );
+            r6 = w->geometry();
+        }
+        else if( w->windowTitle() == s7 )
+        {
+            w->setGeometry( r6.x(), r6.height() + 2*border,
+                            w->geometry().width(), w->geometry().height() );
+            r7 = w->geometry();
+        }
+        else if( w->windowTitle() == s8 )
+        {
+            w->setGeometry( r6.x(), r6.height() + r7.height() + 3*border,
+                            w->geometry().width(), w->geometry().height()*4/5 );
+            r8 = w->geometry();
+        }
+        else if( w->windowTitle() == s9 )
+        {
+            w->setGeometry( r6.x() + border + (r6.width() > r7.width() ?
+                                r6.width() : r7.width()), border,
+                            w->geometry().width(), w->geometry().height() );
+            r9 = w->geometry();
+        }
+        else if( w->windowTitle() == s10 )
+        {
+            w->setGeometry( r9.x(), r9.height() + 2*border,
+                            w->geometry().width(), w->geometry().height() );
+            r10 = w->geometry();
+        }
+        else if( w->windowTitle() == s11 )
+        {
+            w->setGeometry( r9.x(), r9.height() + r10.height() + 3*border,
+                            r4.width(), r4.height() );
+            r11 = w->geometry();
+        }
+    }
+}
+
+
+
+void mdiHandler::addUICharWindowsOld()
 {
     const int border = 1;
 
@@ -239,7 +370,7 @@ void mdiHandler::addUiCharWindows()
     QRect r10;
 
     addBopmgUICharWindow(     s1 );
-    addEapsWindow(            s2 );
+    addEaps3000Window(        s2 );
     addThermocoupleWindow(    s3 );
     addThermocoupleWindow(    s4 );
     addCalcTemperatureWindow( s5 );

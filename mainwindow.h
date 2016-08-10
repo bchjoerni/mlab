@@ -35,7 +35,8 @@ private slots:
     void startMeasurement();
     void stopMeasurement();
     void addWindow();
-    void addUiCharWindows();
+    void addUICharWindowsOld();
+    void addUICharWindowsNew();
     void doUpdate();
     void timeUpdate();
     void setValueLogger();

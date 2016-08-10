@@ -40,9 +40,17 @@ void windowAdderWindow::ok()
     {
         _mdi->addAllSaveWindow( _ui->txt_allSave->text() );
     }
-    if( _ui->chb_eaps->isChecked() )
+    if( _ui->chb_eaps3000->isChecked() )
     {
-        _mdi->addEapsWindow( _ui->txt_eaps->text() );
+        _mdi->addEaps3000Window( _ui->txt_eaps3000->text() );
+    }
+    if( _ui->chb_eaps8000Usb->isChecked() )
+    {
+        _mdi->addEaps8000UsbWindow( _ui->txt_eaps8000Usb->text() );
+    }
+    if( _ui->chb_eaps8000UsbUIChar->isChecked() )
+    {
+        _mdi->addEaps8000UsbUICharWindow( _ui->txt_eaps8000UsbUIChar->text() );
     }
     if( _ui->chb_bopMg->isChecked() )
     {
@@ -109,9 +117,17 @@ bool windowAdderWindow::checkWindowNames()
     {
         names.push_back( _ui->txt_allSave->text() );
     }
-    if( _ui->chb_eaps->isChecked() )
+    if( _ui->chb_eaps3000->isChecked() )
     {
-        names.push_back( _ui->txt_eaps->text() );
+        names.push_back( _ui->txt_eaps3000->text() );
+    }
+    if( _ui->chb_eaps8000Usb->isChecked() )
+    {
+        names.push_back( _ui->txt_eaps8000Usb->text() );
+    }
+    if( _ui->chb_eaps8000UsbUIChar->isChecked() )
+    {
+        names.push_back( _ui->txt_eaps8000UsbUIChar->text() );
     }
     if( _ui->chb_bopMg->isChecked() )
     {

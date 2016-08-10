@@ -4,7 +4,7 @@
 
 eaps8000UsbWindow::eaps8000UsbWindow( QWidget *parent ) :
     mLabWindow( parent ),
-    _ui( new Ui::eaps8000UsbWindow )
+    _ui( new Ui::eaps8000UsbWindow ), _setPowerDirectly( false )
 {
     _ui->setupUi( this );
 
@@ -61,7 +61,15 @@ void eaps8000UsbWindow::addItems()
 {
     _ui->cob_setValue->addItem( VOLTAGE );
     _ui->cob_setValue->addItem( CURRENT );
-    _ui->cob_setValue->addItem( POWER );
+    if( _setPowerDirectly )
+    {
+        _ui->cob_setValue->addItem( POWER );
+    }
+    else
+    {
+        _ui->cob_setValue->addItem( POWER_BY_VOLTAGE );
+        _ui->cob_setValue->addItem( POWER_BY_CURRENT );
+    }
     _ui->cob_setValue->addItem( RESISTANCE_BY_VOLTAGE );
     _ui->cob_setValue->addItem( RESISTANCE_BY_CURRENT );
 
@@ -89,7 +97,7 @@ void eaps8000UsbWindow::refreshPortList()
         {
             _ui->cob_ports->addItem( info.portName() );
 
-            if( info.serialNumber().startsWith( "EAV" ) )
+            if( info.serialNumber().startsWith( "EAWLE30" ) )
             {
                 _ui->cob_ports->setCurrentText( info.portName() );
             }
@@ -118,8 +126,8 @@ void eaps8000UsbWindow::mLabSignal( char signal )
         _port.setValue( eaps8000UsbPort::setValueType::setTypeCurrent, 0.0,
                         false );
 
-        _ui->lbl_status->setText( STOP_RECEIVED );
-        _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        _ui->lbl_info->setText( STOP_RECEIVED );
+        _ui->lbl_info->setStyleSheet( STYLE_ERROR );
         emit changeWindowState( this->windowTitle(), false );
     }
 }
@@ -133,8 +141,8 @@ void eaps8000UsbWindow::emergencyStop()
         _port.setValue( eaps8000UsbPort::setValueType::setTypeCurrent, 0.0,
                         false );
 
-        _ui->lbl_status->setText( EMERGENCY_STOP );
-        _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        _ui->lbl_info->setText( EMERGENCY_STOP );
+        _ui->lbl_info->setStyleSheet( STYLE_ERROR );
         emit changeWindowState( this->windowTitle(), false );
     }
 }
@@ -221,6 +229,30 @@ void eaps8000UsbWindow::setValue()
         }
         _port.setValue( eaps8000UsbPort::setValueType::setTypePower, value,
                         _ui->chb_adjustSetValue->isChecked() );
+        _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
+                                       + UNIT_WATT );
+        _ui->frame_power->setVisible( true );
+    }
+    else if( _ui->cob_setValue->currentText() == POWER_BY_VOLTAGE )
+    {
+        if( _ui->cob_setValueUnit->currentText() == UNIT_MILLIWATT )
+        {
+            value /= 1000.0;
+        }
+        _port.setValue( eaps8000UsbPort::setValueType::setTypePowerByVoltage,
+                        value, _ui->chb_adjustSetValue->isChecked() );
+        _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
+                                       + UNIT_WATT );
+        _ui->frame_power->setVisible( true );
+    }
+    else if( _ui->cob_setValue->currentText() == POWER_BY_CURRENT )
+    {
+        if( _ui->cob_setValueUnit->currentText() == UNIT_MILLIWATT )
+        {
+            value /= 1000.0;
+        }
+        _port.setValue( eaps8000UsbPort::setValueType::setTypePowerByCurrent,
+                        value, _ui->chb_adjustSetValue->isChecked() );
         _ui->lbl_setValueSet->setText( "set to " + QString::number( value )
                                        + UNIT_WATT );
         _ui->frame_power->setVisible( true );
@@ -438,7 +470,9 @@ void eaps8000UsbWindow::setValueSelectionChanged()
         _ui->cob_setValueUnit->addItem( UNIT_AMPERE );
         _ui->cob_setValueUnit->addItem( UNIT_MILLIAMPERE );
     }
-    else if( _ui->cob_setValue->currentText() == POWER )
+    else if( _ui->cob_setValue->currentText() == POWER
+             || _ui->cob_setValue->currentText() == POWER_BY_VOLTAGE
+             || _ui->cob_setValue->currentText() == POWER_BY_CURRENT )
     {
         _ui->cob_setValueUnit->addItem( UNIT_WATT );
         _ui->cob_setValueUnit->addItem( UNIT_MILLIWATT );
@@ -486,17 +520,17 @@ void eaps8000UsbWindow::updateUnitRange()
             _ui->dsp_setValue->setMaximum( _port.maxCurrent()*1000 );
         }
     }
-    else if( _ui->cob_setValue->currentText() == POWER )
+    else if( _ui->cob_setValue->currentText() == POWER
+             || _ui->cob_setValue->currentText() == POWER_BY_VOLTAGE
+             || _ui->cob_setValue->currentText() == POWER_BY_CURRENT )
     {
         if( _ui->cob_setValueUnit->currentText() == UNIT_WATT )
         {
-            _ui->dsp_setValue->setMaximum(
-                        _port.maxVoltage()*_port.maxCurrent() );
+            _ui->dsp_setValue->setMaximum( _port.maxPower() );
         }
         else if( _ui->cob_setValueUnit->currentText() == UNIT_MILLIWATT )
         {
-            _ui->dsp_setValue->setMaximum(
-                        _port.maxVoltage()*_port.maxCurrent()*1000 );
+            _ui->dsp_setValue->setMaximum( _port.maxPower()*1000 );
         }
     }
     else if( _ui->cob_setValue->currentText() == RESISTANCE_BY_VOLTAGE

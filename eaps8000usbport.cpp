@@ -6,7 +6,7 @@ eaps8000UsbPort::eaps8000UsbPort( QObject *parent ) : labPort( parent ),
     _lastResistance( 0.0 ),
     _setValueType( setValueType::setTypeNone ), _autoAdjust( false ),
     _emitVoltage( false ), _emitCurrent( false ), _emitPower( false ),
-    _emitResistance( false )
+    _emitResistance( false ), _setPowerDirectly( false )
 {
     setSerialValues();
     setLabPortVariables();
@@ -99,6 +99,11 @@ void eaps8000UsbPort::setEmitResistance( bool emitResistance )
     _emitResistance = emitResistance;
 }
 
+void eaps8000UsbPort::setPowerType( bool isAbleToSetPowerDirectly )
+{
+    _setPowerDirectly = isAbleToSetPowerDirectly;
+}
+
 void eaps8000UsbPort::updateNumInTimeValues()
 {
     _numInTimeValues = 0;
@@ -123,12 +128,29 @@ void eaps8000UsbPort::adjustValues()
     {
         setPower( calcAdjustedValue( _setPower, _lastPower ) );
     }
+    else if( _setValueType == setValueType::setTypePowerByVoltage )
+    {
+        if( _lastVoltage > 0.0 && _lastCurrent > 0.0 )
+        {
+            setVoltage( std::sqrt( calcAdjustedValue( _setPower, _lastPower )*
+                                   _lastVoltage/_lastCurrent ) );
+        }
+    }
+    else if( _setValueType == setValueType::setTypePowerByCurrent )
+    {
+        if( _lastVoltage > 0.0 && _lastCurrent > 0.0 )
+        {
+            setCurrent( std::sqrt( calcAdjustedValue( _setPower, _lastPower )/
+                                   (_lastVoltage/_lastCurrent) ) );
+        }
+    }
     else if( _setValueType == setValueType::setTypeResistanceByVoltage )
     {
         if( _lastVoltage > 0.0 && _lastResistance > 0.0 )
         {
             setVoltage( _lastVoltage*
-                        std::sqrt( _setResistance/_lastResistance ) );
+                        std::pow( _setResistance/_lastResistance,
+                                  adjustmentFactor ) );
         }
     }
     else if( _setValueType == setValueType::setTypeResistanceByCurrent )
@@ -136,7 +158,8 @@ void eaps8000UsbPort::adjustValues()
         if( _lastVoltage > 0.0 && _lastResistance > 0.0 )
         {
             setCurrent( _lastCurrent*
-                        std::sqrt( _setResistance/_lastResistance ) );
+                        std::pow( _setResistance/_lastResistance,
+                                  adjustmentFactor) );
         }
     }
 }
@@ -158,7 +181,7 @@ void eaps8000UsbPort::setValue( setValueType type, double value,
 
     if( type == setValueType::setTypeVoltage )
     {
-        LOG(INFO) << "eaps 8000 set voltage: " << value
+        LOG(INFO) << "eaps 8000 usb set voltage: " << value
                   << " adjust: " << autoAdjust;
         _setVoltage = value;
         _lastVoltage = value;
@@ -166,7 +189,7 @@ void eaps8000UsbPort::setValue( setValueType type, double value,
     }
     else if( type == setValueType::setTypeCurrent )
     {
-        LOG(INFO) << "eaps 8000 set current: " << value
+        LOG(INFO) << "eaps 8000 usb set current: " << value
                   << " adjust: " << autoAdjust;
         _setCurrent = value;
         _lastCurrent = value;
@@ -174,16 +197,41 @@ void eaps8000UsbPort::setValue( setValueType type, double value,
     }
     else if( type == setValueType::setTypePower )
     {
-        LOG(INFO) << "eaps 8000 set power: " << value
+        LOG(INFO) << "eaps 8000 usb set power: " << value
                   << " adjust: " << autoAdjust;
         _setPower = value;
         _lastPower = value;
         setPower( value );
     }
+    else if( type == setValueType::setTypePowerByVoltage
+             || type == setValueType::setTypePowerByCurrent )
+    {
+        LOG(INFO) << "eaps 8000 usb set power: " << value
+                  << " adjust: " << autoAdjust << " by voltage: "
+                  << (type == setValueType::setTypePowerByVoltage);
+        _setPower = value;
+        _lastPower = value;
+        if( _lastVoltage > 0.0 && _lastCurrent > 0.0 )
+        {
+            double resistance = _lastVoltage/_lastCurrent;
+            if( type == setValueType::setTypePowerByVoltage )
+            {
+                setVoltage( std::sqrt( value*resistance ) );
+            }
+            else if( type == setValueType::setTypePowerByCurrent )
+            {
+                setCurrent( std::sqrt( value/resistance ) );
+            }
+        }
+        else
+        {
+            emit portError( "Measure before setting power!" );
+        }
+    }
     else if( type == setValueType::setTypeResistanceByVoltage
              || type == setValueType::setTypeResistanceByCurrent )
     {
-        LOG(INFO) << "eaps 8000 set resistance: " << value << " adjust: "
+        LOG(INFO) << "eaps 8000 usb set resistance: " << value << " adjust: "
                   << autoAdjust << " by voltage: "
                   << (type == setValueType::setTypeResistanceByVoltage);
         _setResistance = value;
@@ -209,17 +257,17 @@ void eaps8000UsbPort::setValue( setValueType type, double value,
 
 void eaps8000UsbPort::setVoltage( double voltage )
 {
-    sendSetValue( 50, static_cast<int>( voltage/_maxVoltage*256 ) );
+    sendSetValue( 50, static_cast<int>( voltage/_maxVoltage*25600 ) );
 }
 
 void eaps8000UsbPort::setCurrent( double current )
 {
-    sendSetValue( 51, static_cast<int>( current/_maxCurrent*256 ) );
+    sendSetValue( 51, static_cast<int>( current/_maxCurrent*25600 ) );
 }
 
 void eaps8000UsbPort::setPower( double power )
 {
-    sendSetValue( 52, static_cast<int>( power/_maxPower*256 ) );
+    sendSetValue( 52, static_cast<int>( power/_maxPower*25600 ) );
 }
 
 void eaps8000UsbPort::setRemoteControl( bool on )
@@ -293,10 +341,10 @@ void eaps8000UsbPort::sendGetValue( int object, bool inTime )
     msg[1] = 0;
     msg[2] = object;
 
-    int checksum = msg[0] + msg[1] + msg[2] + msg[3] + msg[4];
+    int checksum = msg[0] + msg[1] + msg[2];
 
-    msg[5] = checksum/256;
-    msg[6] = checksum%256;
+    msg[3] = checksum/256;
+    msg[4] = checksum%256;
 
     sendMsg( reinterpret_cast<char*>( msg ), 5, inTime );
 }
@@ -307,8 +355,8 @@ void eaps8000UsbPort::sendSetValue( int object, int value )
     msg[0] = 0xF1;
     msg[1] = 0;
     msg[2] = object;
-    msg[3] = value%256;
-    msg[4] = value/256;
+    msg[3] = value/256;
+    msg[4] = value%256;
 
     int checksum = msg[0] + msg[1] + msg[2] + msg[3] + msg[4];
 
@@ -320,7 +368,7 @@ void eaps8000UsbPort::sendSetValue( int object, int value )
 
 int eaps8000UsbPort::getAnswerLength( unsigned char startDelimiter )
 {
-    return startDelimiter%16 + 5;
+    return startDelimiter%16 + 6;
 }
 
 char eaps8000UsbPort::getMessageType( unsigned char objectByte )
@@ -445,17 +493,15 @@ void eaps8000UsbPort::receivedMsg( QByteArray msg )
         else
         {*/
 
-        if( _bufferReceived.size() >=
-                getAnswerLength( _bufferReceived.at( 0 ) ) )
-        {
-            interpretMessage( _bufferReceived.left(
-                    getAnswerLength( _bufferReceived.at( 0 ) ) ) );
+        int answerLength = getAnswerLength( _bufferReceived.at( 0 ) );
 
-            if( _bufferReceived.size() >
-                    getAnswerLength( _bufferReceived.at( 0 ) ) )
+        if( _bufferReceived.size() >= answerLength )
+        {
+            interpretMessage( _bufferReceived.left( answerLength ) );
+
+            if( _bufferReceived.size() > answerLength )
             {
-                _bufferReceived.mid( getAnswerLength( _bufferReceived.at( 0 ) ),
-                                     -1 );
+                _bufferReceived = _bufferReceived.mid( answerLength, -1 );
             }
             else
             {
@@ -468,230 +514,319 @@ void eaps8000UsbPort::receivedMsg( QByteArray msg )
 }
 
 void eaps8000UsbPort::interpretMessage( QByteArray msg )
-{
+{/*
+    qDebug() << "interpret message, " << msg.size() << " bytes:";
+    for( int i = 0; i < msg.size(); i++ )
+    {
+        char c = msg.at( i );
+        qDebug() << static_cast<int>( reinterpret_cast<unsigned char&>( c ) );
+    }
+*/
     char object = msg.at( 2 );
     switch( reinterpret_cast<unsigned char&>( object ) )
     {
-        case 0: answerDeviceType();
+        case 0: answerDeviceType( msg );
             break;
-        case 1: answerDeviceSerial();
+        case 1: answerDeviceSerial( msg );
             break;
-        case 2: answerNominalVoltage();
+        case 2: answerNominalVoltage( msg );
             break;
-        case 3: answerNominalCurrent();
+        case 3: answerNominalCurrent( msg );
             break;
-        case 4: answerNominalPower();
+        case 4: answerNominalPower( msg );
             break;
-        case 6: answerArticleNumber();
+        case 6: answerArticleNumber( msg );
             break;
-        case 7: answerUserText();
+        case 7: answerUserText( msg );
             break;
-        case 8: answerManufacturer();
+        case 8: answerManufacturer( msg );
             break;
-        case 9: answerSoftwareVersion();
+        case 9: answerSoftwareVersion( msg );
             break;
-        case 10: answerInterfaceType();
+        case 10: answerInterfaceType( msg );
             break;
-        case 11: answerInterfaceSerial();
+        case 11: answerInterfaceSerial( msg );
             break;
-        case 12: answerInterfaceArticleNumber();
+        case 12: answerInterfaceArticleNumber( msg );
             break;
-        case 13: answerInterfaceFirmwareVersion();
+        case 13: answerInterfaceFirmwareVersion( msg );
             break;
-        case 19: answerDeviceClass();
+        case 19: answerDeviceClass( msg );
             break;
-        case 22: unhandledAnswer();
-        case 23: unhandledAnswer();
-        case 24: unhandledAnswer();
-        case 25: unhandledAnswer();
-        case 26: unhandledAnswer();
-        case 27: unhandledAnswer();
-        case 28: unhandledAnswer();
-        case 29: unhandledAnswer();
-        case 30: unhandledAnswer();
-        case 31: unhandledAnswer();
-        case 37: unhandledAnswer();
-        case 38: unhandledAnswer();
-        case 50: answerSetVoltage();
-        case 51: answerSetCurrent();
-        case 52: answerSetPower();
-        case 54: unhandledAnswer();
-        case 70: answerDeviceState();
-        case 71: answerActualValues();
-        case 72: answerSetValues();
+        case 22: unhandledAnswer( msg );
+            break;
+        case 23: unhandledAnswer( msg );
+            break;
+        case 24: unhandledAnswer( msg );
+            break;
+        case 25: unhandledAnswer( msg );
+            break;
+        case 26: unhandledAnswer( msg );
+            break;
+        case 27: unhandledAnswer( msg );
+            break;
+        case 28: unhandledAnswer( msg );
+            break;
+        case 29: unhandledAnswer( msg );
+            break;
+        case 30: unhandledAnswer( msg );
+            break;
+        case 31: unhandledAnswer( msg );
+            break;
+        case 37: unhandledAnswer( msg );
+            break;
+        case 38: unhandledAnswer( msg );
+            break;
+        case 50: answerSetVoltage( msg );
+            break;
+        case 51: answerSetCurrent( msg );
+            break;
+        case 52: answerSetPower( msg );
+            break;
+        case 54: unhandledAnswer( msg );
+            break;
+        case 70: answerDeviceState( msg );
+            break;
+        case 71: answerActualValues( msg );
+            break;
+        case 72: answerSetValues( msg );
+            break;
         case 77: emit portError( "Communication error!" );
-        case 190: unhandledAnswer();
-        case 191: unhandledAnswer();
-        case 192: unhandledAnswer();
-        case 193: unhandledAnswer();
-        case 194: unhandledAnswer();
+            break;
+        case 190: unhandledAnswer( msg );
+            break;
+        case 191: unhandledAnswer( msg );
+            break;
+        case 192: unhandledAnswer( msg );
+            break;
+        case 193: unhandledAnswer( msg );
+            break;
+        case 194: unhandledAnswer( msg );
+            break;
+        case 255: answerError( msg );
+            break;
 
-        default: emit portError( "Protocol Error!" );
+        default: emit portError( "Unknown answer!" );
     }
 }
 
-void eaps8000UsbPort::unhandledAnswer()
+void eaps8000UsbPort::unhandledAnswer( const QByteArray& msg )
 {
     emit portError( "Unhandled Answer!" );
 }
 
-void eaps8000UsbPort::answerDeviceType()
+void eaps8000UsbPort::answerDeviceType( const QByteArray& msg )
 {
-    _idString = _bufferReceived.mid( 3, _bufferReceived.length() - 5 );
+    _idString = msg.mid( 3, msg.length() - 5 );
     _initValueCounter++;
     LOG(INFO) << "eaps 8000 usb port: answer device type: "
-              << _bufferReceived.mid( 3, _bufferReceived.length() - 5 )
-                 .toStdString();
+              << msg.mid( 3, msg.length() - 5 ).toStdString();
+    emit initSuccessful( _idString );
 }
 
-void eaps8000UsbPort::answerDeviceSerial()
+void eaps8000UsbPort::answerDeviceSerial( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer device serial: "
-              << _bufferReceived.mid( 3, _bufferReceived.length() - 5 )
-                 .toStdString();
+              << msg.mid( 3, msg.length() - 5 ).toStdString();
 }
 
-void eaps8000UsbPort::answerNominalVoltage()
+void eaps8000UsbPort::answerNominalVoltage( const QByteArray& msg )
 {
     byteConverter conv;
-    _maxVoltage = conv.bytesToFloat( _bufferReceived.mid( 4, 4 )
-                                     .toStdString() );
+    _maxVoltage = conv.bytesToFloat( msg.mid( 3, 4 ).toStdString() );
     _initValueCounter++;
 }
 
-void eaps8000UsbPort::answerNominalCurrent()
+void eaps8000UsbPort::answerNominalCurrent( const QByteArray& msg )
 {
     byteConverter conv;
-    _maxCurrent = conv.bytesToFloat( _bufferReceived.mid( 4, 4 )
-                                     .toStdString() );
-    _initValueCounter++;
-
-}
-
-void eaps8000UsbPort::answerNominalPower()
-{
-    byteConverter conv;
-    _maxPower = conv.bytesToFloat( _bufferReceived.mid( 4, 4 )
-                                     .toStdString() );
+    _maxCurrent = conv.bytesToFloat( msg.mid( 3, 4 ).toStdString() );
     _initValueCounter++;
 }
 
-void eaps8000UsbPort::answerArticleNumber()
+void eaps8000UsbPort::answerNominalPower( const QByteArray& msg )
+{
+    byteConverter conv;
+    _maxPower = conv.bytesToFloat( msg.mid( 3, 4 ).toStdString() );
+    _initValueCounter++;
+}
+
+void eaps8000UsbPort::answerArticleNumber( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer article number: "
-              << _bufferReceived.mid( 3, _bufferReceived.length() - 5 )
-                 .toStdString();
+              << msg.mid( 3, msg.length() - 5 ).toStdString();
 }
 
-void eaps8000UsbPort::answerUserText()
+void eaps8000UsbPort::answerUserText( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer user text: "
-              << _bufferReceived.mid( 3, _bufferReceived.length() - 5 )
-                 .toStdString();
+              << msg.mid( 3, msg.length() - 5 ).toStdString();
 }
 
-void eaps8000UsbPort::answerManufacturer()
+void eaps8000UsbPort::answerManufacturer( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer manufacturer: "
-              << _bufferReceived.mid( 3, _bufferReceived.length() - 5 )
-                 .toStdString();
+              << msg.mid( 3, msg.length() - 5 ).toStdString();
 }
 
-void eaps8000UsbPort::answerSoftwareVersion()
+void eaps8000UsbPort::answerSoftwareVersion( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer software version: "
-              << _bufferReceived.mid( 3, _bufferReceived.length() - 5 )
-                 .toStdString();
+              << msg.mid( 3, msg.length() - 5 ).toStdString();
 }
 
-void eaps8000UsbPort::answerInterfaceType()
+void eaps8000UsbPort::answerInterfaceType( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer interface type: "
-              << _bufferReceived.mid( 3, _bufferReceived.length() - 5 )
-                 .toStdString();
+              << msg.mid( 3, msg.length() - 5 ).toStdString();
 }
 
-void eaps8000UsbPort::answerInterfaceSerial()
+void eaps8000UsbPort::answerInterfaceSerial( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer interface serial: "
-              << _bufferReceived.mid( 3, _bufferReceived.length() - 5 )
-                 .toStdString();
+              << msg.mid( 3, msg.length() - 5 ).toStdString();
 }
 
-void eaps8000UsbPort::answerInterfaceArticleNumber()
+void eaps8000UsbPort::answerInterfaceArticleNumber( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer interface article number: "
-              << _bufferReceived.mid( 3, _bufferReceived.length() - 5 )
-                 .toStdString();
+              << msg.mid( 3, msg.length() - 5 ).toStdString();
 }
 
-void eaps8000UsbPort::answerInterfaceFirmwareVersion()
+void eaps8000UsbPort::answerInterfaceFirmwareVersion( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer interface firmware version: "
-              << _bufferReceived.mid( 3, _bufferReceived.length() - 5 )
-                 .toStdString();
+              << msg.mid( 3, msg.length() - 5 ).toStdString();
 }
 
-void eaps8000UsbPort::answerDeviceClass()
+void eaps8000UsbPort::answerDeviceClass( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer device class: "
-              << _bufferReceived.at( 3 )*256 + _bufferReceived.at( 4 );
+              << byteConverter::highLowCharsToInt( msg.at( 3 ), msg.at( 4 ) );
 }
 
-void eaps8000UsbPort::answerSetVoltage()
+void eaps8000UsbPort::answerSetVoltage( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer set voltage: "
-              << _bufferReceived.at( 3 )*256 + _bufferReceived.at( 4 );
+              << byteConverter::highLowCharsToInt( msg.at( 3 ), msg.at( 4 ) );
 }
 
-void eaps8000UsbPort::answerSetCurrent()
+void eaps8000UsbPort::answerSetCurrent( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer set current: "
-              << _bufferReceived.at( 3 )*256 + _bufferReceived.at( 4 );
+              << byteConverter::highLowCharsToInt( msg.at( 3 ), msg.at( 4 ) );
 }
 
-void eaps8000UsbPort::answerSetPower()
+void eaps8000UsbPort::answerSetPower( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer set power: "
-              << _bufferReceived.at( 3 )*256 + _bufferReceived.at( 4 );
+              << byteConverter::highLowCharsToInt( msg.at( 3 ), msg.at( 4 ) );
 }
 
-void eaps8000UsbPort::answerDeviceState()
+void eaps8000UsbPort::answerDeviceState( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer device state: "
-              << _bufferReceived.at( 3 ) << " " << _bufferReceived.at( 4 );
+              << byteConverter::highLowCharsToInt( msg.at( 3 ), msg.at( 4 ) );
 }
 
-void eaps8000UsbPort::answerActualValues()
+void eaps8000UsbPort::answerActualValues( const QByteArray& msg )
 {
     _inTimeValueCounter++;
-    int voltageValue = _bufferReceived.at( 3 )*256 + _bufferReceived.at( 4 );
-    int currentValue = _bufferReceived.at( 5 )*256 + _bufferReceived.at( 6 );
-    int powerValue   = _bufferReceived.at( 7 )*256 + _bufferReceived.at( 8 );
+    int voltageValue = byteConverter::highLowCharsToInt( msg.at( 3 ),
+                                                         msg.at( 4 ) );
+    int currentValue = byteConverter::highLowCharsToInt( msg.at( 5 ),
+                                                         msg.at( 6 ) );
+    int powerValue   = byteConverter::highLowCharsToInt( msg.at( 7 ),
+                                                         msg.at( 8 ) );
+
+    _lastVoltage    = voltageValue*_maxVoltage/25600.0;
+    _lastCurrent    = currentValue*_maxCurrent/25600.0;
+    _lastPower      = powerValue*_maxPower/25600.0;
+    _lastResistance = _lastVoltage/_lastCurrent;
 
     if( _emitVoltage )
     {
-        emit newVoltage( voltageValue*_maxVoltage/256.0 );
+        emit newVoltage( _lastVoltage );
     }
     if( _emitCurrent )
     {
-        emit newCurrent( currentValue*_maxCurrent/256.0 );
+        emit newCurrent( _lastCurrent );
     }
     if( _emitPower )
     {
-        emit newPower( powerValue*_maxPower/256.0 );
+        emit newPower( _lastPower );
     }
     if( _emitResistance )
     {
-        emit newResistance( voltageValue*_maxVoltage/
-                            (currentValue*_maxCurrent) );
+        emit newResistance( _lastResistance );
     }
 }
 
-void eaps8000UsbPort::answerSetValues()
+void eaps8000UsbPort::answerSetValues( const QByteArray& msg )
 {
     LOG(INFO) << "eaps 8000 usb port: answer set value: "
-              << _bufferReceived.at( 3 ) << " " << _bufferReceived.at( 4 )
-              << _bufferReceived.at( 5 ) << " " << _bufferReceived.at( 6 )
-              << _bufferReceived.at( 7 ) << " " << _bufferReceived.at( 8 );
+              << byteConverter::highLowCharsToInt( msg.at( 3 ), msg.at( 4 ) )
+              << byteConverter::highLowCharsToInt( msg.at( 5 ), msg.at( 6 ) )
+              << byteConverter::highLowCharsToInt( msg.at( 7 ), msg.at( 8 ) );
+}
+
+void eaps8000UsbPort::answerError( const QByteArray &msg )
+{
+    switch( msg.at( 3 ) )
+    {
+        case 0x01: emit portError( "RS232 error! (0x01)" ); // RS232: Parity error
+            break;
+        case 0x02: emit portError( "RS232 error! (0x02)" ); // RS232: Frame Error (Startbit or Stopbit incorrect)
+            break;
+        case 0x03: emit portError( "Protocol error! (0x03)" ); // Check sum incorrect
+            break;
+        case 0x04: emit portError( "Protocol error! (0x04)" ); // Start delimiter incorrect
+            break;
+        case 0x05: emit portError( "Protocol error! (0x05)" ); // CAN: max. nodes exceeded
+            break;
+        case 0x06: emit portError( "Protocol error! (0x06)" ); // Device node wrong / no gateway present
+            break;
+        case 0x07: emit portError( "Protocol error! (0x07)" ); // Object not defined
+            break;
+        case 0x08: emit portError( "Protocol error! (0x08)" ); // Object length incorrect
+            break;
+        case 0x09: emit portError( "Protocol error! (0x09)" ); // Read/Write permissions violated, no access
+            break;
+        case 0x0A: emit portError( "Protocol error! (0x0A)" ); // Time between two bytes too long / Number of bytes in message wrong
+            break;
+        case 0x0C: emit portError( "Protocol error! (0x0C)" ); // CAN: Split message aborted
+            break;
+        case 0x0F: emit portError( "Protocol error! (0x0F)" ); // Device is in "local" mode or analogue remote control
+            break;
+        case 0x10: emit portError( "Protocol error! (0x10)" ); // CAN driver chip: Stuffing error
+            break;
+        case 0x11: emit portError( "Protocol error! (0x11)" ); // CAN driver chip: CRC sum error
+            break;
+        case 0x12: emit portError( "Protocol error! (0x12)" ); // CAN driver chip: Form error
+            break;
+        case 0x13: emit portError( "Protocol error! (0x13)" ); // CAN: expected data length incorrect
+            break;
+        case 0x14: emit portError( "Protocol error! (0x14)" ); // CAN driver chip: Buffer full
+            break;
+        case 0x20: emit portError( "Protocol error! (0x20)" ); // Gateway: CAN Stuffing error
+            break;
+        case 0x21: emit portError( "Protocol error! (0x21)" ); // Gateway: CAN CRC check error
+            break;
+        case 0x22: emit portError( "Protocol error! (0x22)" ); // Gateway: CAN form error
+            break;
+        case 0x30: emit portError( "Protocol error! (0x30)" ); // Upper limit of object exceeded
+            break;
+        case 0x31: emit portError( "Protocol error! (0x31)" ); // Lower limit of object exceeded
+            break;
+        case 0x32: emit portError( "Protocol error! (0x32)" ); // Time definition not observed
+            break;
+        case 0x33: emit portError( "Protocol error! (0x33)" ); // Access to menu parameter only in standby
+            break;
+        case 0x36: emit portError( "Protocol error! (0x36)" ); // Access to function manager / function data denied
+            break;
+        case 0x38: emit portError( "Protocol error! (0x38)" ); // Access to object not possible
+            break;
+
+        default: emit portError( "Unknown answer error!" );
+    }
 }
