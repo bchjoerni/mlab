@@ -33,6 +33,7 @@ private:
 
     QString _idString;
     bool _emitValue;
+    QByteArray _bufferReceived;
 };
 
 #endif // MS8050PORT_H

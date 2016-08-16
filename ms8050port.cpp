@@ -52,25 +52,20 @@ QString ms8050Port::idString() const
 
 void ms8050Port::receivedMsg( QByteArray msg )
 {
-    if( msg.isNull() )
-    {
-        return;
-    }
+    _bufferReceived.append( msg );
 
-    if( msg.isEmpty() )
+    for( int i = 0; i < msg.size()-7; i++ )
     {
-        return;
-    }
-
-    char first = msg.at( 0 );
-    if( (reinterpret_cast<unsigned char&>( first ) & 0xA0) != 0xA0 )
-    {
-        emit portError( "Wrong start marker!" );
-    }
-    else
-    {
-        qApp->processEvents();
-        interpretMessage( msg );
+        char startMarker = msg.at( 0 );
+        if( (reinterpret_cast<unsigned char&>( startMarker ) & 0xA0) == 0xA0 )
+        {
+            interpretMessage( _bufferReceived.left( 8 ) );
+            _bufferReceived.clear();
+        }
+        else
+        {
+            _bufferReceived = _bufferReceived.right( _bufferReceived.size()-1 );
+        }
     }
 }
 
