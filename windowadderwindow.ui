@@ -25,7 +25,7 @@
         <x>0</x>
         <y>0</y>
         <width>392</width>
-        <height>604</height>
+        <height>641</height>
        </rect>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
@@ -70,6 +70,13 @@
          </property>
         </widget>
        </item>
+       <item row="5" column="0">
+        <widget class="QCheckBox" name="chb_flowMeter">
+         <property name="text">
+          <string>Flow Meter</string>
+         </property>
+        </widget>
+       </item>
        <item row="2" column="0">
         <widget class="QCheckBox" name="chb_eaps3000">
          <property name="text">
@@ -77,10 +84,10 @@
          </property>
         </widget>
        </item>
-       <item row="5" column="0">
-        <widget class="QCheckBox" name="chb_flowMeter">
+       <item row="6" column="0">
+        <widget class="QCheckBox" name="chb_thermocouple">
          <property name="text">
-          <string>Flow Meter</string>
+          <string>Thermocouple</string>
          </property>
         </widget>
        </item>
@@ -94,10 +101,10 @@
          </property>
         </widget>
        </item>
-       <item row="6" column="0">
-        <widget class="QCheckBox" name="chb_thermocouple">
+       <item row="9" column="0">
+        <widget class="QCheckBox" name="chb_pairSave">
          <property name="text">
-          <string>Thermocouple</string>
+          <string>pair save</string>
          </property>
         </widget>
        </item>
@@ -111,10 +118,10 @@
          </property>
         </widget>
        </item>
-       <item row="7" column="0">
-        <widget class="QCheckBox" name="chb_pairSave">
+       <item row="10" column="0">
+        <widget class="QCheckBox" name="chb_allSave">
          <property name="text">
-          <string>pair save</string>
+          <string>all save</string>
          </property>
         </widget>
        </item>
@@ -128,31 +135,7 @@
          </property>
         </widget>
        </item>
-       <item row="8" column="0">
-        <widget class="QCheckBox" name="chb_allSave">
-         <property name="text">
-          <string>all save</string>
-         </property>
-        </widget>
-       </item>
-       <item row="7" column="1">
-        <widget class="QLineEdit" name="txt_pairSave">
-         <property name="text">
-          <string>value saver (pair)</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="9" column="0">
-        <widget class="QCheckBox" name="chb_calcTemperature">
-         <property name="text">
-          <string>Temp. calculator</string>
-         </property>
-        </widget>
-       </item>
-       <item row="8" column="1">
+       <item row="10" column="1">
         <widget class="QLineEdit" name="txt_allSave">
          <property name="text">
           <string>value saver (all)</string>
@@ -162,14 +145,31 @@
          </property>
         </widget>
        </item>
-       <item row="10" column="0">
+       <item row="9" column="1">
+        <widget class="QLineEdit" name="txt_pairSave">
+         <property name="text">
+          <string>value saver (pair)</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="0">
         <widget class="QCheckBox" name="chb_simpleGraph">
          <property name="text">
           <string>simple graph</string>
          </property>
         </widget>
        </item>
-       <item row="10" column="1">
+       <item row="11" column="0">
+        <widget class="QCheckBox" name="chb_calcTemperature">
+         <property name="text">
+          <string>Temp. calculator</string>
+         </property>
+        </widget>
+       </item>
+       <item row="12" column="1">
         <widget class="QLineEdit" name="txt_simpleGraph">
          <property name="text">
           <string>simple graph</string>
@@ -179,7 +179,14 @@
          </property>
         </widget>
        </item>
-       <item row="9" column="1">
+       <item row="13" column="0">
+        <widget class="QCheckBox" name="chb_scratchpad">
+         <property name="text">
+          <string>scratchpad</string>
+         </property>
+        </widget>
+       </item>
+       <item row="11" column="1">
         <widget class="QLineEdit" name="txt_calcTemperature">
          <property name="text">
           <string>temperature calculator</string>
@@ -189,14 +196,21 @@
          </property>
         </widget>
        </item>
-       <item row="11" column="0">
-        <widget class="QCheckBox" name="chb_scratchpad">
+       <item row="14" column="0">
+        <widget class="QCheckBox" name="chb_screenshot">
          <property name="text">
-          <string>scratchpad</string>
+          <string>screenshot</string>
          </property>
         </widget>
        </item>
-       <item row="11" column="1">
+       <item row="15" column="0">
+        <widget class="QCheckBox" name="chb_tsh071">
+         <property name="text">
+          <string>TSH071</string>
+         </property>
+        </widget>
+       </item>
+       <item row="13" column="1">
         <widget class="QLineEdit" name="txt_scratchpad">
          <property name="text">
           <string>scratchpad</string>
@@ -206,38 +220,14 @@
          </property>
         </widget>
        </item>
-       <item row="12" column="0">
-        <widget class="QCheckBox" name="chb_screenshot">
-         <property name="text">
-          <string>screenshot</string>
-         </property>
-        </widget>
-       </item>
-       <item row="13" column="0">
-        <widget class="QCheckBox" name="chb_tsh071">
-         <property name="text">
-          <string>TSH071</string>
-         </property>
-        </widget>
-       </item>
-       <item row="12" column="1">
-        <widget class="QLineEdit" name="txt_screenshot">
-         <property name="text">
-          <string>screenshot</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-       <item row="14" column="0">
+       <item row="16" column="0">
         <widget class="QCheckBox" name="chb_generalPort">
          <property name="text">
           <string>general port</string>
          </property>
         </widget>
        </item>
-       <item row="14" column="1">
+       <item row="16" column="1">
         <widget class="QLineEdit" name="txt_generalPort">
          <property name="text">
           <string>general port</string>
@@ -247,7 +237,17 @@
          </property>
         </widget>
        </item>
-       <item row="13" column="1">
+       <item row="14" column="1">
+        <widget class="QLineEdit" name="txt_screenshot">
+         <property name="text">
+          <string>screenshot</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+       <item row="15" column="1">
         <widget class="QLineEdit" name="txt_tsh071">
          <property name="text">
           <string>Vacuum pump</string>
@@ -257,14 +257,14 @@
          </property>
         </widget>
        </item>
-       <item row="15" column="0">
+       <item row="17" column="0">
         <widget class="QCheckBox" name="chb_powerMeterTest">
          <property name="text">
           <string>TEST power meter</string>
          </property>
         </widget>
        </item>
-       <item row="15" column="1">
+       <item row="17" column="1">
         <widget class="QLineEdit" name="txt_test">
          <property name="text">
           <string>TEST</string>
@@ -281,6 +281,16 @@
          </property>
         </widget>
        </item>
+       <item row="4" column="1">
+        <widget class="QLineEdit" name="txt_eaps8000UsbUIChar">
+         <property name="text">
+          <string>EA-PS UI Characteristic</string>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
        <item row="3" column="1">
         <widget class="QLineEdit" name="txt_eaps8000Usb">
          <property name="text">
@@ -291,10 +301,17 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="1">
-        <widget class="QLineEdit" name="txt_eaps8000UsbUIChar">
+       <item row="7" column="0">
+        <widget class="QCheckBox" name="chb_ms8050">
          <property name="text">
-          <string>EA-PS UI Characteristic</string>
+          <string>MS 8050</string>
+         </property>
+        </widget>
+       </item>
+       <item row="7" column="1">
+        <widget class="QLineEdit" name="txt_ms8050">
+         <property name="text">
+          <string>MS 8050</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignCenter</set>

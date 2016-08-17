@@ -20,7 +20,6 @@ public:
 signals:
     void newProbeTemperature( double temperatureCelsius );
     void newAmbientTemperature( double temperatureCelsius );
-    void initSuccessful( QString idString );
 
 private slots:
     void receivedMsg( QByteArray msg );

@@ -25,6 +25,7 @@
 #include "screenshotwindow.h"
 #include "eaps8000usbwindow.h"
 #include "eaps8000usbuicharwindow.h"
+#include "ms8050window.h"
 
 
 class mdiHandler : public QObject
@@ -48,6 +49,7 @@ public:
     void addTsh071Window( const QString& title );
     void addFlowMeterWindow( const QString& title );
     void addThermocoupleWindow( const QString& title );
+    void addMs8050Window( const QString& title );
     void addScratchpadWindow( const QString& title );
     void addScreenshotWindow( const QString& title );
     QStringList getWindowNames();

@@ -37,6 +37,7 @@ public:
 signals:
     void portError( QString error );
     void dataReceived( QByteArray msg );
+    void initSuccessful( QString idString );
 
 private slots:
     void read();

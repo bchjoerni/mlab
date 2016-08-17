@@ -7,6 +7,10 @@ ms8050Window::ms8050Window( QWidget *parent ) :
 {
     _ui->setupUi( this );
 
+    _ui->lbl_hold->setVisible( false );
+    _ui->lbl_minMax->setVisible( false );
+    _ui->lbl_relative->setVisible( false );
+
     _unitStr[0] = "V AC";
     _unitStr[1] = "dBm";
     _unitStr[2] = "V DC";

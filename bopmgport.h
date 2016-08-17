@@ -37,7 +37,6 @@ signals:
     void newCurrent( double current );
     void newPower( double power );
     void newResistance( double resistance );
-    void initSuccessful( QString idString );
 
 private slots:
     void receivedMsg( QByteArray msg );

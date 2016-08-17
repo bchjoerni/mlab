@@ -28,7 +28,6 @@ public:
     void setId( int id );
 
 signals:
-    void initSuccessful( QString idString );
     void newRpm( int rpm );
     void newPressure( double pressure );
 

@@ -20,7 +20,7 @@ void ms8050Port::setSerialValues()
 
 void ms8050Port::setLabPortVariables()
 {
-    _initTimeoutMs      = 1500;
+    _initTimeoutMs      = 700;
     _initValueCounter   = 0;
     _numInitValues      = 1;
     _minBytesRead       = 8;
@@ -32,7 +32,7 @@ void ms8050Port::setLabPortVariables()
 
 void ms8050Port::getInitValues()
 {
-    // wait for data to be sent
+    emit initSuccessful( _idString ); // if no value is received within init time --> error
 }
 
 void ms8050Port::updateValues()
@@ -56,8 +56,8 @@ void ms8050Port::receivedMsg( QByteArray msg )
 
     for( int i = 0; i < msg.size()-7; i++ )
     {
-        char startMarker = msg.at( 0 );
-        if( (reinterpret_cast<unsigned char&>( startMarker ) & 0xA0) == 0xA0 )
+        char startMarker = _bufferReceived.at( 0 );
+        if( (reinterpret_cast<unsigned char&>( startMarker ) & 0xF0) == 0xA0 )
         {
             interpretMessage( _bufferReceived.left( 8 ) );
             _bufferReceived.clear();
@@ -72,9 +72,8 @@ void ms8050Port::receivedMsg( QByteArray msg )
 void ms8050Port::interpretMessage( const QByteArray &msg )
 {
     double value;
-    value = (msg.at( 3 ) - 0x30)*10000 + (msg.at( 4 ) - 0x30)*1000
-            + (msg.at( 5 ) - 0x30)*100 + (msg.at( 6 ) - 0x30)*10
-            + (msg.at( 7 ) - 0x30);
+    value = msg.at( 3 )*10000 + msg.at( 4 )*1000 + msg.at( 5 )*100
+            + msg.at( 6 )*10 + msg.at( 7 );
 
     emit newMinMax( msg.at( 2 ) & 3 );
     emit newRelative( (msg.at( 2 ) & 4) == 4 );
@@ -135,6 +134,7 @@ void ms8050Port::interpretMessage( const QByteArray &msg )
         default: emit portError( "Protocol error!" );
     }
 
+    _initValueCounter++;
     emit newValue( value, unit );
 }
 

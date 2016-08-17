@@ -174,6 +174,13 @@ void mdiHandler::addThermocoupleWindow( const QString& title )
     addWindow( window, window->windowFlags(), title );
 }
 
+void mdiHandler::addMs8050Window( const QString& title )
+{
+    LOG(INFO) << "add MS8050Window";
+    ms8050Window* window = new ms8050Window;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addScratchpadWindow( const QString &title )
 {
     LOG(INFO) << "add scratchpadWindow";

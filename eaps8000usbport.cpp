@@ -1,12 +1,13 @@
 #include "eaps8000usbport.h"
 
 eaps8000UsbPort::eaps8000UsbPort( QObject *parent ) : labPort( parent ),
-    _inMsg( false ), _id( 0 ), _maxVoltage( 0.0 ), _maxCurrent( 0.0 ),
+    _inMsg( false ), _id( 0 ), _setPowerDirectly( false ),
+    _maxVoltage( 0.0 ), _maxCurrent( 0.0 ),
     _lastVoltage( 0.0 ), _lastCurrent( 0.0 ), _lastPower( 0.0 ),
     _lastResistance( 0.0 ),
     _setValueType( setValueType::setTypeNone ), _autoAdjust( false ),
     _emitVoltage( false ), _emitCurrent( false ), _emitPower( false ),
-    _emitResistance( false ), _setPowerDirectly( false )
+    _emitResistance( false )
 {
     setSerialValues();
     setLabPortVariables();

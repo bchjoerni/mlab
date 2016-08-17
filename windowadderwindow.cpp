@@ -80,6 +80,10 @@ void windowAdderWindow::ok()
     {
         _mdi->addThermocoupleWindow( _ui->txt_thermocouple->text() );
     }
+    if( _ui->chb_ms8050->isChecked() )
+    {
+        _mdi->addMs8050Window( _ui->txt_ms8050->text() );
+    }
     if( _ui->chb_scratchpad->isChecked() )
     {
         _mdi->addScratchpadWindow( _ui->txt_scratchpad->text() );
@@ -156,6 +160,10 @@ bool windowAdderWindow::checkWindowNames()
     if( _ui->chb_thermocouple->isChecked() )
     {
         names.push_back( _ui->txt_thermocouple->text() );
+    }
+    if( _ui->chb_ms8050->isChecked() )
+    {
+        names.push_back( _ui->txt_ms8050->text() );
     }
     if( _ui->chb_scratchpad->isChecked() )
     {

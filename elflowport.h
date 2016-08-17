@@ -30,7 +30,6 @@ signals:
     void newFlow( double flow );
     void newPressure( double pressure );
     void newTemperature( double temperature );
-    void initSuccessful( QString idString );
 
 private slots:
     void receivedMsg( QByteArray msg );
