@@ -28,6 +28,7 @@ void scratchpadWindow::selectFile()
         _ui->lbl_fileName->setText( _fileName );
         _ui->btn_save->setEnabled( true );
         _ui->lbl_status->setText( "File not saved yet." );
+        _ui->lbl_status->setStyleSheet( STYLE_NONE );
         _ui->txt_notes->setText( "" );
     }
     else

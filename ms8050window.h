@@ -47,6 +47,8 @@ private:
     Ui::ms8050Window *_ui;
     ms8050Port _port;
     QString _unitStr[21];
+    double _lastValue;
+    char _lastUnit;
 };
 
 #endif // MS8050WINDOW_H

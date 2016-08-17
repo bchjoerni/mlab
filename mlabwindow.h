@@ -33,6 +33,7 @@ protected:
     const QString DISCONNECT_PORT    = "disconnect";
     const QString CONNECTED          = "connected";
     const QString NOT_CONNECTED      = "not connected";
+    const QString STYLE_NONE         = "";
     const QString STYLE_OK           = "color: green;";
     const QString STYLE_ERROR        = "color: red;";
 

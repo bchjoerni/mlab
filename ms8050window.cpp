@@ -12,26 +12,25 @@ ms8050Window::ms8050Window( QWidget *parent ) :
     _ui->lbl_relative->setVisible( false );
 
     _unitStr[0] = "V AC";
-    _unitStr[1] = "dBm";
-    _unitStr[2] = "V DC";
-    _unitStr[3] = "V AC+DC";
-    _unitStr[4] = "mV DC";
-    _unitStr[5] = "mV AC";
-    _unitStr[6] = "V AC+DC";
-    _unitStr[7] = "Hz";
-    _unitStr[8] = "Duty";
-    _unitStr[9] = "Ohm";
-    _unitStr[10] = "Continuity";
-    _unitStr[11] = "Capacity";
-    _unitStr[12] = "uA DC";
-    _unitStr[13] = "uA AC";
-    _unitStr[14] = "uA AC+DC";
-    _unitStr[15] = "mA DC";
-    _unitStr[16] = "mA AC";
-    _unitStr[17] = "mA AC+DC";
-    _unitStr[18] = "A DC";
-    _unitStr[19] = "A AC";
-    _unitStr[20] = "A DC";
+    _unitStr[1] = "V DC";
+    _unitStr[2] = "V AC+DC";
+    _unitStr[3] = "mV DC";
+    _unitStr[4] = "mV AC";
+    _unitStr[5] = "V AC+DC";
+    _unitStr[6] = "Hz";
+    _unitStr[7] = "V Diode";
+    _unitStr[8] = "Ohm";
+    _unitStr[9] = "Continuity";
+    _unitStr[10] = "Capacity";
+    _unitStr[11] = "uA DC";
+    _unitStr[12] = "uA AC";
+    _unitStr[13] = "uA AC+DC";
+    _unitStr[14] = "mA DC";
+    _unitStr[15] = "mA AC";
+    _unitStr[16] = "mA AC+DC";
+    _unitStr[17] = "A DC";
+    _unitStr[18] = "A AC";
+    _unitStr[19] = "A DC";
 
     connectPortFunctions();
     connectUiElements();
@@ -77,7 +76,7 @@ void ms8050Window::refreshPortList()
         {
             _ui->cob_ports->addItem( info.portName() );
 
-            if( info.serialNumber().startsWith( "N160" ) )
+            if( info.manufacturer().contains( "Standardanschluss" ) )
             {
                 _ui->cob_ports->setCurrentText( info.portName() );
             }
@@ -145,6 +144,8 @@ void ms8050Window::doUpdate()
     if( _port.isRunning() )
     {
         _port.updateValues();
+        emit newValue( this->windowTitle() + ": " + _unitStr[_lastUnit],
+                                            _lastValue );
     }
 }
 
@@ -158,8 +159,8 @@ void ms8050Window::valueUpdate( double value, char unit )
     _ui->txt_value->setText( QString::number( value )
                                         + " " + _unitStr[index] );
 
-    emit newValue( this->windowTitle() + ": " + _unitStr[index],
-                   value );
+    _lastValue = value;
+    _lastUnit = unit;
 }
 
 void ms8050Window::holdUpdate( bool hold )

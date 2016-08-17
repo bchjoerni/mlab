@@ -89,46 +89,44 @@ void ms8050Port::interpretMessage( const QByteArray &msg )
     switch( unit )
     {
         case 0: value *= std::pow( 10, power-4 ); // V AC
+            break;        
+        case 1: value *= std::pow( 10, power-4 ); // V DC
             break;
-        case 1: value *= std::pow( 10, power-2 ); // dBm
+        case 2: value *= std::pow( 10, power-4 ); // V AC+DC
             break;
-        case 2: value *= std::pow( 10, power-4 ); // V DC
+        case 3: value *= std::pow( 10, power-3 ); // mV DC
             break;
-        case 3: value *= std::pow( 10, power-4 ); // V AC+DC
+        case 4: value *= std::pow( 10, power-3 ); // mV AC
             break;
-        case 4: value *= std::pow( 10, power-4 ); // mV DC
+        case 5: value *= std::pow( 10, power-3 ); // V AC+DC
             break;
-        case 5: value *= std::pow( 10, power-4 ); // mV AC
+        case 6: value *= std::pow( 10, power-3 ); // Hz
             break;
-        case 6: value *= std::pow( 10, power-7 ); // V AC+DC
+        case 7: value *= std::pow( 10, power-4 ); // V Diode
             break;
-        case 7: value *= std::pow( 10, power-3 ); // Hz
+        case 8: value *= std::pow( 10, power-2 ); // Ohm
             break;
-        case 8: value *= std::pow( 10, power-2 ); // Duty
+        case 9: value *= std::pow( 10, power-2 ); // continuity
             break;
-        case 9: value *= std::pow( 10, power-2 ); // Ohm
+        case 10: value *= std::pow( 10, power-8 ); // Capacitance
             break;
-        case 10: value *= std::pow( 10, power-2 ); // continuity
+        case 11: value *= std::pow( 10, power-2 ); // uA DC
             break;
-        case 11: value *= std::pow( 10, power-8 ); // Capacitance
+        case 12: value *= std::pow( 10, power-2 ); // uA AC
             break;
-        case 12: value *= std::pow( 10, power-2 ); // uA DC
+        case 13: value *= std::pow( 10, power-2 ); // uA AC+DC
             break;
-        case 13: value *= std::pow( 10, power-2 ); // uA AC
+        case 14: value *= std::pow( 10, power-3 ); // mA DC
             break;
-        case 14: value *= std::pow( 10, power-2 ); // uA AC+DC
+        case 15: value *= std::pow( 10, power-3 ); // mA AC
             break;
-        case 15: value *= std::pow( 10, power-3 ); // mA DC
+        case 16: value *= std::pow( 10, power-3 ); // mA AC+DC
             break;
-        case 16: value *= std::pow( 10, power-3 ); // mA AC
+        case 17: value *= std::pow( 10, power-4 ); // A DC
             break;
-        case 17: value *= std::pow( 10, power-4 ); // mA AC+DC
+        case 18: value *= std::pow( 10, power-4 ); // A AC
             break;
-        case 18: value *= std::pow( 10, power-4 ); // A DC
-            break;
-        case 19: value *= std::pow( 10, power-4 ); // A AC
-            break;
-        case 20: value *= std::pow( 10, power-4 ); // A AC+DC
+        case 19: value *= std::pow( 10, power-4 ); // A AC+DC
             break;
 
         default: emit portError( "Protocol error!" );
