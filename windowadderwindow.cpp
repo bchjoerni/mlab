@@ -94,7 +94,7 @@ void windowAdderWindow::ok()
     }
     if( _ui->chb_tpg26x->isChecked() )
     {
-        _mdi->addTpg26xWindow( _ui->txt_screenshot->text() );
+        _mdi->addTpg26xWindow( _ui->txt_tpg26x->text() );
     }
 
     accept();

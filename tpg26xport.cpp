@@ -109,6 +109,7 @@ void tpg26xPort::nextMsg()
         QString msg = _msgToSend[0] + "\r\n";
         _expectedAnswer = _msgToSend[0];
         sendMsg( msg.toStdString().c_str(), msg.size(), false );
+        _msgToSend.erase( _msgToSend.begin() );
     }
     else
     {
@@ -143,7 +144,8 @@ void tpg26xPort::receivedMsg( QByteArray msg )
 
     if( msg.startsWith( 0x06 ) )
     {
-        sendMsg( "0x05", 1, false );
+        char c = 5;
+        sendMsg( &c, 1, false );
         return;
     }
     else if( msg.startsWith( 0x15 ) )
@@ -166,15 +168,15 @@ void tpg26xPort::receivedMsg( QByteArray msg )
     }
     else if( _expectedAnswer == CMD_UNIT )
     {
-        if( msg.at( 0 ) == 0x00 )
+        if( msg.at( 0 ) == '0' )
         {
             _unit = "mbar";
         }
-        else if( msg.at( 0 ) == 0x01 )
+        else if( msg.at( 0 ) == '1' )
         {
             _unit = "Torr";
         }
-        else if( msg.at( 0 ) == 0x02 )
+        else if( msg.at( 0 ) == '2' )
         {
             _unit = "Pa";
         }
