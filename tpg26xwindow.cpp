@@ -142,7 +142,7 @@ void tpg26xWindow::pressureGauge1Update( double mbarPressure )
     }
     else
     {
-        int errorNum = -static_cast<int>( mbarPressure );
+        int errorNum = -static_cast<int>( mbarPressure ) - 0x30;
         if( errorNum <= 0 || errorNum >= 8 )
         {
             errorNum = 7;
@@ -173,7 +173,7 @@ void tpg26xWindow::pressureGauge2Update( double mbarPressure )
     }
     else
     {
-        int errorNum = -static_cast<int>( mbarPressure );
+        int errorNum = -static_cast<int>( mbarPressure ) - 0x30;
         if( errorNum <= 0 || errorNum >= 8 )
         {
             errorNum = 7;

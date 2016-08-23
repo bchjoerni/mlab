@@ -25,7 +25,7 @@ void tpg26xPort::setLabPortVariables()
 {
     _initTimeoutMs      = 1500;
     _initValueCounter   = 0;
-    _numInitValues      = 1;
+    _numInitValues      = 2;
     _minBytesRead       = -10;
     _writingPauseMs     = 200;
     _bytesError         = 40;
@@ -93,12 +93,13 @@ void tpg26xPort::sendTpg26xCmd( QString cmd )
 
     if( _readyToSend )
     {
+        _readyToSend = false;
         nextMsg();
     }
     else
     {
         _checkForAnswerTimer.start( (_expectedAnswer.size() + 1)
-                                    *_writingPauseMs );
+                                    *_writingPauseMs*2 );
     }
 }
 
@@ -182,7 +183,7 @@ void tpg26xPort::receivedMsg( QByteArray msg )
         }
         else
         {
-            _unit = msg;
+            _unit = "unit " + msg;
         }
         _initValueCounter++;
         emit newPressureUnit( _unit );
@@ -195,17 +196,23 @@ void tpg26xPort::receivedMsg( QByteArray msg )
         }
         else
         {
+            bool c1 = false;
+            bool c2 = false;
             bool conversion1Successful = false;
             bool conversion2Successful = false;
 
-            double pressureGauge1 = msg.mid( 2, 11 ).toDouble(
-                        &conversion1Successful );
-            double pressureGauge2 = msg.mid( 16, 11 ).toDouble(
-                        &conversion2Successful );
+            double pressureGauge1 = msg.mid( 2, 7 ).trimmed().toDouble( &c1 )
+                    *std::pow( 10.0, msg.mid( 10, 3 ).replace( "+", "" )
+                               .toDouble( &c2) );
+            conversion1Successful = c1 && c2;
+            double pressureGauge2 = msg.mid( 16, 7 ).trimmed().toDouble( &c1 )
+                    *std::pow( 10.0, msg.mid( 24, 3 ).replace( "+", "" )
+                               .toDouble( &c2 ) );
+            conversion2Successful = c1 && c2;
 
             switch(  msg.at( 0 ) )
             {
-                case 0: if( _emitGauge1 )
+                case 0x30: if( _emitGauge1 )
                 {
                     if( conversion1Successful )
                     {
@@ -227,7 +234,7 @@ void tpg26xPort::receivedMsg( QByteArray msg )
 
             switch(  msg.at( 14 ) )
             {
-                case 0: if( _emitGauge2 )
+                case 0x30: if( _emitGauge2 )
                 {
                     if( conversion2Successful )
                     {
