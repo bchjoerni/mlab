@@ -23,7 +23,7 @@ void ms8050Port::setLabPortVariables()
     _initTimeoutMs      = 700;
     _initValueCounter   = 0;
     _numInitValues      = 1;
-    _minBytesRead       = 8;
+    _minBytesRead       = 14;
     _writingPauseMs     = 150;
     _bytesError         = 20;
     _inTimeValueCounter = 0;
@@ -54,12 +54,12 @@ void ms8050Port::receivedMsg( QByteArray msg )
 {
     _bufferReceived.append( msg );
 
-    for( int i = 0; i < msg.size()-7; i++ )
+    for( int i = 0; i < msg.size()-13; i++ )
     {
         char startMarker = _bufferReceived.at( 0 );
         if( (reinterpret_cast<unsigned char&>( startMarker ) & 0xF0) == 0xA0 )
         {
-            interpretMessage( _bufferReceived.left( 8 ) );
+            interpretMessage( _bufferReceived.left( 14 ) );
             _bufferReceived.clear();
         }
         else
@@ -72,8 +72,8 @@ void ms8050Port::receivedMsg( QByteArray msg )
 void ms8050Port::interpretMessage( const QByteArray &msg )
 {
     double value;
-    value = msg.at( 3 )*10000 + msg.at( 4 )*1000 + msg.at( 5 )*100
-            + msg.at( 6 )*10 + msg.at( 7 );
+    value = msg.at( 4 )*10000 + msg.at( 5 )*1000 + msg.at( 6 )*100
+            + msg.at( 7 )*10 + msg.at( 8 );
 
     emit newMinMax( msg.at( 2 ) & 3 );
     emit newRelative( (msg.at( 2 ) & 4) == 4 );
