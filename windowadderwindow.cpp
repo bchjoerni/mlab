@@ -92,6 +92,10 @@ void windowAdderWindow::ok()
     {
         _mdi->addScreenshotWindow( _ui->txt_screenshot->text() );
     }
+    if( _ui->chb_tpg26x->isChecked() )
+    {
+        _mdi->addTpg26xWindow( _ui->txt_screenshot->text() );
+    }
 
     accept();
 }
@@ -172,6 +176,10 @@ bool windowAdderWindow::checkWindowNames()
     if( _ui->chb_screenshot->isChecked() )
     {
         names.push_back( _ui->txt_screenshot->text() );
+    }
+    if( _ui->chb_tpg26x->isChecked() )
+    {
+        names.push_back( _ui->txt_tpg26x->text() );
     }
 
     return namesValid( names );

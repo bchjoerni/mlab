@@ -26,6 +26,7 @@
 #include "eaps8000usbwindow.h"
 #include "eaps8000usbuicharwindow.h"
 #include "ms8050window.h"
+#include "tpg26xwindow.h"
 
 
 class mdiHandler : public QObject
@@ -52,6 +53,7 @@ public:
     void addMs8050Window( const QString& title );
     void addScratchpadWindow( const QString& title );
     void addScreenshotWindow( const QString& title );
+    void addTpg26xWindow( const QString& title );
     QStringList getWindowNames();
     void addUICharWindowsNew();
     void addUICharWindowsOld();

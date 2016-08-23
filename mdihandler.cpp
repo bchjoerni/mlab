@@ -195,6 +195,13 @@ void mdiHandler::addScreenshotWindow( const QString &title )
     addWindow( window, window->windowFlags(), title );
 }
 
+void mdiHandler::addTpg26xWindow( const QString &title )
+{
+    LOG(INFO) << "add tpg26xWindow";
+    tpg26xWindow* window = new tpg26xWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
                             const QString& title )
 {
