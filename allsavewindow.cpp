@@ -55,10 +55,12 @@ void allSaveWindow::doUpdate()
             return;
         }
 
+        _fileStream << "{" << std::endl;
         for( std::string s : _data )
         {
             _fileStream << s << std::endl;
         }
+        _fileStream << "}" << std::endl;
         _fileStream.close();
 
         _savedCounter++;

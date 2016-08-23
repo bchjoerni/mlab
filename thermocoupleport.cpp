@@ -239,7 +239,15 @@ void thermocouplePort::receivedMsg( QByteArray msg )
         {
             if( _emitProbeTemperature )
             {
-                emit newProbeTemperature( probeTemperatureCelsius );
+                if( probeTemperatureCelsius > MAX_TEMPERATURE
+                        || probeTemperatureCelsius < -MAX_TEMPERATURE )
+                {
+                    emit portError( "Out of range!" );
+                }
+                else
+                {
+                    emit newProbeTemperature( probeTemperatureCelsius );
+                }
             }
         }
         else
@@ -259,15 +267,33 @@ void thermocouplePort::receivedMsg( QByteArray msg )
 
         if( conversion1Successful && conversion2Successful )
         {
+            int tProbeCelsius = fahrenheitToCelsius(
+                        probeTemperatureFahrenheit );
+            int tAmbientCelsius = fahrenheitToCelsius(
+                        ambientTemperatureFahrenheit );
             if( _emitProbeTemperature )
             {
-                emit newProbeTemperature(
-                        fahrenheitToCelsius( probeTemperatureFahrenheit ) );
+                if( tProbeCelsius > MAX_TEMPERATURE
+                        || tProbeCelsius < -MAX_TEMPERATURE )
+                {
+                    emit portError( "Out of range!" );
+                }
+                else
+                {
+                    emit newProbeTemperature( tProbeCelsius );
+                }
             }
             if( _emitAmbientTemperature )
             {
-                emit newAmbientTemperature(
-                        fahrenheitToCelsius( ambientTemperatureFahrenheit ) );
+                if( tAmbientCelsius > MAX_TEMPERATURE
+                        || tAmbientCelsius < -MAX_TEMPERATURE )
+                {
+                    emit portError( "Out of range!" );
+                }
+                else
+                {
+                    emit newAmbientTemperature( tAmbientCelsius );
+                }
             }
         }
         else

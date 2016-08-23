@@ -555,7 +555,7 @@ void eaps8000UsbWindow::portError( QString error )
 
 void eaps8000UsbWindow::resetInfo()
 {
-    _port.clearPort();
+    _port.clearPortErrors();
 
     if( _port.isRunning() )
     {

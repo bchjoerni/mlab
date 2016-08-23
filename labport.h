@@ -24,7 +24,7 @@ public:
     bool isOpen();
     bool isRunning();
     QString getPortName();
-    void clearPort();
+    void clearPortErrors();
     virtual void updateValues();
 
     // settings for using enabling using raw labport!:

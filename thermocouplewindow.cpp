@@ -157,7 +157,7 @@ void thermocoupleWindow::portError( QString error )
 
 void thermocoupleWindow::resetInfo()
 {
-    _port.clearPort();
+    _port.clearPortErrors();
 
     if( _port.isRunning() )
     {

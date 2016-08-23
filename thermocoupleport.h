@@ -48,7 +48,8 @@ private:
     bool _idStringSet;
     bool _probeTemperatureOnly;
 
-    const int TRIES_SEND_MSG = 3;
+    const int TRIES_SEND_MSG  = 3;
+    const int MAX_TEMPERATURE = 1000;
 
     const QString CMD_ID                = "ENQ";
     const QString CMD_BOTH_TEMPERATURES = "PA";

@@ -58,6 +58,7 @@ bool labPort::openPort( const QString& portName )
     _port.clearError();
     _closing = false;
     _port.setPortName( portName );
+    _msgToSend.clear();
 
     if( !_port.open( QSerialPort::ReadWrite ) )
     {
@@ -90,17 +91,18 @@ QString labPort::getPortName()
     return _port.portName();
 }
 
-void labPort::clearPort()
+void labPort::clearPortErrors()
 {
-    if( _port.isOpen() )
-    {
-        _port.clear();
-    }
     _port.clearError();
 }
 
 void labPort::sendMsg( const char* msg, int numChars, bool inTime )
 {
+    if( _closing )
+    {
+        return;
+    }
+
     QByteArray bytes( msg, numChars );
     _msgToSend.push_back( bytes );
 
@@ -156,16 +158,14 @@ void labPort::closePort()
 {
     _closing = true;
     _sendTimer.stop();
-    qApp->processEvents();
-
+    _msgToSend.clear();
     _closeTimer.singleShot( _writingPauseMs*5/4, this, SLOT( finishPortClose() ) ); // interval > than writing pause
 }
 
 void labPort::finishPortClose()
 {
-    _port.clear();
-    _port.clearError();
     _port.close();
+    _port.clearError();
 }
 
 void labPort::initTimeout()

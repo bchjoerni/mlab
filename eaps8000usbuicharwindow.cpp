@@ -484,7 +484,7 @@ void eaps8000UsbUICharWindow::portError( QString error )
 
 void eaps8000UsbUICharWindow::resetInfo()
 {
-    _port.clearPort();
+    _port.clearPortErrors();
 
     if( _port.isRunning() )
     {

@@ -391,7 +391,7 @@ void generalPortWindow::portError( QString error )
 
 void generalPortWindow::resetInfo()
 {
-    _port.clearPort();
+    _port.clearPortErrors();
 
     if( _port.isRunning() )
     {

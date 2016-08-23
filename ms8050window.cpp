@@ -224,7 +224,7 @@ void ms8050Window::portError( QString error )
 
 void ms8050Window::resetInfo()
 {
-    _port.clearPort();
+    _port.clearPortErrors();
 
     if( _port.isRunning() )
     {

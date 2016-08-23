@@ -259,7 +259,7 @@ void tsh071Window::portError( QString error )
 
 void tsh071Window::resetInfo()
 {
-    _port.clearPort();
+    _port.clearPortErrors();
 
     if( _port.isRunning() )
     {

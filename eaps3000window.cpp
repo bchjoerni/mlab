@@ -532,7 +532,7 @@ void eaps3000Window::portError( QString error )
 
 void eaps3000Window::resetInfo()
 {
-    _port.clearPort();
+    _port.clearPortErrors();
 
     if( _port.isRunning() )
     {

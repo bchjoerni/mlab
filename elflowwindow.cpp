@@ -365,7 +365,7 @@ void elFlowWindow::portError( QString error )
 
 void elFlowWindow::resetInfo()
 {
-    _port.clearPort();
+    _port.clearPortErrors();
 
     if( _port.isRunning() )
     {

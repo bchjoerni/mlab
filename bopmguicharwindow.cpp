@@ -461,7 +461,7 @@ void bopmgUICharWindow::portError( QString error )
 
 void bopmgUICharWindow::resetInfo()
 {
-    _port.clearPort();
+    _port.clearPortErrors();
 
     if( _port.isRunning() )
     {
