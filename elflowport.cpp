@@ -27,7 +27,7 @@ void elFlowPort::setLabPortVariables()
     _initValueCounter   = 0;
     _numInitValues      = 1;
     _minBytesRead       = 1;
-    _writingPauseMs     = 100;
+    _writingPauseMs     = 200;
     _bytesError         = 50;
     _inTimeValueCounter = 0;
     _numInTimeValues    = 0;

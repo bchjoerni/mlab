@@ -158,12 +158,12 @@ void labPort::closePort()
 {
     _closing = true;
     _sendTimer.stop();
-    _msgToSend.clear();
     _closeTimer.singleShot( _writingPauseMs*5/4, this, SLOT( finishPortClose() ) ); // interval > than writing pause
 }
 
 void labPort::finishPortClose()
 {
+    _msgToSend.clear();
     _port.close();
     _port.clearError();
 }

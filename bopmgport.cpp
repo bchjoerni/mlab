@@ -33,7 +33,7 @@ void bopmgPort::setLabPortVariables()
     _initValueCounter   = 0;
     _numInitValues      = 1;
     _minBytesRead       = -10;
-    _writingPauseMs     = 150;
+    _writingPauseMs     = 200;
     _bytesError         = 20;
     _inTimeValueCounter = 0;
     _numInTimeValues    = 0;

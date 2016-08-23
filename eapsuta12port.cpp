@@ -32,7 +32,7 @@ void eapsUta12Port::setLabPortVariables()
     _initValueCounter   = 0;
     _numInitValues      = 3;
     _minBytesRead       = MESSAGE_LENGTH;
-    _writingPauseMs     = 100;
+    _writingPauseMs     = 200;
     _bytesError         = 75;
     _inTimeValueCounter = 0;
     _numInTimeValues    = 0;

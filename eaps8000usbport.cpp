@@ -30,7 +30,7 @@ void eaps8000UsbPort::setLabPortVariables()
     _initValueCounter   = 0;
     _numInitValues      = 4;
     _minBytesRead       = 0;
-    _writingPauseMs     = 150;
+    _writingPauseMs     = 200;
     _bytesError         = 75;
     _inTimeValueCounter = 0;
     _numInTimeValues    = 0;

@@ -39,7 +39,7 @@ int simpleGraphWidget::getXPosition( double value, double min, double max )
 {
     if( min == max )
     {
-        return LEFT_BORDER + (this->height() - LEFT_BORDER - RIGHT_BORDER)/2;
+        return LEFT_BORDER + (this->width() - LEFT_BORDER - RIGHT_BORDER)/2;
     }
 
     return static_cast<int>( LEFT_BORDER + 1 + (value - min)/

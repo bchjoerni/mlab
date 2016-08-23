@@ -44,7 +44,9 @@ SOURCES += main.cpp\
     eaps8000usbwindow.cpp \
     eaps8000usbuicharwindow.cpp \
     ms8050window.cpp \
-    ms8050port.cpp
+    ms8050port.cpp \
+    tpg26xport.cpp \
+    tpg26xwindow.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -78,7 +80,9 @@ HEADERS  += mainwindow.h \
     eaps8000usbwindow.h \
     eaps8000usbuicharwindow.h \
     ms8050window.h \
-    ms8050port.h
+    ms8050port.h \
+    tpg26xport.h \
+    tpg26xwindow.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -98,7 +102,8 @@ FORMS    += mainwindow.ui \
     eaps3000window.ui \
     eaps8000usbwindow.ui \
     eaps8000usbuicharwindow.ui \
-    ms8050window.ui
+    ms8050window.ui \
+    tpg26xwindow.ui
 
 CONFIG   += c++11
 
