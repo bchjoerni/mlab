@@ -202,6 +202,13 @@ void mdiHandler::addTpg26xWindow( const QString &title )
     addWindow( window, window->windowFlags(), title );
 }
 
+void mdiHandler::addSignalTimer( const QString &title )
+{
+    LOG(INFO) << "add signalTimerWindow";
+    signalTimerWindow* window = new signalTimerWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
                             const QString& title )
 {

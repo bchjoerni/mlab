@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     ms8050window.cpp \
     ms8050port.cpp \
     tpg26xport.cpp \
-    tpg26xwindow.cpp
+    tpg26xwindow.cpp \
+    signaltimerwindow.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -82,7 +83,8 @@ HEADERS  += mainwindow.h \
     ms8050window.h \
     ms8050port.h \
     tpg26xport.h \
-    tpg26xwindow.h
+    tpg26xwindow.h \
+    signaltimerwindow.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -103,7 +105,8 @@ FORMS    += mainwindow.ui \
     eaps8000usbwindow.ui \
     eaps8000usbuicharwindow.ui \
     ms8050window.ui \
-    tpg26xwindow.ui
+    tpg26xwindow.ui \
+    signaltimerwindow.ui
 
 CONFIG   += c++11
 

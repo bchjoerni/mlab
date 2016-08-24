@@ -130,6 +130,14 @@ void eaps8000UsbWindow::mLabSignal( char signal )
         _ui->lbl_info->setStyleSheet( STYLE_ERROR );
         emit changeWindowState( this->windowTitle(), false );
     }
+    else if( signal == 16 && _port.isOpen() )
+    {
+        if( _ui->dsp_setValue->value() >= 10.0 )
+        {
+            _ui->dsp_setValue->setValue( _ui->dsp_setValue->value()-10.0 );
+            setValue();
+        }
+    }
 }
 
 void eaps8000UsbWindow::emergencyStop()
