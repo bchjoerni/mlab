@@ -21,7 +21,7 @@ allSaveWindow::~allSaveWindow()
     delete _ui;
 }
 
-void allSaveWindow::mLabSignal( char signal )
+void allSaveWindow::mLabSignal( char signal, const QString& cmd )
 {
     if( signal == SHUTDOWN_SIGNAL
             || (signal == STOP_SIGNAL &&

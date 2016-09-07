@@ -16,13 +16,16 @@ public:
     virtual void doUpdate() = 0;
     virtual bool isReceiver() const = 0;
     virtual void putValue( const QString& id, double value );
-    virtual void mLabSignal( char signal )
+    virtual void mLabSignal( char signal, const QString& cmd )
     {
+        Q_UNUSED( signal )
+        Q_UNUSED( cmd )
     }
 
 protected:
     const char SHUTDOWN_SIGNAL = 0; // is hard coded in mdi handler !!!
     const char STOP_SIGNAL     = 1;
+    const QString SIGNALCMD_VOID = "";
 
     const QString EMERGENCY_STOP     = "Emergency stop!";
     const QString STOP_RECEIVED      = "stop signal";
@@ -42,7 +45,7 @@ protected:
 signals:
     void newValue( QString id, double value );
     void newString( QString id, QString string );
-    void newSignal( char signal );
+    void newSignal( char signal, QString cmd );
     void closing();
     void changeWindowState( QString id, bool okay );
 };

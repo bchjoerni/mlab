@@ -23,6 +23,7 @@
 #include "thermocouplewindow.h"
 #include "scratchpadwindow.h"
 #include "screenshotwindow.h"
+#include "screenuploaderwindow.h"
 #include "eaps8000usbwindow.h"
 #include "eaps8000usbuicharwindow.h"
 #include "ms8050window.h"
@@ -54,6 +55,7 @@ public:
     void addMs8050Window( const QString& title );
     void addScratchpadWindow( const QString& title );
     void addScreenshotWindow( const QString& title );
+    void addScreenUploaderWindow( const QString& title );
     void addTpg26xWindow( const QString& title );
     void addSignalTimer( const QString& title );
     QStringList getWindowNames();
@@ -63,7 +65,7 @@ public:
 public slots:
     void windowClosed();
     void putValue( const QString& id, double value );
-    void mLabSignal( char signal );
+    void mLabSignal( char signal, const QString& cmd );
     void changeWindowState( const QString& id, bool okay );
 
 signals:

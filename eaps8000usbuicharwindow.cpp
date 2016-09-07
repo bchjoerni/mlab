@@ -125,7 +125,7 @@ void eaps8000UsbUICharWindow::emergencyStop()
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void eaps8000UsbUICharWindow::mLabSignal( char signal )
+void eaps8000UsbUICharWindow::mLabSignal( char signal, const QString& cmd )
 {
     if( signal == SHUTDOWN_SIGNAL )
     {
@@ -210,7 +210,7 @@ void eaps8000UsbUICharWindow::setValues()
 
         if( _ui->chb_emitStopSignal->isChecked() )
         {
-            emit newSignal( STOP_SIGNAL );
+            emit newSignal( STOP_SIGNAL, SIGNALCMD_VOID );
         }
         return;
     }

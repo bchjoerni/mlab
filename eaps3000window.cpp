@@ -106,7 +106,7 @@ void eaps3000Window::refreshPortList()
     }
 }
 
-void eaps3000Window::mLabSignal( char signal )
+void eaps3000Window::mLabSignal( char signal, const QString& cmd )
 {
     if( signal == SHUTDOWN_SIGNAL )
     {

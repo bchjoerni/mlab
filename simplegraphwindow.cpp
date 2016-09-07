@@ -23,7 +23,7 @@ simpleGraphWindow::~simpleGraphWindow()
 }
 
 
-void simpleGraphWindow::mLabSignal( char signal )
+void simpleGraphWindow::mLabSignal( char signal, const QString& cmd )
 {
     if( signal == SHUTDOWN_SIGNAL
             || (signal == STOP_SIGNAL &&

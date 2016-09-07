@@ -106,7 +106,7 @@ void bopmgWindow::refreshPortList()
     }
 }
 
-void bopmgWindow::mLabSignal( char signal )
+void bopmgWindow::mLabSignal( char signal, const QString& cmd )
 {
     if( signal == SHUTDOWN_SIGNAL )
     {

@@ -29,7 +29,7 @@ temperatureCalcWindow::~temperatureCalcWindow()
     delete _ui;
 }
 
-void temperatureCalcWindow::mLabSignal( char signal )
+void temperatureCalcWindow::mLabSignal( char signal, const QString& cmd )
 {
     if( signal == SHUTDOWN_SIGNAL )
     {

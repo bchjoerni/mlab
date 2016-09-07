@@ -12,7 +12,7 @@ void mdiHandler::emergencyStop()
     for( QMdiSubWindow* window : subWindows )
     {
         mLabWindow* labWindow = qobject_cast<mLabWindow*>( window->widget() );
-        labWindow->mLabSignal( 0 );
+        labWindow->mLabSignal( 0, "" );
     }
 }
 
@@ -44,13 +44,13 @@ void mdiHandler::putValue( const QString &id, double value )
     }
 }
 
-void mdiHandler::mLabSignal( char signal )
+void mdiHandler::mLabSignal( char signal, const QString& cmd )
 {
     auto subWindows = _mdiArea->subWindowList();
     for( QMdiSubWindow* window : subWindows )
     {
         mLabWindow* labWindow = qobject_cast<mLabWindow*>( window->widget() );
-        labWindow->mLabSignal( signal );
+        labWindow->mLabSignal( signal, cmd );
     }
 }
 
@@ -195,6 +195,13 @@ void mdiHandler::addScreenshotWindow( const QString &title )
     addWindow( window, window->windowFlags(), title );
 }
 
+void mdiHandler::addScreenUploaderWindow( const QString &title )
+{
+    LOG(INFO) << "add screenUploaderWindow";
+    screenUploaderWindow* window = new screenUploaderWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addTpg26xWindow( const QString &title )
 {
     LOG(INFO) << "add tpg26xWindow";
@@ -222,8 +229,8 @@ void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
     connect( window, SIGNAL( closing() ), this, SLOT( windowClosed() ) );
     connect( window, SIGNAL( newValue( QString, double ) ), this,
              SLOT( putValue( QString, double ) ) );
-    connect( window, SIGNAL( newSignal( char ) ), this,
-             SLOT( mLabSignal(char) ) );
+    connect( window, SIGNAL( newSignal( char, QString ) ), this,
+             SLOT( mLabSignal( char, QString ) ) );
     connect( window, SIGNAL( changeWindowState( QString, bool ) ), this,
              SLOT( changeWindowState( QString, bool ) ) );
 }

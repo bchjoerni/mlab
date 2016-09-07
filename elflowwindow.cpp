@@ -101,7 +101,7 @@ void elFlowWindow::refreshPortList()
     }
 }
 
-void elFlowWindow::mLabSignal( char signal )
+void elFlowWindow::mLabSignal( char signal, const QString& cmd )
 {
     if( signal == SHUTDOWN_SIGNAL )
     {

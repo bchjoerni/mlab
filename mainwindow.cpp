@@ -1,6 +1,11 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#ifdef Q_OS_WINDOWS
+    #include <windows.h>
+    #pragma comment(lib, "user32.lib")
+#endif
+
 mainWindow::mainWindow( QWidget *parent ) :
     QMainWindow( parent ),
     _ui( new Ui::mainWindow ),
@@ -23,10 +28,18 @@ mainWindow::mainWindow( QWidget *parent ) :
     connectActions();
     connectButtons();
     connectTimers();
+
+    #ifdef Q_OS_WINDOWS
+        SystemParametersInfo(SPI_SETSCREENSAVEACTIVE, FALSE , NULL, SPIF_SENDWININICHANGE);
+    #endif
 }
 
 mainWindow::~mainWindow()
 {
+    #ifdef Q_OS_WINDOWS
+        SystemParametersInfo(SPI_SETSCREENSAVEACTIVE, TRUE , NULL, SPIF_SENDWININICHANGE);
+    #endif
+
     delete _statusBarNumWindows;
     _statusBarNumWindows = nullptr;
 

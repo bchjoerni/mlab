@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui serialport
+QT       += core gui serialport network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -47,7 +47,8 @@ SOURCES += main.cpp\
     ms8050port.cpp \
     tpg26xport.cpp \
     tpg26xwindow.cpp \
-    signaltimerwindow.cpp
+    signaltimerwindow.cpp \
+    screenuploaderwindow.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -84,7 +85,8 @@ HEADERS  += mainwindow.h \
     ms8050port.h \
     tpg26xport.h \
     tpg26xwindow.h \
-    signaltimerwindow.h
+    signaltimerwindow.h \
+    screenuploaderwindow.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -106,7 +108,8 @@ FORMS    += mainwindow.ui \
     eaps8000usbuicharwindow.ui \
     ms8050window.ui \
     tpg26xwindow.ui \
-    signaltimerwindow.ui
+    signaltimerwindow.ui \
+    screenuploaderwindow.ui
 
 CONFIG   += c++11
 

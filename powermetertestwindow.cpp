@@ -46,7 +46,7 @@ void powerMeterTestWindow::refreshPortList()
     _ui->cob_ports->addItem( "testport" );
 }
 
-void powerMeterTestWindow::mLabSignal( char signal )
+void powerMeterTestWindow::mLabSignal( char signal, const QString& cmd )
 {
     if( signal == SHUTDOWN_SIGNAL )
     {

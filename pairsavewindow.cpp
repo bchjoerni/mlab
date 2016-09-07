@@ -23,7 +23,7 @@ pairSaveWindow::~pairSaveWindow()
     delete _ui;
 }
 
-void pairSaveWindow::mLabSignal( char signal )
+void pairSaveWindow::mLabSignal( char signal, const QString& cmd )
 {    
     if( signal == SHUTDOWN_SIGNAL
             || (signal == STOP_SIGNAL &&

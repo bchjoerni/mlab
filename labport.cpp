@@ -83,7 +83,8 @@ bool labPort::isOpen()
 bool labPort::isRunning()
 {
     return (_initValueCounter >= _numInitValues
-            && _port.isOpen());
+            && _port.isOpen()
+            && !_closing );
 }
 
 QString labPort::getPortName()

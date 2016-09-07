@@ -113,7 +113,7 @@ void eaps8000UsbWindow::refreshPortList()
     }
 }
 
-void eaps8000UsbWindow::mLabSignal( char signal )
+void eaps8000UsbWindow::mLabSignal( char signal, const QString& cmd )
 {
     if( signal == SHUTDOWN_SIGNAL )
     {

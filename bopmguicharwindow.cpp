@@ -121,7 +121,7 @@ void bopmgUICharWindow::emergencyStop()
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void bopmgUICharWindow::mLabSignal( char signal )
+void bopmgUICharWindow::mLabSignal( char signal, const QString& cmd )
 {
     if( signal == SHUTDOWN_SIGNAL )
     {
@@ -206,7 +206,7 @@ void bopmgUICharWindow::setValues()
 
         if( _ui->chb_emitStopSignal->isChecked() )
         {
-            emit newSignal( STOP_SIGNAL );
+            emit newSignal( STOP_SIGNAL, SIGNALCMD_VOID );
         }
         return;
     }
