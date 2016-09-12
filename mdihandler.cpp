@@ -12,7 +12,7 @@ void mdiHandler::emergencyStop()
     for( QMdiSubWindow* window : subWindows )
     {
         mLabWindow* labWindow = qobject_cast<mLabWindow*>( window->widget() );
-        labWindow->mLabSignal( 0, "" );
+        labWindow->mLabSignal( SIGNAL_SHUTDOWN, SIGNAL_CMD_VOID );
     }
 }
 
@@ -44,13 +44,19 @@ void mdiHandler::putValue( const QString &id, double value )
     }
 }
 
-void mdiHandler::mLabSignal( char signal, const QString& cmd )
+void mdiHandler::mLabSignal( const QString& receiver, char signal,
+                             const QString& cmd )
 {
     auto subWindows = _mdiArea->subWindowList();
     for( QMdiSubWindow* window : subWindows )
     {
         mLabWindow* labWindow = qobject_cast<mLabWindow*>( window->widget() );
-        labWindow->mLabSignal( signal, cmd );
+
+        if( receiver == SIGNAL_RECEIVER_ALL
+                || receiver == labWindow->getTitle() )
+        {
+            labWindow->mLabSignal( signal, cmd );
+        }
     }
 }
 
@@ -202,6 +208,13 @@ void mdiHandler::addScreenUploaderWindow( const QString &title )
     addWindow( window, window->windowFlags(), title );
 }
 
+void mdiHandler::addNetworkRemoteWindow( const QString &title )
+{
+    LOG(INFO) << "add networkRemoteWindow";
+    networkRemoteWindow* window = new networkRemoteWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addTpg26xWindow( const QString &title )
 {
     LOG(INFO) << "add tpg26xWindow";
@@ -229,8 +242,8 @@ void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
     connect( window, SIGNAL( closing() ), this, SLOT( windowClosed() ) );
     connect( window, SIGNAL( newValue( QString, double ) ), this,
              SLOT( putValue( QString, double ) ) );
-    connect( window, SIGNAL( newSignal( char, QString ) ), this,
-             SLOT( mLabSignal( char, QString ) ) );
+    connect( window, SIGNAL( newSignal( QString, char, QString ) ), this,
+             SLOT( mLabSignal( QString, char, QString ) ) );
     connect( window, SIGNAL( changeWindowState( QString, bool ) ), this,
              SLOT( changeWindowState( QString, bool ) ) );
 }

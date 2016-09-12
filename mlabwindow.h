@@ -7,6 +7,11 @@
 
 #include "easylogging++.h"
 
+const char SIGNAL_SHUTDOWN = 0;
+const char SIGNAL_STOP     = 1;
+const QString SIGNAL_CMD_VOID = "";
+const QString SIGNAL_RECEIVER_ALL = "__ALL__";
+
 class mLabWindow : public QWidget
 {
     Q_OBJECT
@@ -21,12 +26,9 @@ public:
         Q_UNUSED( signal )
         Q_UNUSED( cmd )
     }
+    QString getTitle() const;
 
 protected:
-    const char SHUTDOWN_SIGNAL = 0; // is hard coded in mdi handler !!!
-    const char STOP_SIGNAL     = 1;
-    const QString SIGNALCMD_VOID = "";
-
     const QString EMERGENCY_STOP     = "Emergency stop!";
     const QString STOP_RECEIVED      = "stop signal";
     const QString NO_PORTS_AVAILABLE = "No ports available!";
@@ -45,7 +47,7 @@ protected:
 signals:
     void newValue( QString id, double value );
     void newString( QString id, QString string );
-    void newSignal( char signal, QString cmd );
+    void newSignal( QString receiver, char signal, QString cmd );
     void closing();
     void changeWindowState( QString id, bool okay );
 };

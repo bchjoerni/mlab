@@ -48,7 +48,8 @@ SOURCES += main.cpp\
     tpg26xport.cpp \
     tpg26xwindow.cpp \
     signaltimerwindow.cpp \
-    screenuploaderwindow.cpp
+    screenuploaderwindow.cpp \
+    networkremotewindow.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -86,7 +87,8 @@ HEADERS  += mainwindow.h \
     tpg26xport.h \
     tpg26xwindow.h \
     signaltimerwindow.h \
-    screenuploaderwindow.h
+    screenuploaderwindow.h \
+    networkremotewindow.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -109,7 +111,8 @@ FORMS    += mainwindow.ui \
     ms8050window.ui \
     tpg26xwindow.ui \
     signaltimerwindow.ui \
-    screenuploaderwindow.ui
+    screenuploaderwindow.ui \
+    networkremotewindow.ui
 
 CONFIG   += c++11
 

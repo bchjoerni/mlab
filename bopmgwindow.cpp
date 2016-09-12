@@ -108,11 +108,11 @@ void bopmgWindow::refreshPortList()
 
 void bopmgWindow::mLabSignal( char signal, const QString& cmd )
 {
-    if( signal == SHUTDOWN_SIGNAL )
+    if( signal == SIGNAL_SHUTDOWN )
     {
         emergencyStop();
     }
-    else if( signal == STOP_SIGNAL && _port.isOpen() )
+    else if( signal == SIGNAL_STOP && _port.isOpen() )
     {
         _port.setValue( bopmgPort::setValueType::setTypeVoltage, 0, false );
         _port.setValue( bopmgPort::setValueType::setTypeCurrent, 0, false );

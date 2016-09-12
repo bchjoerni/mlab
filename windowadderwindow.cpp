@@ -96,6 +96,10 @@ void windowAdderWindow::ok()
     {
         _mdi->addScreenUploaderWindow( _ui->txt_screenUploader->text() );
     }
+    if( _ui->chb_networkRemote->isChecked() )
+    {
+        _mdi->addNetworkRemoteWindow( _ui->txt_networkRemote->text() );
+    }
     if( _ui->chb_tpg26x->isChecked() )
     {
         _mdi->addTpg26xWindow( _ui->txt_tpg26x->text() );
@@ -189,6 +193,10 @@ bool windowAdderWindow::checkWindowNames()
     if( _ui->chb_screenUploader->isChecked() )
     {
         names.push_back( _ui->txt_screenUploader->text() );
+    }
+    if( _ui->chb_networkRemote->isChecked() )
+    {
+        names.push_back( _ui->txt_networkRemote->text() );
     }
     if( _ui->chb_tpg26x->isChecked() )
     {

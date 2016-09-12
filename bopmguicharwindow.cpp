@@ -123,11 +123,11 @@ void bopmgUICharWindow::emergencyStop()
 
 void bopmgUICharWindow::mLabSignal( char signal, const QString& cmd )
 {
-    if( signal == SHUTDOWN_SIGNAL )
+    if( signal == SIGNAL_SHUTDOWN )
     {
         emergencyStop();
     }
-    else if( signal == STOP_SIGNAL )
+    else if( signal == SIGNAL_STOP )
     {
         if( _ui->chb_setZeroAtStopSignal->isChecked() )
         {
@@ -136,6 +136,25 @@ void bopmgUICharWindow::mLabSignal( char signal, const QString& cmd )
             _ui->lbl_info->setText( STOP_RECEIVED );
             _ui->lbl_info->setStyleSheet( STYLE_ERROR );
         }
+    }
+    else if( signal == 10 )
+    {
+        if( _ui->btn_startStop->text() == STOP )
+        {
+            startStop();
+        }
+    }
+    else if( signal == 11 )
+    {
+        if( _ui->btn_startStop->text() == START )
+        {
+            startStop();
+        }
+    }
+    else if( signal == 18
+             || signal == 19 )
+    {
+        resetInfo();
     }
 }
 
@@ -206,7 +225,7 @@ void bopmgUICharWindow::setValues()
 
         if( _ui->chb_emitStopSignal->isChecked() )
         {
-            emit newSignal( STOP_SIGNAL, SIGNALCMD_VOID );
+            emit newSignal( SIGNAL_RECEIVER_ALL, SIGNAL_STOP, SIGNAL_CMD_VOID );
         }
         return;
     }

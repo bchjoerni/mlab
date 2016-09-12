@@ -103,11 +103,11 @@ void elFlowWindow::refreshPortList()
 
 void elFlowWindow::mLabSignal( char signal, const QString& cmd )
 {
-    if( signal == SHUTDOWN_SIGNAL )
+    if( signal == SIGNAL_SHUTDOWN )
     {
         emergencyStop();
     }
-    else if( signal == STOP_SIGNAL && _port.isOpen() )
+    else if( signal == SIGNAL_STOP && _port.isOpen() )
     {
         _port.setValue( elFlowPort::setValueType::setTypeFlow, 0, false );
 

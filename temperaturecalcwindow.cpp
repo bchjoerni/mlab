@@ -31,7 +31,7 @@ temperatureCalcWindow::~temperatureCalcWindow()
 
 void temperatureCalcWindow::mLabSignal( char signal, const QString& cmd )
 {
-    if( signal == SHUTDOWN_SIGNAL )
+    if( signal == SIGNAL_SHUTDOWN )
     {
         if( _running )
         {
@@ -41,7 +41,7 @@ void temperatureCalcWindow::mLabSignal( char signal, const QString& cmd )
             emit changeWindowState( this->windowTitle(), false );
         }
     }
-    else if( signal == STOP_SIGNAL )
+    else if( signal == SIGNAL_STOP )
     {
         if( _running )
         {

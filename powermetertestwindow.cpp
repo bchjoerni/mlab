@@ -48,11 +48,11 @@ void powerMeterTestWindow::refreshPortList()
 
 void powerMeterTestWindow::mLabSignal( char signal, const QString& cmd )
 {
-    if( signal == SHUTDOWN_SIGNAL )
+    if( signal == SIGNAL_SHUTDOWN )
     {
         emergencyStop();
     }
-    else if( signal == STOP_SIGNAL && getInit() )
+    else if( signal == SIGNAL_STOP && getInit() )
     {
         _setValueStr = "stop";
         _ui->lbl_info->setText( STOP_RECEIVED );

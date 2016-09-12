@@ -17,3 +17,7 @@ void mLabWindow::closeEvent( QCloseEvent *event )
     emit closing();
 }
 
+QString mLabWindow::getTitle() const
+{
+    return this->windowTitle();
+}

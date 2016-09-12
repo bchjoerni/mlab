@@ -1,0 +1,31 @@
+REMOTE commads:
+
+0-9: commands affecting all windows:
+------------------------------------
+0: emergency shutdown
+1: stop
+
+10-19: general commands:
+------------------------
+10: stop
+11: start
+12: connect
+13: disconnect
+18: soft reset
+19: full reset
+
+30-39: commands for power supplies:
+-----------------------------------
+30: set 0
+31: set voltage
+32: set current
+33: set power
+34: set power by setting voltage
+35: set power by setting current
+36: set resistance by setting voltage
+37: set resistance by setting current
+
+40-59: commands for settings:
+-----------------------------
+(depending on Window)
+

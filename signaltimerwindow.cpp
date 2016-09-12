@@ -41,8 +41,14 @@ void signalTimerWindow::doUpdate()
         if( _ui->spb_ticks->value() <= 1 )
         {
             LOG(INFO) << "timer emits signal:" << _ui->spb_signal->value();
-            emit newSignal( static_cast<char>( _ui->spb_signal->value() ),
-                            SIGNALCMD_VOID );
+            QString receiver = _ui->txt_window->text();
+            if( _ui->rad_allWindows->isChecked() )
+            {
+                receiver = SIGNAL_RECEIVER_ALL;
+            }
+            emit newSignal( receiver,
+                            static_cast<char>( _ui->spb_signal->value() ),
+                            _ui->txt_cmd->text() );
             _ui->btn_startStop->setText( START );
             _ui->spb_ticks->setEnabled( true );
             _ui->spb_ticks->setStyleSheet( STYLE_NONE );
@@ -56,13 +62,13 @@ void signalTimerWindow::doUpdate()
 
 void signalTimerWindow::mLabSignal( char signal, const QString& cmd )
 {
-    if( signal == SHUTDOWN_SIGNAL )
+    if( signal == SIGNAL_SHUTDOWN )
     {
         _ui->btn_startStop->setText( START );
         _ui->spb_ticks->setEnabled( true );
         _ui->spb_ticks->setStyleSheet( STYLE_NONE );
     }
-    else if( signal == STOP_SIGNAL )
+    else if( signal == SIGNAL_STOP )
     {
         _ui->btn_startStop->setText( START );
         _ui->spb_ticks->setEnabled( true );

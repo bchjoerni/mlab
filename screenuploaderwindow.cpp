@@ -13,6 +13,8 @@ screenUploaderWindow::screenUploaderWindow( QWidget *parent ) :
              SLOT( startStopPressed() ) );
     connect( _networkManager, SIGNAL( finished( QNetworkReply* ) ), this,
              SLOT( uploadFinished( QNetworkReply* ) ) );
+    connect( _ui->spb_ticks, SIGNAL( valueChanged( int ) ), this,
+             SLOT( updateTickCounter() ) );
 
     _ui->lbl_status->setText( PAUSING );
 }
@@ -25,14 +27,14 @@ screenUploaderWindow::~screenUploaderWindow()
 
 void screenUploaderWindow::mLabSignal( char signal, const QString& cmd )
 {
-    if( signal == SHUTDOWN_SIGNAL
-            || (signal == STOP_SIGNAL) )
+    if( signal == SIGNAL_SHUTDOWN
+            || (signal == SIGNAL_STOP) )
     {
         if( _ui->btn_startStop->text() == STOP_UPLOADING )
         {
             _ui->lbl_status->setText( PAUSING );
             _ui->lbl_status->setStyleSheet( STYLE_ERROR );
-            _ui->lbl_info->setText( signal == SHUTDOWN_SIGNAL ?
+            _ui->lbl_info->setText( signal == SIGNAL_SHUTDOWN ?
                                         "Shutdown signal received!" :
                                         "Stop signal received!" );
             _ui->btn_startStop->setText( START_UPLOADING );
@@ -45,26 +47,44 @@ void screenUploaderWindow::doUpdate()
     if( _ui->btn_startStop->text() == STOP_UPLOADING )
     {
         _counter++;
+        _ui->lbl_ticksToNextScreen->setText( QString::number(
+                                                 _ui->spb_ticks->value() -
+                                                 _counter ) );
     }
 
     if( _counter >= _ui->spb_ticks->value() )
     {
+        _ui->lbl_ticksToNextScreen->setText( QString::number(
+                                                 _ui->spb_ticks->value() ) );
         _counter = 0;
         uploadScreen();
     }
+}
+
+void screenUploaderWindow::updateTickCounter()
+{
+    _ui->lbl_ticksToNextScreen->setText( QString::number(
+                                             _ui->spb_ticks->value() ) );
 }
 
 void screenUploaderWindow::startStopPressed()
 {
     if( _ui->btn_startStop->text() == START_UPLOADING )
     {
+        _ui->frame_parameter->setEnabled( false );
+        _username = _ui->txt_username->text();
+        _password = _ui->txt_password->text();
+        _ui->txt_password->setText( "" );
+
         _counter = 0;
         _ui->lbl_status->setText( RUNNING );
         _ui->lbl_status->setStyleSheet( STYLE_OK );
-        _ui->btn_startStop->setText( STOP_UPLOADING );
+        _ui->btn_startStop->setText( STOP_UPLOADING );        
     }
     else
     {
+        _ui->frame_parameter->setEnabled( true );
+
         _ui->lbl_status->setText( PAUSING );
         _ui->lbl_status->setStyleSheet( STYLE_ERROR );
         _ui->btn_startStop->setText( START_UPLOADING );
@@ -73,10 +93,12 @@ void screenUploaderWindow::startStopPressed()
 
 void screenUploaderWindow::uploadScreen()
 {
+    LOG(INFO) << "upload screen";
     QPixmap pixmap;
     QScreen *screen = QGuiApplication::primaryScreen();
     if( !screen )
     {
+        LOG(INFO) << "ERROR: Unable to get screen!";
         _ui->lbl_info->setText( "Error: unable to get screen!" );
         _ui->lbl_status->setStyleSheet( STYLE_ERROR );
         return;
@@ -89,8 +111,8 @@ void screenUploaderWindow::uploadScreen()
     pixmap.save( &buffer, "PNG" );
 
     QUrl url( _ui->txt_url->text() );
-    url.setUserName( _ui->txt_username->text() );
-    url.setPassword( _ui->txt_password->text() );
+    url.setUserName( _username );
+    url.setPassword( _password );
     url.setPort( 21 );
 
     QNetworkRequest upload( url );
@@ -104,6 +126,7 @@ void screenUploaderWindow::uploadScreen()
 
 void screenUploaderWindow::uploadError( QNetworkReply::NetworkError error )
 {
+    LOG(INFO) << "upload screen error: " << error;
     _ui->lbl_info->setText( "Network error! (" + QString::number( error )
                             + ")" );
 }

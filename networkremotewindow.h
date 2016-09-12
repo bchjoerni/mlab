@@ -1,5 +1,5 @@
-#ifndef SCREENUPLOADERWINDOW_H
-#define SCREENUPLOADERWINDOW_H
+#ifndef NETWORKREMOTEWINDOW_H
+#define NETWORKREMOTEWINDOW_H
 
 #include <QNetworkAccessManager>
 #include <QNetworkReply>
@@ -14,16 +14,16 @@
 
 namespace Ui
 {
-    class screenUploaderWindow;
+    class networkRemoteWindow;
 }
 
-class screenUploaderWindow : public mLabWindow
+class networkRemoteWindow : public mLabWindow
 {
     Q_OBJECT
 
 public:
-    explicit screenUploaderWindow( QWidget *parent = 0 );
-    ~screenUploaderWindow();
+    explicit networkRemoteWindow( QWidget *parent = 0 );
+    ~networkRemoteWindow();
     void doUpdate() override;
     bool isReceiver() const override
     {
@@ -33,26 +33,30 @@ public:
 
 private slots:
     void startStopPressed();
-    void uploadError( QNetworkReply::NetworkError error );
+    void networkError( QNetworkReply::NetworkError error );
     void uploadProgress( qint64, qint64 );
-    void uploadFinished( QNetworkReply *reply );
-    void updateTickCounter();
+    void downloadProgress( qint64, qint64 );
+    void networkFinished( QNetworkReply *reply );
+    void commandTicksChanged();
+    void readCommands();
 
 private:
     void uploadScreen();
+    void downloadCmd();
 
-    Ui::screenUploaderWindow *_ui;
+    Ui::networkRemoteWindow *_ui;
     QNetworkAccessManager* _networkManager;
+    QNetworkReply* _networkReply;
     QImage _screen;
-    int _counter;
-    QString _username;
+    int _counterCommands;
+    int _counterScreen;
     QString _password;
 
-    const QString START_UPLOADING = "start";
-    const QString STOP_UPLOADING  = "stop ";
+    const QString START_REMOTE= "start";
+    const QString STOP_REMOTE  = "stop ";
 
     const QString RUNNING = "running";
     const QString PAUSING = "pausing";
 };
 
-#endif // SCREENUPLOADERWINDOW_H
+#endif // NETWORKREMOTEWINDOW_H
