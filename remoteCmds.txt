@@ -11,6 +11,9 @@ REMOTE commads:
 11: start
 12: connect
 13: disconnect
+14: set 0 at stop signal
+15: set 0 at finish
+16: emit stop at finish
 18: soft reset
 19: full reset
 

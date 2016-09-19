@@ -14,8 +14,6 @@ networkRemoteWindow::networkRemoteWindow( QWidget *parent ) :
              SLOT( startStopPressed() ) );
     connect( _ui->spb_ticksCmd, SIGNAL( valueChanged( int ) ), this,
              SLOT( commandTicksChanged() ) );
-    connect( _networkManager, SIGNAL( finished( QNetworkReply* ) ), this,
-             SLOT( networkFinished( QNetworkReply* ) ) );
 
     _ui->lbl_status->setText( PAUSING );
 }
@@ -83,6 +81,19 @@ void networkRemoteWindow::startStopPressed()
 {
     if( _ui->btn_startStop->text() == START_REMOTE )
     {
+        QUrl urlCmd( _ui->txt_urlCmd->text() );
+        if( !urlCmd.isValid() )
+        {
+            _ui->lbl_info->setText( "Invalid cmd url!" );
+            return;
+        }
+        QUrl urlUpload( _ui->txt_urlUpload->text() );
+        if( !urlUpload.isValid() )
+        {
+            _ui->lbl_info->setText( "Invalid upload url!" );
+            return;
+        }
+
         _ui->grp_screenUpload->setEnabled( false );
         _ui->grp_commands->setEnabled( false );
         _password = _ui->txt_passwordUpload->text();
@@ -119,8 +130,7 @@ void networkRemoteWindow::uploadScreen()
     }
     pixmap = screen->grabWindow( 0 );
 
-    QByteArray screenBytes;
-    QBuffer buffer( &screenBytes );
+    QBuffer buffer( &_screenBytes );
     buffer.open( QIODevice::WriteOnly );
     pixmap.save( &buffer, "PNG" );
 
@@ -130,12 +140,13 @@ void networkRemoteWindow::uploadScreen()
     url.setPort( 21 );
 
     QNetworkRequest upload( url );
-    _networkReply = _networkManager->put( upload, screenBytes );
+    QNetworkReply* reply = _networkManager->put( upload, _screenBytes );
 
-    connect( _networkReply, SIGNAL( uploadProgress( qint64, qint64 ) ), this,
+    connect( reply, SIGNAL( uploadProgress( qint64, qint64 ) ), this,
              SLOT( uploadProgress( qint64, qint64 ) ) );
-    connect( _networkReply, SIGNAL( error( QNetworkReply::NetworkError ) ),
+    connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
             this, SLOT( networkError( QNetworkReply::NetworkError ) ) );
+    connect( reply, SIGNAL( finished() ), this, SLOT( uploadFinished() ) );
 }
 
 void networkRemoteWindow::networkError( QNetworkReply::NetworkError error )
@@ -147,48 +158,55 @@ void networkRemoteWindow::networkError( QNetworkReply::NetworkError error )
 
 void networkRemoteWindow::uploadProgress( qint64 bytesSent, qint64 bytesTotal )
 {
-    _ui->lbl_info->setText( "Upload: " + QString::number( bytesSent/bytesTotal )
-                            + "%, " + QDateTime::currentDateTime()
-                            .toString( "yyyy-MM-dd hh:mm:ss" ) );
+    if( bytesTotal > 0 )
+    {
+        _ui->lbl_info->setText( "Upload: "
+                                + QString::number( bytesSent/bytesTotal )
+                                + "%, " + QDateTime::currentDateTime()
+                                .toString( "yyyy-MM-dd hh:mm:ss" ) );
+    }
 }
 
-void networkRemoteWindow::networkFinished( QNetworkReply *reply )
+void networkRemoteWindow::uploadFinished()
 {
-    if( _counterScreen == -1 )
+    if( !_ui->lbl_info->text().startsWith( "Network error" ) )
     {
-        _ui->lbl_info->setText( "Network task finished. "
-                                + QDateTime::currentDateTime()
-                                .toString( "yyyy-MM-dd hh:mm:ss" ) );
+        _ui->lbl_info->setText( "Screen upload finished. "
+                                    + QDateTime::currentDateTime()
+                                    .toString( "yyyy-MM-dd hh:mm:ss" ) );
     }
 }
 
 void networkRemoteWindow::downloadProgress( qint64 bytesSent,
                                             qint64 bytesTotal )
 {
-    _ui->lbl_info->setText( "Download: "
-                            + QString::number( bytesSent/bytesTotal )
-                            + "%" + QDateTime::currentDateTime()
-                            .toString( "yyyy-MM-dd hh:mm:ss" ) );
+    if( bytesTotal > 0 )
+    {
+        _ui->lbl_info->setText( "Download: "
+                                + QString::number( bytesSent/bytesTotal )
+                                + "%" + QDateTime::currentDateTime()
+                                .toString( "yyyy-MM-dd hh:mm:ss" ) );
+    }
 }
 
 void networkRemoteWindow::downloadCmd()
 {
     QNetworkRequest request( QUrl( _ui->txt_urlCmd->text() ) );
-    _networkReply = _networkManager->get( request );
+    _downloadReply = _networkManager->get( request );
 
-    connect( _networkReply, SIGNAL( readyRead() ), this,
+    connect( _downloadReply, SIGNAL( readyRead() ), this,
              SLOT( readCommands() ) );
-//    connect( _downloadReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this,
-//             SLOT( downloadProgress( qint64, qint64 ) ) );
-    connect( _networkReply, SIGNAL( error( QNetworkReply::NetworkError ) ),
+    connect( _downloadReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this,
+             SLOT( downloadProgress( qint64, qint64 ) ) );
+    connect( _downloadReply, SIGNAL( error( QNetworkReply::NetworkError ) ),
              this, SLOT( networkError( QNetworkReply::NetworkError ) ) );
 }
 
 void networkRemoteWindow::readCommands()
 {
-    while( _networkReply->canReadLine() )
+    while( _downloadReply->canReadLine() )
     {
-        QString cmdLine = _networkReply->readLine();
+        QString cmdLine = _downloadReply->readLine();
         LOG(INFO) << "network command read: " << cmdLine.toStdString();
         int firstSeperator = cmdLine.indexOf( "\t" );
         int secondSeperator = cmdLine.indexOf( "\t", firstSeperator+1 );

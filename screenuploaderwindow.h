@@ -35,7 +35,7 @@ private slots:
     void startStopPressed();
     void uploadError( QNetworkReply::NetworkError error );
     void uploadProgress( qint64, qint64 );
-    void uploadFinished( QNetworkReply *reply );
+    void uploadFinished();
     void updateTickCounter();
 
 private:
@@ -43,10 +43,10 @@ private:
 
     Ui::screenUploaderWindow *_ui;
     QNetworkAccessManager* _networkManager;
-    QImage _screen;
+    QByteArray _screenBytes;
     int _counter;
     QString _username;
-    QString _password;
+    QString _password;    
 
     const QString START_UPLOADING = "start";
     const QString STOP_UPLOADING  = "stop ";

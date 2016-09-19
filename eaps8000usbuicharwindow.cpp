@@ -155,10 +155,133 @@ void eaps8000UsbUICharWindow::mLabSignal( char signal, const QString& cmd )
             startStop();
         }
     }
+    else if( signal == 12 )
+    {
+        if( _ui->btn_connect->text() == CONNECT_PORT )
+        {
+            connectPort();
+        }
+    }
+    else if( signal == 13 )
+    {
+        if( _ui->btn_connect->text() == DISCONNECT_PORT )
+        {
+            disconnectPort();
+        }
+    }
+    else if( signal == 14 )
+    {
+        if( cmd == "true" )
+        {
+            _ui->chb_setZeroAtStopSignal->setChecked( true );
+        }
+        else if( cmd == "false" )
+        {
+            _ui->chb_setZeroAtStopSignal->setChecked( false );
+        }
+    }
+    else if( signal == 15 )
+    {
+        if( cmd == "true" )
+        {
+            _ui->chb_setZeroWhenFinished->setChecked( true );
+        }
+        else if( cmd == "false" )
+        {
+            _ui->chb_setZeroWhenFinished->setChecked( false );
+        }
+    }
+    else if( signal == 16 )
+    {
+        if( cmd == "true" )
+        {
+            _ui->chb_emitStopSignal->setChecked( true );
+        }
+        else if( cmd == "false" )
+        {
+            _ui->chb_emitStopSignal->setChecked( false );
+        }
+    }
     else if( signal == 18
              || signal == 19 )
     {
         resetInfo();
+    }
+    else if( signal == 41 )
+    {
+        int indexType = _ui->cob_setValue->findText( cmd );
+        if( indexType == -1 )
+        {
+            return;
+        }
+        _ui->cob_setValue->setCurrentIndex( indexType );
+    }
+    else if( signal == 42 )
+    {
+        bool conversionSuccessful = false;
+        double stepSize = cmd.toDouble( &conversionSuccessful );
+        if( conversionSuccessful )
+        {
+            _ui->dsb_stepSize->setValue( stepSize );
+        }
+    }
+    else if( signal == 43 )
+    {
+        if( cmd == "true" )
+        {
+            _ui->chb_calcValues->setChecked( true );
+        }
+        else if( cmd == "false" )
+        {
+            _ui->chb_calcValues->setChecked( false );
+        }
+    }
+    else if( signal == 45 )
+    {
+        bool conversionSuccessful = false;
+        double fromValue = cmd.toDouble( &conversionSuccessful );
+        if( conversionSuccessful )
+        {
+            _ui->dsb_fromValue->setValue( fromValue );
+        }
+    }
+    else if( signal == 46 )
+    {
+        bool conversionSuccessful = false;
+        double toValue = cmd.toDouble( &conversionSuccessful );
+        if( conversionSuccessful )
+        {
+            _ui->dsb_toValue->setValue( toValue );
+        }
+    }
+    else if( signal == 47 )
+    {
+        int unitType = _ui->cob_unit->findText( cmd );
+        if( unitType == -1 )
+        {
+            return;
+        }
+        _ui->cob_unit->setCurrentIndex( unitType );
+    }
+    else if( signal == 51 )
+    {
+        bool conversionSuccessful = false;
+        int repeat = cmd.toInt( &conversionSuccessful );
+        if( conversionSuccessful )
+        {
+            _ui->spb_repeat->setValue( repeat );
+        }
+    }
+    else if( signal == 52 )
+    {
+        if( cmd == "true" )
+        {
+            _ui->chb_loop->setChecked( true );
+        }
+        else if( cmd == "false" )
+        {
+            _ui->chb_loop->setChecked( false );
+        }
     }
 }
 

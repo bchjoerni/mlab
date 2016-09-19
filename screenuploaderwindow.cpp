@@ -11,8 +11,6 @@ screenUploaderWindow::screenUploaderWindow( QWidget *parent ) :
 
     connect( _ui->btn_startStop, SIGNAL( clicked() ), this,
              SLOT( startStopPressed() ) );
-    connect( _networkManager, SIGNAL( finished( QNetworkReply* ) ), this,
-             SLOT( uploadFinished( QNetworkReply* ) ) );
     connect( _ui->spb_ticks, SIGNAL( valueChanged( int ) ), this,
              SLOT( updateTickCounter() ) );
 
@@ -50,14 +48,14 @@ void screenUploaderWindow::doUpdate()
         _ui->lbl_ticksToNextScreen->setText( QString::number(
                                                  _ui->spb_ticks->value() -
                                                  _counter ) );
-    }
 
-    if( _counter >= _ui->spb_ticks->value() )
-    {
-        _ui->lbl_ticksToNextScreen->setText( QString::number(
-                                                 _ui->spb_ticks->value() ) );
-        _counter = 0;
-        uploadScreen();
+        if( _counter >= _ui->spb_ticks->value() )
+        {
+            _ui->lbl_ticksToNextScreen->setText( QString::number(
+                                                     _ui->spb_ticks->value() ) );
+            _counter = 0;
+            uploadScreen();
+        }
     }
 }
 
@@ -71,6 +69,12 @@ void screenUploaderWindow::startStopPressed()
 {
     if( _ui->btn_startStop->text() == START_UPLOADING )
     {
+        QUrl url( _ui->txt_url->text() );
+        if( !url.isValid() )
+        {
+            _ui->lbl_info->setText( "Invalid URL!" );
+            return;
+        }
         _ui->frame_parameter->setEnabled( false );
         _username = _ui->txt_username->text();
         _password = _ui->txt_password->text();
@@ -105,8 +109,7 @@ void screenUploaderWindow::uploadScreen()
     }
     pixmap = screen->grabWindow( 0 );
 
-    QByteArray screenBytes;
-    QBuffer buffer( &screenBytes );
+    QBuffer buffer( &_screenBytes );
     buffer.open( QIODevice::WriteOnly );
     pixmap.save( &buffer, "PNG" );
 
@@ -116,12 +119,14 @@ void screenUploaderWindow::uploadScreen()
     url.setPort( 21 );
 
     QNetworkRequest upload( url );
-    QNetworkReply* reply = _networkManager->put( upload, screenBytes );
+    QNetworkReply* reply = _networkManager->put( upload, _screenBytes );
 
     connect( reply, SIGNAL( uploadProgress( qint64, qint64 ) ), this,
              SLOT( uploadProgress( qint64, qint64 ) ) );
     connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
             this, SLOT( uploadError( QNetworkReply::NetworkError ) ) );
+    connect( reply, SIGNAL( finished() ), this, SLOT( uploadFinished() ) );
+    connect( reply, SIGNAL( finished() ), reply, SLOT( deleteLater() ) );
 }
 
 void screenUploaderWindow::uploadError( QNetworkReply::NetworkError error )
@@ -133,13 +138,21 @@ void screenUploaderWindow::uploadError( QNetworkReply::NetworkError error )
 
 void screenUploaderWindow::uploadProgress( qint64 bytesSent, qint64 bytesTotal )
 {
-    _ui->lbl_info->setText( "Upload: " + QString::number( bytesSent/bytesTotal )
-                            + "%" );
+    if( bytesTotal > 0 )
+    {
+        _ui->lbl_info->setText( "Upload: "
+                                + QString::number( bytesSent/bytesTotal )
+                                + "%" );
+    }
 }
 
-void screenUploaderWindow::uploadFinished( QNetworkReply *reply )
+void screenUploaderWindow::uploadFinished()
 {
-    _ui->lbl_info->setText( "Upload finished. " + QDateTime::currentDateTime()
-                            .toString( "yyyy-MM-dd hh:mm:ss" ) );
+    if( !_ui->lbl_info->text().startsWith( "Network error" ) )
+    {
+        _ui->lbl_info->setText( "Upload finished. "
+                                + QDateTime::currentDateTime()
+                                .toString( "yyyy-MM-dd hh:mm:ss" ) );
+    }
 }
 

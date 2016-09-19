@@ -36,7 +36,7 @@ private slots:
     void networkError( QNetworkReply::NetworkError error );
     void uploadProgress( qint64, qint64 );
     void downloadProgress( qint64, qint64 );
-    void networkFinished( QNetworkReply *reply );
+    void uploadFinished();
     void commandTicksChanged();
     void readCommands();
 
@@ -46,8 +46,8 @@ private:
 
     Ui::networkRemoteWindow *_ui;
     QNetworkAccessManager* _networkManager;
-    QNetworkReply* _networkReply;
-    QImage _screen;
+    QNetworkReply* _downloadReply;
+    QByteArray _screenBytes;
     int _counterCommands;
     int _counterScreen;
     QString _password;
