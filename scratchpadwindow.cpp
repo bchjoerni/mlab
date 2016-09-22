@@ -52,6 +52,7 @@ void scratchpadWindow::save()
     {
         _ui->lbl_status->setText( "ERROR!" );
         _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        emit newError( this->windowTitle() + ": unable to open file!" );
         return;
     }
 

@@ -105,6 +105,7 @@ void screenUploaderWindow::uploadScreen()
         LOG(INFO) << "ERROR: Unable to get screen!";
         _ui->lbl_info->setText( "Error: unable to get screen!" );
         _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+        emit newError( this->windowTitle() + ": unable to get screen!" );
         return;
     }
     pixmap = screen->grabWindow( 0 );
@@ -134,6 +135,8 @@ void screenUploaderWindow::uploadError( QNetworkReply::NetworkError error )
     LOG(INFO) << "upload screen error: " << error;
     _ui->lbl_info->setText( "Network error! (" + QString::number( error )
                             + ")" );
+    emit newError( this->windowTitle() + ": network error "
+                   + QString::number( error ) );
 }
 
 void screenUploaderWindow::uploadProgress( qint64 bytesSent, qint64 bytesTotal )

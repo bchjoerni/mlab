@@ -360,6 +360,7 @@ void elFlowWindow::portError( QString error )
     _ui->lbl_info->setText( error );
     _ui->lbl_info->setStyleSheet( STYLE_ERROR );
 
+    emit newError( this->windowTitle() + ": " + error );
     emit changeWindowState( this->windowTitle(), false );
 }
 

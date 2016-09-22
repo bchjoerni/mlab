@@ -49,7 +49,8 @@ SOURCES += main.cpp\
     tpg26xwindow.cpp \
     signaltimerwindow.cpp \
     screenuploaderwindow.cpp \
-    networkremotewindow.cpp
+    networkremotewindow.cpp \
+    errorlogwindow.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -88,7 +89,8 @@ HEADERS  += mainwindow.h \
     tpg26xwindow.h \
     signaltimerwindow.h \
     screenuploaderwindow.h \
-    networkremotewindow.h
+    networkremotewindow.h \
+    errorlogwindow.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -112,7 +114,8 @@ FORMS    += mainwindow.ui \
     tpg26xwindow.ui \
     signaltimerwindow.ui \
     screenuploaderwindow.ui \
-    networkremotewindow.ui
+    networkremotewindow.ui \
+    errorlogwindow.ui
 
 CONFIG   += c++11
 

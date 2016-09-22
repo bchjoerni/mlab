@@ -30,9 +30,12 @@
 #include "ms8050window.h"
 #include "tpg26xwindow.h"
 #include "signaltimerwindow.h"
+#include "errorlogwindow.h"
 
+const QString ERROR_LOG_WINDOW_TITLE = "error logger";
 
 class mdiHandler : public QObject
+
 {
     Q_OBJECT
 public:
@@ -60,12 +63,14 @@ public:
     void addNetworkRemoteWindow( const QString& title );
     void addTpg26xWindow( const QString& title );
     void addSignalTimer( const QString& title );
+    void addErrorLogWindow( const QString& title );
     QStringList getWindowNames();
     void addUICharWindowsNew();
     void addUICharWindowsOld();
 
 public slots:
     void windowClosed();
+    void windowError( const QString& errorMsg );
     void putValue( const QString& id, double value );
     void mLabSignal( const QString& receiver, char signal, const QString& cmd );
     void changeWindowState( const QString& id, bool okay );

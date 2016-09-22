@@ -154,6 +154,8 @@ void networkRemoteWindow::networkError( QNetworkReply::NetworkError error )
     LOG(INFO) << "network error: " << error;
     _ui->lbl_info->setText( "Network error! (" + QString::number( error )
                             + ")" );
+    emit newError( this->windowTitle() + ": network error "
+                   + QString::number( error ) );
 }
 
 void networkRemoteWindow::uploadProgress( qint64 bytesSent, qint64 bytesTotal )

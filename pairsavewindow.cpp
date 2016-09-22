@@ -55,8 +55,7 @@ void pairSaveWindow::mLabSignal( char signal, const QString& cmd )
             startStopPressed();
         }
     }
-    else if( signal == 18
-             || signal == 19 )
+    else if( signal == 19 )
     {
         resetCounter();
     }
@@ -72,6 +71,7 @@ void pairSaveWindow::doUpdate()
         {
             _ui->lbl_status->setText( "ERROR!" );
             _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+            emit newError( this->windowTitle() + ": unable to open file!" );
             return;
         }
 
@@ -136,6 +136,7 @@ void pairSaveWindow::startStopPressed()
         {
             _ui->lbl_status->setText( "ERROR!" );
             _ui->lbl_status->setStyleSheet( STYLE_ERROR );
+            emit newError( this->windowTitle() + ": unable to open file!" );
             return;
         }
         _fileStream.close();

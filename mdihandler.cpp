@@ -44,6 +44,20 @@ void mdiHandler::putValue( const QString &id, double value )
     }
 }
 
+void mdiHandler::windowError( const QString &errorMsg )
+{
+    auto subWindows = _mdiArea->subWindowList();
+    for( QMdiSubWindow* window : subWindows )
+    {
+        mLabWindow* labWindow = qobject_cast<mLabWindow*>( window->widget() );
+        if( labWindow->getTitle().startsWith( ERROR_LOG_WINDOW_TITLE ) )
+        {
+            qobject_cast<errorLogWindow*>( labWindow )->mLabError(
+                        labWindow->getTitle() + ": " + errorMsg );
+        }
+    }
+}
+
 void mdiHandler::mLabSignal( const QString& receiver, char signal,
                              const QString& cmd )
 {
@@ -226,6 +240,13 @@ void mdiHandler::addSignalTimer( const QString &title )
 {
     LOG(INFO) << "add signalTimerWindow";
     signalTimerWindow* window = new signalTimerWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
+void mdiHandler::addErrorLogWindow( const QString &title )
+{
+    LOG(INFO) << "add errorLogWindow";
+    errorLogWindow* window = new errorLogWindow;
     addWindow( window, window->windowFlags(), title );
 }
 

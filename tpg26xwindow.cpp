@@ -154,6 +154,8 @@ void tpg26xWindow::pressureGauge1Update( double mbarPressure )
                   << PRESSURE_GAUGE_1.toStdString() << " : "
                   << PR_ERRORS[errorNum].toStdString();
         _ui->txt_gauge1->setText( PR_ERRORS[errorNum] );
+        emit newError( this->windowTitle() + ": " + PRESSURE_GAUGE_1 + ": "
+                       + PR_ERRORS[errorNum] );
     }
 }
 
@@ -185,6 +187,8 @@ void tpg26xWindow::pressureGauge2Update( double mbarPressure )
                   << PRESSURE_GAUGE_2.toStdString() << " : "
                   << PR_ERRORS[errorNum].toStdString();
         _ui->txt_gauge2->setText( PR_ERRORS[errorNum] );
+        emit newError( this->windowTitle() + ": " + PRESSURE_GAUGE_2 + ": "
+                       + PR_ERRORS[errorNum] );
     }
 }
 
@@ -195,6 +199,7 @@ void tpg26xWindow::portError( QString error )
     _ui->lbl_info->setText( error );
     _ui->lbl_info->setStyleSheet( STYLE_ERROR );
 
+    emit newError( this->windowTitle() + ": " + error );
     emit changeWindowState( this->windowTitle(), false );
 }
 

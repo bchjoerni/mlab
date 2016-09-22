@@ -29,6 +29,7 @@ private slots:
 
 private:
     Ui::signalTimerWindow *_ui;
+    int _ticks;
 
     const QString START = "start";
     const QString STOP  = "stop";

@@ -6,39 +6,39 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>331</width>
-    <height>166</height>
+    <width>234</width>
+    <height>259</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>signal timer</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QLabel" name="lbl_signal_lbl">
+   <item row="0" column="0" colspan="2">
+    <widget class="QRadioButton" name="rad_repeat">
      <property name="text">
-      <string>signal:</string>
+      <string>repeat</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QSpinBox" name="spb_signal">
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-     <property name="value">
-      <number>1</number>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="lbl_after_lbl">
+   <item row="0" column="2" colspan="2">
+    <widget class="QRadioButton" name="rad_singleShot">
      <property name="text">
-      <string>after</string>
+      <string>single shot</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="3" colspan="2">
+   <item row="1" column="0">
+    <widget class="QLabel" name="lbl_every_lbl">
+     <property name="text">
+      <string>every</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
     <widget class="QSpinBox" name="spb_ticks">
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -50,49 +50,69 @@
       <number>1000000</number>
      </property>
      <property name="value">
-      <number>3600</number>
+      <number>60</number>
      </property>
     </widget>
    </item>
-   <item row="0" column="5">
+   <item row="1" column="3">
     <widget class="QLabel" name="lbl_ticks_lbl">
      <property name="text">
       <string>ticks</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
+   <item row="2" column="0">
+    <widget class="QLabel" name="lbl_window_lbl">
+     <property name="text">
+      <string>window:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="3">
+    <widget class="QLineEdit" name="txt_window">
+     <property name="text">
+      <string>__ALL__</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="lbl_signal_lbl">
+     <property name="text">
+      <string>signal:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QSpinBox" name="spb_signal">
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="value">
+      <number>1</number>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
     <widget class="QLabel" name="lbl_cmd">
      <property name="text">
       <string>cmd:</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="4" column="1" colspan="3">
     <widget class="QLineEdit" name="txt_cmd">
+     <property name="text">
+      <string/>
+     </property>
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
-   <item row="1" column="2" colspan="2">
-    <widget class="QRadioButton" name="rad_allWindows">
-     <property name="text">
-      <string>all windows</string>
-     </property>
-     <property name="checked">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="4" colspan="2">
-    <widget class="QRadioButton" name="rad_singleWindow">
-     <property name="text">
-      <string>window:</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="3">
+   <item row="5" column="0" colspan="3">
     <widget class="QCheckBox" name="chb_setZeroAtStopSignal">
      <property name="text">
       <string>set 0 at stop signal</string>
@@ -102,14 +122,7 @@
      </property>
     </widget>
    </item>
-   <item row="2" column="3" colspan="3">
-    <widget class="QLineEdit" name="txt_window">
-     <property name="alignment">
-      <set>Qt::AlignCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="2" colspan="2">
+   <item row="6" column="1" colspan="2">
     <widget class="QPushButton" name="btn_startStop">
      <property name="text">
       <string>start</string>

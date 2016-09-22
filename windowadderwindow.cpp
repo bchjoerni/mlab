@@ -8,6 +8,8 @@ windowAdderWindow::windowAdderWindow( mdiHandler* mdi, QWidget *parent ) :
 {
     _ui->setupUi( this );
 
+    _ui->txt_errorLog->setText( ERROR_LOG_WINDOW_TITLE );
+
     connect( _ui->btn_ok, SIGNAL( clicked() ), this, SLOT( ok() ) );
     connect( _ui->btn_cancel, SIGNAL( clicked() ), this, SLOT( cancel() ) );
 }
@@ -108,6 +110,10 @@ void windowAdderWindow::ok()
     {
         _mdi->addSignalTimer( _ui->txt_signalTimer->text() );
     }
+    if( _ui->chb_errorLog->isChecked() )
+    {
+        _mdi->addErrorLogWindow( ERROR_LOG_WINDOW_TITLE ); // hardcoded in MDI-Handler!
+    }
 
 
     accept();
@@ -205,6 +211,10 @@ bool windowAdderWindow::checkWindowNames()
     if( _ui->chb_signalTimer->isChecked() )
     {
         names.push_back( _ui->txt_signalTimer->text() );
+    }
+    if( _ui->chb_errorLog->isChecked() )
+    {
+        names.push_back( ERROR_LOG_WINDOW_TITLE ); // hardcoded in MDI-Handler!
     }
 
     return namesValid( names );

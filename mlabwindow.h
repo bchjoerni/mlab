@@ -48,6 +48,7 @@ signals:
     void newValue( QString id, double value );
     void newString( QString id, QString string );
     void newSignal( QString receiver, char signal, QString cmd );
+    void newError( QString errorMsg );
     void closing();
     void changeWindowState( QString id, bool okay );
 };

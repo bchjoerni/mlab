@@ -1,10 +1,10 @@
-#include "allsavewindow.h"
-#include "ui_allsavewindow.h"
+#include "errorlogwindow.h"
+#include "ui_errorlogwindow.h"
 
-allSaveWindow::allSaveWindow( QWidget *parent ) :
+
+errorLogWindow::errorLogWindow( QWidget *parent ) :
     mLabWindow( parent ),
-    _ui( new Ui::allSaveWindow ), _intervalCounter( 0 ), _savedCounter( 0 ),
-    _recording( false )
+    _ui( new Ui::errorLogWindow ), _recording( false )
 {
     _ui->setupUi( this );
 
@@ -12,16 +12,16 @@ allSaveWindow::allSaveWindow( QWidget *parent ) :
              SLOT( selectFile() ) );
     connect( _ui->btn_startStop, SIGNAL( clicked() ), this,
              SLOT( startStopPressed() ) );
-    connect( _ui->btn_resetCounter, SIGNAL( clicked() ), this,
-             SLOT( resetCounter() ) );
+    connect( _ui->btn_clearLog, SIGNAL( clicked() ), this,
+             SLOT( clearLog() ) );
 }
 
-allSaveWindow::~allSaveWindow()
+errorLogWindow::~errorLogWindow()
 {
     delete _ui;
 }
 
-void allSaveWindow::mLabSignal( char signal, const QString& cmd )
+void errorLogWindow::mLabSignal( char signal, const QString& cmd )
 {
     if( signal == SIGNAL_SHUTDOWN
             || (signal == SIGNAL_STOP &&
@@ -35,7 +35,6 @@ void allSaveWindow::mLabSignal( char signal, const QString& cmd )
                                           EMERGENCY_STOP : STOP_RECEIVED );
             _ui->lbl_status->setStyleSheet( STYLE_ERROR );
             _ui->btn_selectFile->setEnabled( true );
-            _intervalCounter = 0;
             emit changeWindowState( this->windowTitle(), false );
         }
 
@@ -56,13 +55,13 @@ void allSaveWindow::mLabSignal( char signal, const QString& cmd )
     }
     else if( signal == 19 )
     {
-        resetCounter();
+        clearLog();
     }
 }
 
-void allSaveWindow::doUpdate()
+void errorLogWindow::mLabError( const QString& errorMsg )
 {
-    if( _recording && _intervalCounter%_ui->spb_ticks->value() == 0 )
+    if( _recording )
     {
         _fileStream.open( _fileName.toStdString().c_str(), std::ios_base::app );
 
@@ -70,34 +69,26 @@ void allSaveWindow::doUpdate()
         {
             _ui->lbl_status->setText( "ERROR!" );
             _ui->lbl_status->setStyleSheet( STYLE_ERROR );
-            emit newError( this->windowTitle() + ": unable to open file!" );
-            return;
+            _ui->txt_errorLog->append( QDateTime::currentDateTime().toString(
+                                           "yyyy-MM-dd_hh:mm:ss: " ) +
+                                       "Error: unable to open file!" );
         }
-
-        _fileStream << "{" << std::endl;
-        for( std::string s : _data )
+        else
         {
-            _fileStream << s << std::endl;
+            _fileStream << QDateTime::currentDateTime().toString(
+                               "yyyy-MM-dd_hh:mm:ss: " ).toStdString()
+                        << errorMsg.toStdString() << std::endl;
+            _fileStream.close();
         }
-        _fileStream << "}" << std::endl;
-        _fileStream.close();
-
-        _savedCounter++;
-        _ui->lbl_numSaved->setText( QString::number( _savedCounter ) );
-        _intervalCounter = 0;
     }
-    _data.clear();
-    _intervalCounter++;
+
+    _ui->txt_errorLog->append( QDateTime::currentDateTime().toString(
+                                   "yyyy-MM-dd_hh:mm:ss: " ) + errorMsg );
 }
 
-void allSaveWindow::putValue( const QString& id, double value )
+void errorLogWindow::selectFile()
 {
-    _data.push_back( id.toStdString() + ": " + std::to_string( value ) );
-}
-
-void allSaveWindow::selectFile()
-{
-    QString name = "mlab_all_" +
+    QString name = "mlab_errorlog_" +
         QDateTime::currentDateTime().toString( "yyyy-MM-dd_hh_mm_ss" ) + ".txt";
     _fileName = QFileDialog::getSaveFileName( this, "Select file", name,
                                               "text files (*.txt)" );
@@ -108,7 +99,7 @@ void allSaveWindow::selectFile()
     }
 }
 
-void allSaveWindow::startStopPressed()
+void errorLogWindow::startStopPressed()
 {
     bool start = (_ui->btn_startStop->text() == START_RECORDING);
 
@@ -119,7 +110,9 @@ void allSaveWindow::startStopPressed()
         {
             _ui->lbl_status->setText( "ERROR!" );
             _ui->lbl_status->setStyleSheet( STYLE_ERROR );
-            emit newError( this->windowTitle() + ": unable to open file!" );
+            _ui->txt_errorLog->append( QDateTime::currentDateTime().toString(
+                                           "yyyy-MM-dd_hh:mm:ss: " ) +
+                                       "Error: unable to open file!" );
             return;
         }
         _fileStream.close();
@@ -139,12 +132,10 @@ void allSaveWindow::startStopPressed()
     }
 
     _ui->btn_selectFile->setEnabled( !start );
-    _intervalCounter = 0;
     _recording = start;
 }
 
-void allSaveWindow::resetCounter()
+void errorLogWindow::clearLog()
 {
-    _savedCounter = 0;
-    _ui->lbl_numSaved->setText( "0" );
+    _ui->txt_errorLog->clear();
 }
