@@ -159,6 +159,8 @@
      <string>Windows</string>
     </property>
     <addaction name="act_addWindow"/>
+    <addaction name="act_tileWindows"/>
+    <addaction name="act_cascadeWindows"/>
     <addaction name="act_addUiCharWindows_old"/>
     <addaction name="act_addUICharWindows_new"/>
    </widget>
@@ -203,6 +205,16 @@
   <action name="act_addUICharWindows_new">
    <property name="text">
     <string>Add UI-Char Windows new</string>
+   </property>
+  </action>
+  <action name="act_cascadeWindows">
+   <property name="text">
+    <string>Cascade Windows</string>
+   </property>
+  </action>
+  <action name="act_tileWindows">
+   <property name="text">
+    <string>Tile Windows</string>
    </property>
   </action>
  </widget>

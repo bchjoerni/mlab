@@ -34,6 +34,8 @@ private slots:
     void emergencyStop();
     void startMeasurement();
     void stopMeasurement();
+    void tileWindows();
+    void cascadeWindows();
     void addWindow();
     void addUICharWindowsOld();
     void addUICharWindowsNew();

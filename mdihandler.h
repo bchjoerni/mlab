@@ -8,6 +8,8 @@
 #include <QIcon>
 #include <QRect>
 
+#include <vector>
+
 #include "easylogging++.h"
 #include "generalportwindow.h"
 #include "bopmgwindow.h"
@@ -81,6 +83,7 @@ signals:
 private:
     void addWindow( mLabWindow* window, Qt::WindowFlags flags,
                     const QString& title );
+    void positionWindows( const std::vector<std::vector<QString> >& windows );
 
     QMdiArea* _mdiArea;
     double _counter;

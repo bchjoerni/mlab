@@ -36,6 +36,10 @@ mainWindow::~mainWindow()
 void mainWindow::connectActions()
 {
     connect( _ui->act_exit, SIGNAL( triggered() ), this, SLOT( exit() ) );
+    connect( _ui->act_tileWindows, SIGNAL( triggered() ), this,
+             SLOT( tileWindows() ) );
+    connect( _ui->act_cascadeWindows, SIGNAL( triggered() ), this,
+             SLOT( cascadeWindows() ) );
     connect( _ui->act_addWindow, SIGNAL( triggered() ), this,
              SLOT( addWindow() ) );
     connect( _ui->act_addUiCharWindows_old, SIGNAL( triggered() ), this,
@@ -97,6 +101,16 @@ void mainWindow::stopMeasurement()
     _ui->lbl_updateStatus->setText( " paused  " );
     _ui->lbl_updateStatus->setStyleSheet( "color: red" );
     LOG(INFO) << "update timer stopped";
+}
+
+void mainWindow::tileWindows()
+{
+    _ui->mdiArea->tileSubWindows();
+}
+
+void mainWindow::cascadeWindows()
+{
+    _ui->mdiArea->cascadeSubWindows();
 }
 
 void mainWindow::addWindow()

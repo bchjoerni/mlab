@@ -292,117 +292,42 @@ void mdiHandler::windowClosed()
 
 void mdiHandler::addUICharWindowsNew()
 {
-    const int border = 1;
+    const QString s11  = "UI Characteristic";
+    const QString s12  = "Thermocouple 1";
+    const QString s13  = "Thermocouple 2";
+    const QString s21  = "Heating";
+    const QString s22  = "MS 8050";
+    const QString s31  = "All value saver";
+    const QString s32  = "Pair value saver";
+    const QString s33  = "screenshot";
+    const QString s34  = "scratchpad";
+    const QString s41  = ERROR_LOG_WINDOW_TITLE;
+    const QString s42  = "network remote";
+    const QString s51  = "signal timer";
+    const QString s52  = "simple graph";
 
-    const QString s1  = "UI Characteristic";
-    const QString s2  = "Thermocouple 1";
-    const QString s3  = "Thermocouple 2";
-    const QString s4  = "Heating";
-    const QString s5  = "Temperature Calculator";
-    const QString s6  = "Flow Meter";
-    const QString s7  = "UI Value Saver";
-    const QString s8  = "Scratchpad";
-    const QString s9  = "All Value Saver";
-    const QString s10 = "Screenshot";
-    const QString s11 = "Graph";
+    addEaps8000UsbUICharWindow( s11 );
+    addThermocoupleWindow(      s12 );
+    addThermocoupleWindow(      s13 );
+    addEaps8000UsbWindow(       s21 );
+    addMs8050Window(            s22 );
+    addAllSaveWindow(           s31 );
+    addPairSaveWindow(          s32 );
+    addScreenshotWindow(        s33 );
+    addScratchpadWindow(        s34 );
+    addErrorLogWindow(          s41 );
+    addNetworkRemoteWindow(     s42 );
+    addSignalTimer(             s51 );
+    addSimpleGraph(             s52 );
 
-    QRect r1;
-    QRect r2;
-    QRect r3;
-    QRect r4;
-    QRect r5;
-    QRect r6;
-    QRect r7;
-    QRect r8;
-    QRect r9;
-    QRect r10;
-    QRect r11;
+    std::vector<QString> c1 { s11, s12, s13 };
+    std::vector<QString> c2 { s21, s22 };
+    std::vector<QString> c3 { s31, s32, s33, s34 };
+    std::vector<QString> c4 { s41, s42 };
+    std::vector<QString> c5 { s51, s52 };
+    std::vector<std::vector<QString> > windows { c1, c2, c3, c4, c5 };
 
-    addEaps8000UsbUICharWindow( s1 );
-    addThermocoupleWindow(      s2 );
-    addThermocoupleWindow(      s3 );
-    addEaps8000UsbWindow(       s4 );
-    addCalcTemperatureWindow(   s5 );
-    addFlowMeterWindow(         s6 );
-    addPairSaveWindow(          s7 );
-    addScratchpadWindow(        s8 );
-    addAllSaveWindow(           s9 );
-    addScreenshotWindow(        s10 );
-    addSimpleGraph(             s11 );
-
-    auto subWindows = _mdiArea->subWindowList();
-    for( QMdiSubWindow* w : subWindows )
-    {
-        if( w->windowTitle() == s1 )
-        {
-            w->setGeometry( border, border,
-                            w->geometry().width(), w->geometry().height() );
-            r1 = w->geometry();
-        }
-        else if( w->windowTitle() == s2 )
-        {
-            w->setGeometry( r1.x(), border*2 + r1.height(),
-                            w->geometry().width(), w->geometry().height() );
-            r2 = w->geometry();
-        }
-        else if( w->windowTitle() == s3 )
-        {
-            w->setGeometry( r1.x(), r1.height() + r2.height() + 3*border,
-                            w->geometry().width(), w->geometry().height() );
-            r3 = w->geometry();
-        }
-        else if( w->windowTitle() == s4 )
-        {
-            w->setGeometry( r1.x() + border + (r1.width() > r2.width() ?
-                                r1.width() : r2.width()), border,
-                            w->geometry().width(), w->geometry().height() );
-            r4 = w->geometry();
-        }
-        else if( w->windowTitle() == s5 )
-        {
-            w->setGeometry( r4.x(), r4.height() + 2*border,
-                            w->geometry().width(), w->geometry().height() );
-            r5 = w->geometry();
-        }
-        else if( w->windowTitle() == s6 )
-        {
-            w->setGeometry( r4.x() + border + (r4.width() > r5.width() ?
-                                r4.width() : r5.width()), border,
-                            w->geometry().width(), w->geometry().height() );
-            r6 = w->geometry();
-        }
-        else if( w->windowTitle() == s7 )
-        {
-            w->setGeometry( r6.x(), r6.height() + 2*border,
-                            w->geometry().width(), w->geometry().height() );
-            r7 = w->geometry();
-        }
-        else if( w->windowTitle() == s8 )
-        {
-            w->setGeometry( r6.x(), r6.height() + r7.height() + 3*border,
-                            w->geometry().width(), w->geometry().height()*4/5 );
-            r8 = w->geometry();
-        }
-        else if( w->windowTitle() == s9 )
-        {
-            w->setGeometry( r6.x() + border + (r6.width() > r7.width() ?
-                                r6.width() : r7.width()), border,
-                            w->geometry().width(), w->geometry().height() );
-            r9 = w->geometry();
-        }
-        else if( w->windowTitle() == s10 )
-        {
-            w->setGeometry( r9.x(), r9.height() + 2*border,
-                            w->geometry().width(), w->geometry().height() );
-            r10 = w->geometry();
-        }
-        else if( w->windowTitle() == s11 )
-        {
-            w->setGeometry( r9.x(), r9.height() + r10.height() + 3*border,
-                            r4.width(), r4.height() );
-            r11 = w->geometry();
-        }
-    }
+    positionWindows( windows );
 }
 
 
@@ -510,6 +435,38 @@ void mdiHandler::addUICharWindowsOld()
                             r2.width(), r2.height() );
             r10 = w->geometry();
         }
+    }
+}
+
+void mdiHandler::positionWindows( const std::vector<std::vector<QString> >&
+                                   windows )
+{
+    int border = 1;
+    int xPos = border;
+    int yPos = border;
+    int xPosChange = 0;
+    auto subWindows = _mdiArea->subWindowList();
+
+    for( unsigned int i = 0; i < windows.size(); i++ )
+    {
+        for( unsigned int k = 0; k < windows[i].size(); k++ )
+        {
+            for( QMdiSubWindow* w : subWindows )
+            {
+                if( w->windowTitle() == windows[i][k] )
+                {
+                    w->setGeometry( xPos, yPos, w->width(), w->height() );
+                    if( w->width() > xPosChange )
+                    {
+                        xPosChange = w->width();
+                    }
+                    yPos += w->height() + border;
+                }
+            }
+        }
+        xPos += xPosChange + border;
+        xPosChange = 0;
+        yPos = border;
     }
 }
 
