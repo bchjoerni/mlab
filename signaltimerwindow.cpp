@@ -49,6 +49,7 @@ void signalTimerWindow::doUpdate()
             emit newSignal( _ui->txt_window->text(),
                             static_cast<char>( _ui->spb_signal->value() ),
                             _ui->txt_cmd->text() );
+            _ui->spb_ticks->setValue( _ticks );
 
             if( _ui->rad_singleShot->isChecked() )
             {
