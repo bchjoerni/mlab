@@ -28,7 +28,7 @@ void thermocouplePort::setLabPortVariables()
     _initValueCounter   = 0;
     _numInitValues      = 2;
     _minBytesRead       = -10;
-    _writingPauseMs     = 200;
+    _writingPauseMs     = 230;
     _bytesError         = 20;
     _inTimeValueCounter = 0;
     _numInTimeValues    = 0;

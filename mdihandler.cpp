@@ -265,6 +265,8 @@ void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
              SLOT( putValue( QString, double ) ) );
     connect( window, SIGNAL( newSignal( QString, char, QString ) ), this,
              SLOT( mLabSignal( QString, char, QString ) ) );
+    connect( window, SIGNAL( newError( QString ) ), this,
+             SLOT( windowError( QString ) ) );
     connect( window, SIGNAL( changeWindowState( QString, bool ) ), this,
              SLOT( changeWindowState( QString, bool ) ) );
 }
