@@ -28,7 +28,7 @@ void thermocouplePort::setLabPortVariables()
     _initValueCounter   = 0;
     _numInitValues      = 2;
     _minBytesRead       = -10;
-    _writingPauseMs     = 230;
+    _writingPauseMs     = 220;
     _bytesError         = 20;
     _inTimeValueCounter = 0;
     _numInTimeValues    = 0;
@@ -133,8 +133,11 @@ void thermocouplePort::nextMsg()
 
 void thermocouplePort::noAnswerReceived()
 {
-    if( _msgToSend.size() == 0 )
+    if( _msgToSend.size() == 0
+            || _expectedAnswer.size() == 0 )
     {
+        _msgToSend.clear();
+        _expectedAnswer.clear();
         return;
     }
 
