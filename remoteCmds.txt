@@ -27,6 +27,8 @@ REMOTE commads:
 35: set power by setting current
 36: set resistance by setting voltage
 37: set resistance by setting current
+38: change setValue by value
+39: change setValue by factor
 
 40-59: commands for settings:
 -----------------------------

@@ -162,7 +162,7 @@ void eaps8000UsbWindow::mLabSignal( char signal, const QString& cmd )
         }
     }
     else if( signal >= 31
-             && signal <= 37 )
+             && signal <= 39 )
     {
         if( !_port.isRunning() )
         {
@@ -221,6 +221,18 @@ void eaps8000UsbWindow::mLabSignal( char signal, const QString& cmd )
         {
             type == RESISTANCE_BY_CURRENT;
             unit = UNIT_OHM;
+        }
+        else if( signal == 38 )
+        {
+            type = _ui->cob_setValue->currentText();
+            unit = _ui->cob_setValueUnit->currentText();
+            value += _ui->dsp_setValue->value();
+        }
+        else if( signal == 39 )
+        {
+            type = _ui->cob_setValue->currentText();
+            unit = _ui->cob_setValueUnit->currentText();
+            value *= _ui->dsp_setValue->value();
         }
 
         int indexType = _ui->cob_setValue->findText( type );

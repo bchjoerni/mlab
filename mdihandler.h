@@ -32,6 +32,7 @@
 #include "ms8050window.h"
 #include "tpg26xwindow.h"
 #include "signaltimerwindow.h"
+#include "limitsignalwindow.h"
 #include "errorlogwindow.h"
 
 const QString ERROR_LOG_WINDOW_TITLE = "error logger";
@@ -65,6 +66,7 @@ public:
     void addNetworkRemoteWindow( const QString& title );
     void addTpg26xWindow( const QString& title );
     void addSignalTimer( const QString& title );
+    void addLimitSignalWindow( const QString& title );
     void addErrorLogWindow( const QString& title );
     QStringList getWindowNames();
     void addUICharWindowsNew();

@@ -243,6 +243,13 @@ void mdiHandler::addSignalTimer( const QString &title )
     addWindow( window, window->windowFlags(), title );
 }
 
+void mdiHandler::addLimitSignalWindow( const QString &title )
+{
+    LOG(INFO) << "add limitSignalWindow";
+    limitSignalWindow* window = new limitSignalWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addErrorLogWindow( const QString &title )
 {
     LOG(INFO) << "add errorLogWindow";

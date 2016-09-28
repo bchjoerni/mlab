@@ -50,7 +50,8 @@ SOURCES += main.cpp\
     signaltimerwindow.cpp \
     screenuploaderwindow.cpp \
     networkremotewindow.cpp \
-    errorlogwindow.cpp
+    errorlogwindow.cpp \
+    limitsignalwindow.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -90,7 +91,8 @@ HEADERS  += mainwindow.h \
     signaltimerwindow.h \
     screenuploaderwindow.h \
     networkremotewindow.h \
-    errorlogwindow.h
+    errorlogwindow.h \
+    limitsignalwindow.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -115,7 +117,8 @@ FORMS    += mainwindow.ui \
     signaltimerwindow.ui \
     screenuploaderwindow.ui \
     networkremotewindow.ui \
-    errorlogwindow.ui
+    errorlogwindow.ui \
+    limitsignalwindow.ui
 
 CONFIG   += c++11
 

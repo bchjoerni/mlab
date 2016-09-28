@@ -110,6 +110,10 @@ void windowAdderWindow::ok()
     {
         _mdi->addSignalTimer( _ui->txt_signalTimer->text() );
     }
+    if( _ui->chb_limitSignal->isChecked() )
+    {
+        _mdi->addLimitSignalWindow( _ui->txt_limitSignal->text() );
+    }
     if( _ui->chb_errorLog->isChecked() )
     {
         _mdi->addErrorLogWindow( ERROR_LOG_WINDOW_TITLE ); // hardcoded in MDI-Handler!
@@ -211,6 +215,10 @@ bool windowAdderWindow::checkWindowNames()
     if( _ui->chb_signalTimer->isChecked() )
     {
         names.push_back( _ui->txt_signalTimer->text() );
+    }
+    if( _ui->chb_limitSignal->isChecked() )
+    {
+        names.push_back( _ui->txt_limitSignal->text() );
     }
     if( _ui->chb_errorLog->isChecked() )
     {
