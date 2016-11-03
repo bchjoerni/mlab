@@ -5,6 +5,7 @@
 #include <QString>
 #include <QFileDialog>
 #include <QDateTime>
+#include <QMessageBox>
 
 #include <fstream>
 
@@ -59,6 +60,7 @@ private:
     double _y;
     std::fstream _fileStream;
     bool _recording;
+    bool _dataRecorded;
 };
 
 #endif // PAIRSAVEWINDOW_H

@@ -4,7 +4,7 @@
 pairSaveWindow::pairSaveWindow( QWidget *parent ) :
     mLabWindow( parent ),
     _ui( new Ui::pairSaveWindow ), _intervalCounter( 0 ), _savedCounter( 0 ),
-    _recording( false )
+    _recording( false ), _dataRecorded( false )
 {
     _ui->setupUi( this );
 
@@ -37,6 +37,9 @@ void pairSaveWindow::mLabSignal( char signal, const QString& cmd )
                                           EMERGENCY_STOP : STOP_RECEIVED );
             _ui->lbl_status->setStyleSheet( STYLE_ERROR );
             _ui->btn_selectFile->setEnabled( true );
+            _ui->cob_delimiter->setEnabled( true );
+            _ui->cob_x->setEnabled( true );
+            _ui->cob_y->setEnabled( true );
             _intervalCounter = 0;
             emit changeWindowState( this->windowTitle(), false );
         }
@@ -78,6 +81,7 @@ void pairSaveWindow::doUpdate()
         _fileStream << _x << getDelimiter().toStdString() << _y << std::endl;
         _fileStream.close();
 
+        _dataRecorded = true;
         _savedCounter++;
         _ui->lbl_numSaved->setText( QString::number( _savedCounter ) );
         _intervalCounter = 0;
@@ -122,6 +126,7 @@ void pairSaveWindow::selectFile()
     {
         _ui->lbl_fileName->setText( _fileName );
         _ui->btn_startStop->setEnabled( true );
+        _dataRecorded = false;
     }
 }
 
@@ -131,6 +136,19 @@ void pairSaveWindow::startStopPressed()
 
     if( start )
     {
+        if( _dataRecorded )
+        {
+            if( QMessageBox::warning( this, "Warning", "Old data will be "
+                                      "overwritten!\nContinue?",
+                                      QMessageBox::StandardButtons(
+                                          QMessageBox::Yes | QMessageBox::No ),
+                                      QMessageBox::StandardButton::No )
+                    == QMessageBox::StandardButton::No )
+            {
+                return;
+            }
+        }
+
         _fileStream.open( _fileName.toStdString().c_str(), std::ios_base::out );
         if( !_fileStream.is_open() )
         {

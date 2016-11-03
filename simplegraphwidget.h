@@ -31,22 +31,20 @@ private:
     void drawAxes( QPainter *painter );
     QString getMinValueString( const QString& id );
     QString getMaxValueString( const QString& id );
-    int getXPosition( double value, double min, double max );
-    int getYPosition( double value, double min, double max );
+    int getXPosition( double value, double min, double max, int textHeight );
+    int getYPosition( double value, double min, double max, int textHeight );
 
     std::map<QString, std::vector<double> > _data;
     QString _xId;
     QString _yId;
 
-    const int LEFT_BORDER   = 30;
-    const int BOTTOM_BORDER = 30;
-    const int RIGHT_BORDER  = 10;
-    const int TOP_BORDER    = 10;
-    const int TEXT_DISTANCE_LEFT   = 20;
-    const int TEXT_DISTANCE_BOTTOM = 10;
-    const int TEXT_START_FACTOR    = 3;
-    const int NUM_CHARS_MAX_VALUE  = 6;
-    const int CHAR_WIDTH           = 6;
+    int PRECISION_MAX_VALUES    = 4;
+    int DIST_LEFT_BORDER_TEXT   = 1;
+    int DIST_LEFT_TEXT_LINE     = 10;
+    int DIST_BOTTOM_BORDER_TEXT = 10;
+    int DIST_BOTTOM_TEXT_LINE   = 1;
+    int DIST_RIGHT_BORDER_LINE  = 10;
+    int DIST_TOP_BORDER_LINE    = 10;
 };
 
 #endif // SIMPLEGRAPHWIDGET_H

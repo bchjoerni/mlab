@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>305</width>
-    <height>417</height>
+    <width>318</width>
+    <height>377</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -44,6 +44,18 @@
       <string>commands</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>8</number>
+      </property>
+      <property name="rightMargin">
+       <number>1</number>
+      </property>
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="lbl_urlCmd_lbl">
         <property name="text">
@@ -126,6 +138,18 @@
       <string>screen upload</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>8</number>
+      </property>
+      <property name="rightMargin">
+       <number>1</number>
+      </property>
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="lbl_urlUpload_lbl">
         <property name="text">

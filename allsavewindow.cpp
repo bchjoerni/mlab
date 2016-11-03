@@ -4,7 +4,7 @@
 allSaveWindow::allSaveWindow( QWidget *parent ) :
     mLabWindow( parent ),
     _ui( new Ui::allSaveWindow ), _intervalCounter( 0 ), _savedCounter( 0 ),
-    _recording( false )
+    _recording( false ), _dataRecorded( false )
 {
     _ui->setupUi( this );
 
@@ -82,6 +82,7 @@ void allSaveWindow::doUpdate()
         _fileStream << "}" << std::endl;
         _fileStream.close();
 
+        _dataRecorded = true;
         _savedCounter++;
         _ui->lbl_numSaved->setText( QString::number( _savedCounter ) );
         _intervalCounter = 0;
@@ -105,6 +106,7 @@ void allSaveWindow::selectFile()
     {
         _ui->lbl_fileName->setText( _fileName );
         _ui->btn_startStop->setEnabled( true );
+        _dataRecorded = false;
     }
 }
 
@@ -114,6 +116,19 @@ void allSaveWindow::startStopPressed()
 
     if( start )
     {
+        if( _dataRecorded )
+        {
+            if( QMessageBox::warning( this, "Warning", "Old data will be "
+                                      "overwritten!\nContinue?",
+                                      QMessageBox::StandardButtons(
+                                          QMessageBox::Yes | QMessageBox::No ),
+                                      QMessageBox::StandardButton::No )
+                    == QMessageBox::StandardButton::No )
+            {
+                return;
+            }
+        }
+
         _fileStream.open( _fileName.toStdString().c_str(), std::ios_base::out );
         if( !_fileStream.is_open() )
         {

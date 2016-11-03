@@ -20,9 +20,9 @@ void ms8050Port::setSerialValues()
 
 void ms8050Port::setLabPortVariables()
 {
-    _initTimeoutMs      = 700;
+    _initTimeoutMs      = 100;
     _initValueCounter   = 0;
-    _numInitValues      = 1;
+    _numInitValues      = 0;
     _minBytesRead       = 14;
     _writingPauseMs     = 200;
     _bytesError         = 20;
@@ -132,7 +132,6 @@ void ms8050Port::interpretMessage( const QByteArray &msg )
         default: emit portError( "Protocol error!" );
     }
 
-    _initValueCounter++;
     emit newValue( value, unit );
 }
 

@@ -20,6 +20,7 @@ void simpleGraphWidget::paintEvent( QPaintEvent *event )
     std::vector<double>& y = _data[_yId];
     if( x.size() > 1 && y.size() > 1 )
     {
+        int textHeight = painter.fontMetrics().height();
         double xMin = *std::min_element( x.begin(), x.end() );
         double xMax = *std::max_element( x.begin(), x.end() );
         double yMin = *std::min_element( y.begin(), y.end() );
@@ -27,36 +28,48 @@ void simpleGraphWidget::paintEvent( QPaintEvent *event )
 
         for( unsigned int i = 0; i < (x > y ? y.size()-1 : x.size()-1); i++ )
         {
-            painter.drawLine( getXPosition( x[x.size()-1-i], xMin, xMax ),
-                    getYPosition( y[y.size()-1-i], yMin, yMax ),
-                    getXPosition( x[x.size()-2-i], xMin, xMax ),
-                    getYPosition( y[y.size()-2-i], yMin, yMax ) );
+            painter.drawLine( getXPosition( x[x.size()-1-i], xMin, xMax,
+                              textHeight ),
+                    getYPosition( y[y.size()-1-i], yMin, yMax, textHeight ),
+                    getXPosition( x[x.size()-2-i], xMin, xMax, textHeight ),
+                    getYPosition( y[y.size()-2-i], yMin, yMax, textHeight ) );
         }
     }
 }
 
-int simpleGraphWidget::getXPosition( double value, double min, double max )
+int simpleGraphWidget::getXPosition( double value, double min, double max,
+                                  int textHeight )
 {
+    int distBorderLineLeft = DIST_LEFT_BORDER_TEXT + textHeight +
+            DIST_LEFT_TEXT_LINE;
+
     if( min == max )
     {
-        return LEFT_BORDER + (this->width() - LEFT_BORDER - RIGHT_BORDER)/2;
+        return distBorderLineLeft + (this->width() - distBorderLineLeft -
+                                     DIST_RIGHT_BORDER_LINE)/2;
     }
 
-    return static_cast<int>( LEFT_BORDER + 1 + (value - min)/
-                             (max-min)*(this->width() - LEFT_BORDER
-                                        - RIGHT_BORDER - 2) );
+    return static_cast<int>( distBorderLineLeft + 1 + (value - min)/
+                             (max-min)*(this->width() - distBorderLineLeft
+                                        - DIST_RIGHT_BORDER_LINE - 2) );
 }
 
-int simpleGraphWidget::getYPosition( double value, double min, double max )
+int simpleGraphWidget::getYPosition( double value, double min, double max,
+                                  int textHeight)
 {
+    int distBorderLineBottom = DIST_BOTTOM_BORDER_TEXT + textHeight +
+            DIST_BOTTOM_TEXT_LINE;
+
     if( min == max )
     {
-        return TOP_BORDER + (this->height() - BOTTOM_BORDER - TOP_BORDER)/2;
+        return DIST_TOP_BORDER_LINE + (this->height() - distBorderLineBottom -
+                                       DIST_TOP_BORDER_LINE)/2;
     }
 
-    return static_cast<int>( this->height() - BOTTOM_BORDER - 2 - (value - min)/
-                              (max-min)*(this->height() - TOP_BORDER
-                                         - BOTTOM_BORDER - 2) );
+    return static_cast<int>( this->height() - distBorderLineBottom - 2 -
+                             (value - min)/(max-min)*
+                             (this->height() - DIST_TOP_BORDER_LINE
+                                         - distBorderLineBottom - 2) );
 }
 
 void simpleGraphWidget::drawAxes( QPainter *painter )
@@ -66,33 +79,50 @@ void simpleGraphWidget::drawAxes( QPainter *painter )
 
     QString value;
     painter->setPen( Qt::black );
-    painter->drawLine( LEFT_BORDER,
-                       this->height() - BOTTOM_BORDER,
-                       this->width() - RIGHT_BORDER,
-                       this->height() - BOTTOM_BORDER );
-    painter->drawLine( LEFT_BORDER, TOP_BORDER, LEFT_BORDER,
-                       this->height() - BOTTOM_BORDER );
+    int textHeight = painter->fontMetrics().height();
+    int distBorderLineLeft = DIST_LEFT_BORDER_TEXT + textHeight +
+            DIST_LEFT_TEXT_LINE;
+    int distBorderLineBottom = DIST_BOTTOM_BORDER_TEXT + textHeight +
+            DIST_BOTTOM_TEXT_LINE;
 
-    painter->drawText( this->width()/3,
-                       this->height() - TEXT_DISTANCE_BOTTOM,
+    painter->drawLine( distBorderLineLeft,
+                       this->height() - distBorderLineBottom,
+                       this->width() - DIST_RIGHT_BORDER_LINE,
+                       this->height() - distBorderLineBottom );
+    painter->drawLine( distBorderLineLeft,
+                       DIST_TOP_BORDER_LINE,
+                       distBorderLineLeft,
+                       this->height() - distBorderLineBottom );
+
+    painter->drawText( distBorderLineLeft +
+                       ((this->width() - distBorderLineLeft
+                         - DIST_RIGHT_BORDER_LINE) -
+                        painter->fontMetrics().width( _xId ) )/2,
+                       this->height() - DIST_BOTTOM_BORDER_TEXT,
                        _xId );
     value = getMinValueString( _xId );
-    painter->drawText( LEFT_BORDER, this->height() - TEXT_DISTANCE_BOTTOM,
+    painter->drawText( distBorderLineLeft,
+                       this->height() - DIST_BOTTOM_BORDER_TEXT,
                        value );
     value = getMaxValueString( _xId );
-    painter->drawText( this->width() - RIGHT_BORDER - value.size()*CHAR_WIDTH,
-                       this->height() - TEXT_DISTANCE_BOTTOM,
+    painter->drawText( this->width() - DIST_RIGHT_BORDER_LINE -
+                       painter->fontMetrics().width( value ),
+                       this->height() - DIST_BOTTOM_BORDER_TEXT,
                        value );
 
     painter->rotate( 270 );
-    painter->drawText( -(this->height() - BOTTOM_BORDER)*2/3,
-                       TEXT_DISTANCE_LEFT, _yId );
+    painter->drawText( -this->height() + distBorderLineBottom +
+                       ((this->height() - DIST_TOP_BORDER_LINE -
+                          distBorderLineBottom) -
+                         painter->fontMetrics().width( _yId ))/2,
+                       DIST_LEFT_BORDER_TEXT + textHeight, _yId );
     value = getMinValueString( _yId );
-    painter->drawText( -(this->height() - BOTTOM_BORDER),
-                       TEXT_DISTANCE_LEFT, value );
+    painter->drawText( -(this->height() - distBorderLineBottom),
+                       DIST_LEFT_BORDER_TEXT + textHeight, value );
     value = getMaxValueString( _yId );
-    painter->drawText( -TOP_BORDER - value.size()*CHAR_WIDTH,
-                       TEXT_DISTANCE_LEFT, value );
+    painter->drawText( -DIST_TOP_BORDER_LINE -
+                       painter->fontMetrics().width( value ),
+                       DIST_LEFT_BORDER_TEXT + textHeight, value );
     painter->rotate( -270 );
 }
 
@@ -102,7 +132,7 @@ QString simpleGraphWidget::getMinValueString( const QString& id )
     {
         double minValue= *std::min_element( _data[id].begin(),
                                             _data[id].end() );
-        return QString::number( minValue ).left( NUM_CHARS_MAX_VALUE );
+        return QString::number( minValue, 'g', PRECISION_MAX_VALUES );
     }
     return "";
 }
@@ -113,7 +143,7 @@ QString simpleGraphWidget::getMaxValueString( const QString& id )
     {
         double maxValue= *std::max_element( _data[id].begin(),
                                             _data[id].end() );
-        return QString::number( maxValue ).left( NUM_CHARS_MAX_VALUE );
+        return QString::number( maxValue, 'g', PRECISION_MAX_VALUES );
     }
     return "";
 }

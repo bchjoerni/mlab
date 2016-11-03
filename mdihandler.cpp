@@ -304,6 +304,7 @@ void mdiHandler::addUICharWindowsNew()
     const QString s13  = "Thermocouple 2";
     const QString s21  = "Heating";
     const QString s22  = "MS 8050";
+    const QString s23  = "Pressure Gauge";
     const QString s31  = "All value saver";
     const QString s32  = "Pair value saver";
     const QString s33  = "screenshot";
@@ -318,6 +319,7 @@ void mdiHandler::addUICharWindowsNew()
     addThermocoupleWindow(      s13 );
     addEaps8000UsbWindow(       s21 );
     addMs8050Window(            s22 );
+    addTpg26xWindow(            s23 );
     addAllSaveWindow(           s31 );
     addPairSaveWindow(          s32 );
     addScreenshotWindow(        s33 );
@@ -328,7 +330,7 @@ void mdiHandler::addUICharWindowsNew()
     addSimpleGraph(             s52 );
 
     std::vector<QString> c1 { s11, s12, s13 };
-    std::vector<QString> c2 { s21, s22 };
+    std::vector<QString> c2 { s21, s22, s23 };
     std::vector<QString> c3 { s31, s32, s33, s34 };
     std::vector<QString> c4 { s41, s42 };
     std::vector<QString> c5 { s51, s52 };

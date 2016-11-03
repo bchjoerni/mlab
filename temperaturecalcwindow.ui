@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>385</width>
-    <height>440</height>
+    <width>369</width>
+    <height>422</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,6 +20,18 @@
       <string>quadratic</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>8</number>
+      </property>
+      <property name="rightMargin">
+       <number>1</number>
+      </property>
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
       <item row="1" column="0">
        <widget class="QLabel" name="lbl_quadraticCalcTemperatureCelsius_lbl">
         <property name="text">
@@ -164,6 +176,18 @@
       <string>linear</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>8</number>
+      </property>
+      <property name="rightMargin">
+       <number>1</number>
+      </property>
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="lbl_initR_lbl">
         <property name="text">

@@ -119,16 +119,20 @@ void eaps8000UsbWindow::mLabSignal( char signal, const QString& cmd )
     {
         emergencyStop();
     }
-    else if( signal == SIGNAL_STOP && _port.isOpen() )
+    else if( signal == SIGNAL_STOP )
     {
-        _port.setValue( eaps8000UsbPort::setValueType::setTypeVoltage, 0.0,
-                        false );
-        _port.setValue( eaps8000UsbPort::setValueType::setTypeCurrent, 0.0,
-                        false );
+        if( _ui->chb_setZeroAtStopSignal->isChecked()
+                && _port.isOpen() )
+        {
+            _port.setValue( eaps8000UsbPort::setValueType::setTypeVoltage, 0.0,
+                            false );
+            _port.setValue( eaps8000UsbPort::setValueType::setTypeCurrent, 0.0,
+                            false );
 
-        _ui->lbl_info->setText( STOP_RECEIVED );
-        _ui->lbl_info->setStyleSheet( STYLE_ERROR );
-        emit changeWindowState( this->windowTitle(), false );
+            _ui->lbl_info->setText( STOP_RECEIVED );
+            _ui->lbl_info->setStyleSheet( STYLE_ERROR );
+            emit changeWindowState( this->windowTitle(), false );
+        }
     }
     else if( signal == 12 )
     {

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>411</width>
-    <height>411</height>
+    <width>405</width>
+    <height>289</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -23,6 +23,18 @@
       <enum>QFrame::Raised</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>1</number>
+      </property>
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
       <item row="0" column="0">
        <widget class="QLabel" name="lbl_status">
         <property name="styleSheet">
@@ -92,6 +104,18 @@
       <enum>QFrame::Box</enum>
      </property>
      <layout class="QGridLayout" name="gridLayout_7">
+      <property name="leftMargin">
+       <number>1</number>
+      </property>
+      <property name="topMargin">
+       <number>1</number>
+      </property>
+      <property name="rightMargin">
+       <number>1</number>
+      </property>
+      <property name="bottomMargin">
+       <number>1</number>
+      </property>
       <item row="5" column="0">
        <widget class="QFrame" name="frame_measuredValues">
         <property name="frameShape">
@@ -101,6 +125,18 @@
          <enum>QFrame::Raised</enum>
         </property>
         <layout class="QGridLayout" name="gridLayout_6">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item row="0" column="0">
           <widget class="QLabel" name="lbl_measuredValues_lbl">
            <property name="text">
@@ -128,8 +164,8 @@
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>20</width>
-          <height>40</height>
+          <width>1</width>
+          <height>1</height>
          </size>
         </property>
        </spacer>
@@ -137,6 +173,18 @@
       <item row="1" column="0">
        <widget class="QFrame" name="frame_setRpm">
         <layout class="QGridLayout" name="gridLayout_5">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item row="1" column="0">
           <widget class="QLabel" name="lbl_setRpm_lbl">
            <property name="text">
@@ -202,6 +250,18 @@
          <enum>QFrame::Raised</enum>
         </property>
         <layout class="QGridLayout" name="gridLayout">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item row="0" column="0">
           <widget class="QLabel" name="lbl_rpm_lbl">
            <property name="text">
@@ -244,6 +304,18 @@
          <enum>QFrame::Raised</enum>
         </property>
         <layout class="QGridLayout" name="gridLayout_2">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item row="0" column="0">
           <widget class="QLabel" name="lbl_pressure_lbl">
            <property name="text">
@@ -286,6 +358,18 @@
          <enum>QFrame::Plain</enum>
         </property>
         <layout class="QGridLayout" name="gridLayout_3">
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
          <item row="0" column="0">
           <widget class="QLabel" name="lbl_running">
            <property name="text">

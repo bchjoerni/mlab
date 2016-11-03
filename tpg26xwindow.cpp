@@ -147,15 +147,20 @@ void tpg26xWindow::pressureGauge1Update( double mbarPressure )
         {
             errorNum = 7;
         }
-        CLOG(INFO, "v") << this->windowTitle().toStdString()
-                        << ": " << PRESSURE_GAUGE_1.toStdString() << ": "
-                        << PR_ERRORS[errorNum].toStdString();
-        LOG(INFO) << this->windowTitle().toStdString() << ": "
-                  << PRESSURE_GAUGE_1.toStdString() << " : "
-                  << PR_ERRORS[errorNum].toStdString();
         _ui->txt_gauge1->setText( PR_ERRORS[errorNum] );
-        emit newError( this->windowTitle() + ": " + PRESSURE_GAUGE_1 + ": "
-                       + PR_ERRORS[errorNum] );
+
+        if( errorNum != 5
+                || !_ui->chb_noGauge1->isChecked() )
+        {
+            CLOG(INFO, "v") << this->windowTitle().toStdString()
+                            << ": " << PRESSURE_GAUGE_1.toStdString() << ": "
+                            << PR_ERRORS[errorNum].toStdString();
+            LOG(INFO) << this->windowTitle().toStdString() << ": "
+                      << PRESSURE_GAUGE_1.toStdString() << " : "
+                      << PR_ERRORS[errorNum].toStdString();
+            emit newError( this->windowTitle() + ": " + PRESSURE_GAUGE_1 + ": "
+                           + PR_ERRORS[errorNum] );
+        }
     }
 }
 
@@ -180,15 +185,20 @@ void tpg26xWindow::pressureGauge2Update( double mbarPressure )
         {
             errorNum = 7;
         }
-        CLOG(INFO, "v") << this->windowTitle().toStdString()
-                        << ": " << PRESSURE_GAUGE_2.toStdString() << ": "
-                        << PR_ERRORS[errorNum].toStdString();
-        LOG(INFO) << this->windowTitle().toStdString() << ": "
-                  << PRESSURE_GAUGE_2.toStdString() << " : "
-                  << PR_ERRORS[errorNum].toStdString();
         _ui->txt_gauge2->setText( PR_ERRORS[errorNum] );
-        emit newError( this->windowTitle() + ": " + PRESSURE_GAUGE_2 + ": "
-                       + PR_ERRORS[errorNum] );
+
+        if( errorNum != 5
+                || !_ui->chb_noGauge2->isChecked() )
+        {
+            CLOG(INFO, "v") << this->windowTitle().toStdString()
+                            << ": " << PRESSURE_GAUGE_2.toStdString() << ": "
+                            << PR_ERRORS[errorNum].toStdString();
+            LOG(INFO) << this->windowTitle().toStdString() << ": "
+                      << PRESSURE_GAUGE_2.toStdString() << " : "
+                      << PR_ERRORS[errorNum].toStdString();
+            emit newError( this->windowTitle() + ": " + PRESSURE_GAUGE_2 + ": "
+                           + PR_ERRORS[errorNum] );
+        }
     }
 }
 

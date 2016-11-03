@@ -4,6 +4,7 @@
 #include <QString>
 #include <QFileDialog>
 #include <QDateTime>
+#include <QMessageBox>
 
 #include <fstream>
 #include <vector>
@@ -46,6 +47,7 @@ private:
     unsigned int _intervalCounter;
     unsigned int _savedCounter;
     bool _recording;
+    bool _dataRecorded;
 
     const QString START_RECORDING = "start recording";
     const QString STOP_RECORDING  = "stop recording ";
