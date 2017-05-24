@@ -4,7 +4,7 @@ labPort::labPort( QObject *parent ) : QObject( parent ),
     _initTimeoutMs( 0 ), _initValueCounter( 0 ), _numInitValues( 0 ),
     _minBytesRead( 0 ), _writingPauseMs( 100 ), _bytesError( 100 ),
     _inTimeValueCounter( 0 ), _numInTimeValues( 0 ),
-    _closing( false )
+    _closing( false ), _lastMsgSent( QTime::currentTime() )
 {    
     connect( &_port, SIGNAL( readyRead() ), this, SLOT( read() ) );
     connect( &_port, SIGNAL( error( QSerialPort::SerialPortError ) ), this,
@@ -109,8 +109,14 @@ void labPort::sendMsg( const char* msg, int numChars, bool inTime )
 
     if( !_sendTimer.isActive() )
     {
-        timeToSendMsg();
-        _sendTimer.start( _writingPauseMs );
+        if( _lastMsgSent.msecsTo( QTime::currentTime() ) > _writingPauseMs )
+        {
+            timeToSendMsg();
+        }
+        else
+        {
+            _sendTimer.start( _writingPauseMs );
+        }
     }
 
     if( inTime )
@@ -143,6 +149,7 @@ void labPort::timeToSendMsg()
         }
         _port.write( _msgToSend[0].data(), _msgToSend[0].size() );
         _msgToSend.erase( _msgToSend.begin() );
+        _lastMsgSent = QTime::currentTime();
     }
 
     if( _msgToSend.size() > 0 )

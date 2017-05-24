@@ -19,14 +19,14 @@
 #include "eaps3000window.h"
 #include "simplegraphwindow.h"
 #include "bopmguicharwindow.h"
+#include "keithley2400window.h"
 #include "temperaturecalcwindow.h"
 #include "tsh071window.h"
 #include "elflowwindow.h"
 #include "thermocouplewindow.h"
 #include "scratchpadwindow.h"
 #include "screenshotwindow.h"
-#include "screenuploaderwindow.h"
-#include "networkremotewindow.h"
+#include "networkwindow.h"
 #include "eaps8000usbwindow.h"
 #include "eaps8000usbuicharwindow.h"
 #include "ms8050window.h"
@@ -52,6 +52,7 @@ public:
     void addSimpleGraph( const QString& title );
     void addCalcTemperatureWindow( const QString& title );
     void addBogMgWindow( const QString& title );
+    void addKeithley2400Window( const QString& title );
     void addEaps3000Window( const QString& title );
     void addEaps8000UsbWindow( const QString& title );
     void addEaps8000UsbUICharWindow( const QString& title );
@@ -62,8 +63,7 @@ public:
     void addMs8050Window( const QString& title );
     void addScratchpadWindow( const QString& title );
     void addScreenshotWindow( const QString& title );
-    void addScreenUploaderWindow( const QString& title );
-    void addNetworkRemoteWindow( const QString& title );
+    void addNetworkWindow( const QString& title );
     void addTpg26xWindow( const QString& title );
     void addSignalTimer( const QString& title );
     void addLimitSignalWindow( const QString& title );

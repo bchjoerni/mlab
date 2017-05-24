@@ -4,9 +4,6 @@
 #include <QString>
 #include <QTimer>
 
-#include <vector>
-#include <string>
-
 #include "easylogging++.h"
 #include "labport.h"
 

@@ -1,12 +1,12 @@
-#include "networkremotewindow.h"
-#include "ui_networkremotewindow.h"
+#include "networkwindow.h"
+#include "ui_networkwindow.h"
 
 
-networkRemoteWindow::networkRemoteWindow( QWidget *parent ) :
+networkWindow::networkWindow( QWidget *parent ) :
     mLabWindow( parent ),
-    _ui( new Ui::networkRemoteWindow ),
+    _ui( new Ui::networkWindow ),
     _networkManager( new QNetworkAccessManager( this ) ),
-    _counterCommands( 0 ), _counterScreen( -1 )
+    _counterCommands( 0 ), _counterScreen( -1 ), _counterReset( 0 )
 {
     _ui->setupUi( this );
 
@@ -18,13 +18,13 @@ networkRemoteWindow::networkRemoteWindow( QWidget *parent ) :
     _ui->lbl_status->setText( PAUSING );
 }
 
-networkRemoteWindow::~networkRemoteWindow()
+networkWindow::~networkWindow()
 {
     delete _networkManager;
     delete _ui;
 }
 
-void networkRemoteWindow::mLabSignal( char signal, const QString& cmd )
+void networkWindow::mLabSignal( char signal, const QString& cmd )
 {
     if( signal == SIGNAL_SHUTDOWN
             || (signal == SIGNAL_STOP) )
@@ -41,13 +41,25 @@ void networkRemoteWindow::mLabSignal( char signal, const QString& cmd )
     }
 }
 
-void networkRemoteWindow::doUpdate()
+void networkWindow::doUpdate()
 {
     if( _ui->btn_startStop->text() == STOP_REMOTE )
     {
         _counterCommands++;
         _ui->lbl_ticksToNextCmd->setText(
             QString::number( _ui->spb_ticksCmd->value() - _counterCommands ) );
+
+        if( _ui->chb_reset->isChecked() )
+        {
+            _counterReset++;
+
+            if( _counterReset >= _ui->spb_reset->value() )
+            {
+                delete _networkManager;
+                _networkManager = new QNetworkAccessManager( this );
+                _counterReset = 0;
+            }
+        }
     }
 
     if( _counterCommands >= _ui->spb_ticksCmd->value() )
@@ -56,7 +68,10 @@ void networkRemoteWindow::doUpdate()
         _counterScreen = 0;
         _ui->lbl_ticksToNextCmd->setText( QString::number(
                                               _ui->spb_ticksCmd->value() ) );
-        downloadCmd();
+        if( !_ui->txt_urlCmd->text().isEmpty() )
+        {
+            downloadCmd();
+        }
     }
 
     if( _counterScreen >= 0 )
@@ -65,30 +80,33 @@ void networkRemoteWindow::doUpdate()
     }
     if( _counterScreen-1 >= _ui->spb_ticksUpload->value() )
     {
-        uploadScreen();
+        if( !_ui->txt_urlUpload->text().isEmpty() )
+        {
+            uploadScreen();
+        }
         _counterScreen = -1;
     }
 }
 
-void networkRemoteWindow::commandTicksChanged()
+void networkWindow::commandTicksChanged()
 {
     _ui->lbl_ticksToNextCmd->setText( QString::number(
                                              _ui->spb_ticksCmd->value() ) );
     _ui->spb_ticksUpload->setMaximum( _ui->spb_ticksCmd->value() );
 }
 
-void networkRemoteWindow::startStopPressed()
+void networkWindow::startStopPressed()
 {
     if( _ui->btn_startStop->text() == START_REMOTE )
     {
         QUrl urlCmd( _ui->txt_urlCmd->text() );
-        if( !urlCmd.isValid() )
+        if( !urlCmd.isValid() && !urlCmd.isEmpty() )
         {
             _ui->lbl_info->setText( "Invalid cmd url!" );
             return;
         }
         QUrl urlUpload( _ui->txt_urlUpload->text() );
-        if( !urlUpload.isValid() )
+        if( !urlUpload.isValid() && !urlUpload.isEmpty() )
         {
             _ui->lbl_info->setText( "Invalid upload url!" );
             return;
@@ -116,7 +134,7 @@ void networkRemoteWindow::startStopPressed()
     }
 }
 
-void networkRemoteWindow::uploadScreen()
+void networkWindow::uploadScreen()
 {
     LOG(INFO) << "upload screen";
     QPixmap pixmap;
@@ -149,7 +167,7 @@ void networkRemoteWindow::uploadScreen()
     connect( reply, SIGNAL( finished() ), this, SLOT( uploadFinished() ) );
 }
 
-void networkRemoteWindow::networkError( QNetworkReply::NetworkError error )
+void networkWindow::networkError( QNetworkReply::NetworkError error )
 {
     LOG(INFO) << "network error: " << error;
     _ui->lbl_info->setText( "Network error! (" + QString::number( error )
@@ -158,7 +176,7 @@ void networkRemoteWindow::networkError( QNetworkReply::NetworkError error )
                    + QString::number( error ) );
 }
 
-void networkRemoteWindow::uploadProgress( qint64 bytesSent, qint64 bytesTotal )
+void networkWindow::uploadProgress( qint64 bytesSent, qint64 bytesTotal )
 {
     if( bytesTotal > 0 )
     {
@@ -169,7 +187,7 @@ void networkRemoteWindow::uploadProgress( qint64 bytesSent, qint64 bytesTotal )
     }
 }
 
-void networkRemoteWindow::uploadFinished()
+void networkWindow::uploadFinished()
 {
     if( !_ui->lbl_info->text().startsWith( "Network error" ) )
     {
@@ -179,7 +197,7 @@ void networkRemoteWindow::uploadFinished()
     }
 }
 
-void networkRemoteWindow::downloadProgress( qint64 bytesSent,
+void networkWindow::downloadProgress( qint64 bytesSent,
                                             qint64 bytesTotal )
 {
     if( bytesTotal > 0 )
@@ -191,7 +209,7 @@ void networkRemoteWindow::downloadProgress( qint64 bytesSent,
     }
 }
 
-void networkRemoteWindow::downloadCmd()
+void networkWindow::downloadCmd()
 {
     QNetworkRequest request( QUrl( _ui->txt_urlCmd->text() ) );
     _downloadReply = _networkManager->get( request );
@@ -204,7 +222,7 @@ void networkRemoteWindow::downloadCmd()
              this, SLOT( networkError( QNetworkReply::NetworkError ) ) );
 }
 
-void networkRemoteWindow::readCommands()
+void networkWindow::readCommands()
 {
     while( _downloadReply->canReadLine() )
     {

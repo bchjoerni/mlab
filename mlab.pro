@@ -48,10 +48,11 @@ SOURCES += main.cpp\
     tpg26xport.cpp \
     tpg26xwindow.cpp \
     signaltimerwindow.cpp \
-    screenuploaderwindow.cpp \
-    networkremotewindow.cpp \
     errorlogwindow.cpp \
-    limitsignalwindow.cpp
+    limitsignalwindow.cpp \
+    networkwindow.cpp \
+    keithley2400port.cpp \
+    keithley2400window.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -89,10 +90,11 @@ HEADERS  += mainwindow.h \
     tpg26xport.h \
     tpg26xwindow.h \
     signaltimerwindow.h \
-    screenuploaderwindow.h \
-    networkremotewindow.h \
     errorlogwindow.h \
-    limitsignalwindow.h
+    limitsignalwindow.h \
+    networkwindow.h \
+    keithley2400port.h \
+    keithley2400window.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -115,10 +117,10 @@ FORMS    += mainwindow.ui \
     ms8050window.ui \
     tpg26xwindow.ui \
     signaltimerwindow.ui \
-    screenuploaderwindow.ui \
-    networkremotewindow.ui \
     errorlogwindow.ui \
-    limitsignalwindow.ui
+    limitsignalwindow.ui \
+    networkwindow.ui \
+    keithley2400window.ui
 
 CONFIG   += c++11
 

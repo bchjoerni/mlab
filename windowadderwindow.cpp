@@ -62,6 +62,10 @@ void windowAdderWindow::ok()
     {
         _mdi->addBopmgUICharWindow( _ui->txt_bopmgUIChar->text() );
     }
+    if( _ui->chb_keithley2400->isChecked() )
+    {
+        _mdi->addKeithley2400Window( _ui->txt_bopmgUIChar->text() );
+    }
     if( _ui->chb_simpleGraph->isChecked() )
     {
         _mdi->addSimpleGraph( _ui->txt_simpleGraph->text() );
@@ -94,13 +98,9 @@ void windowAdderWindow::ok()
     {
         _mdi->addScreenshotWindow( _ui->txt_screenshot->text() );
     }
-    if( _ui->chb_screenUploader->isChecked() )
-    {
-        _mdi->addScreenUploaderWindow( _ui->txt_screenUploader->text() );
-    }
     if( _ui->chb_networkRemote->isChecked() )
     {
-        _mdi->addNetworkRemoteWindow( _ui->txt_networkRemote->text() );
+        _mdi->addNetworkWindow( _ui->txt_networkRemote->text() );
     }
     if( _ui->chb_tpg26x->isChecked() )
     {
@@ -163,6 +163,10 @@ bool windowAdderWindow::checkWindowNames()
     if( _ui->chb_bopMg->isChecked() )
     {
         names.push_back( _ui->txt_bogMg->text() );
+    }
+    if( _ui->chb_keithley2400->isChecked() )
+    {
+        names.push_back( _ui->txt_keithley2400->text() );
     }
     if( _ui->chb_bopmgUiChar->isChecked() )
     {

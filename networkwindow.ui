@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>networkRemoteWindow</class>
- <widget class="QWidget" name="networkRemoteWindow">
+ <class>networkWindow</class>
+ <widget class="QWidget" name="networkWindow">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
     <width>318</width>
-    <height>377</height>
+    <height>386</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -230,12 +230,42 @@
      </layout>
     </widget>
    </item>
-   <item row="3" column="0" colspan="3">
+   <item row="4" column="0" colspan="3">
     <widget class="QLabel" name="lbl_info">
      <property name="text">
-      <string>Specify download parameter!</string>
+      <string>Specify download parameter! (commands empty URLs are ignored)</string>
      </property>
      <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QSpinBox" name="spb_reset">
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+     <property name="value">
+      <number>3600</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QLabel" name="lbl_resetTicks_lbl">
+     <property name="text">
+      <string>ticks</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QCheckBox" name="chb_reset">
+     <property name="text">
+      <string>reset every</string>
+     </property>
+     <property name="checked">
       <bool>true</bool>
      </property>
     </widget>

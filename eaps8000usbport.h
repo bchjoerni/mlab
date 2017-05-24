@@ -7,8 +7,6 @@
 #include <QString>
 #include <QApplication>
 
-#include <cmath>
-
 #include "easylogging++.h"
 #include "labport.h"
 #include "byteconverter.h"

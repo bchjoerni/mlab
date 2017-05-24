@@ -137,6 +137,14 @@ void mdiHandler::addCalcTemperatureWindow( const QString &title )
     addWindow( window, window->windowFlags(), title );
 }
 
+void mdiHandler::addKeithley2400Window( const QString& title )
+
+{
+    LOG(INFO) << "add keithley2400Window";
+    keithley2400Window* window = new keithley2400Window;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addBogMgWindow( const QString& title )
 
 {
@@ -215,17 +223,10 @@ void mdiHandler::addScreenshotWindow( const QString &title )
     addWindow( window, window->windowFlags(), title );
 }
 
-void mdiHandler::addScreenUploaderWindow( const QString &title )
+void mdiHandler::addNetworkWindow( const QString &title )
 {
-    LOG(INFO) << "add screenUploaderWindow";
-    screenUploaderWindow* window = new screenUploaderWindow;
-    addWindow( window, window->windowFlags(), title );
-}
-
-void mdiHandler::addNetworkRemoteWindow( const QString &title )
-{
-    LOG(INFO) << "add networkRemoteWindow";
-    networkRemoteWindow* window = new networkRemoteWindow;
+    LOG(INFO) << "add networkWindow";
+    networkWindow* window = new networkWindow;
     addWindow( window, window->windowFlags(), title );
 }
 
@@ -325,7 +326,7 @@ void mdiHandler::addUICharWindowsNew()
     addScreenshotWindow(        s33 );
     addScratchpadWindow(        s34 );
     addErrorLogWindow(          s41 );
-    addNetworkRemoteWindow(     s42 );
+    addNetworkWindow(           s42 );
     addSignalTimer(             s51 );
     addSimpleGraph(             s52 );
 

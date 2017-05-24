@@ -5,10 +5,12 @@
 #include <QSerialPort>
 #include <QTimer>
 #include <QByteArray>
+#include <QTime>
 
 #include <vector>
 #include <string>
 #include <memory>
+#include <cmath>
 
 #include "easylogging++.h"
 
@@ -66,6 +68,7 @@ private:
     QTimer _sendTimer;
     QTimer _initTimer;
     QTimer _closeTimer;
+    QTime _lastMsgSent;
     std::vector<QByteArray> _msgToSend;
     char _buffer[512];    
 };

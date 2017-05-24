@@ -93,7 +93,13 @@ void allSaveWindow::doUpdate()
 
 void allSaveWindow::putValue( const QString& id, double value )
 {
-    _data.push_back( id.toStdString() + ": " + std::to_string( value ) );
+    std::string str = id.toStdString() + ": " + std::to_string( value );
+    str.erase( str.find_last_not_of( '0' ) + 1, std::string::npos );
+    if( str[str.length()-1] == '.' )
+    {
+        str = str.substr( 0, str.length() - 1 );
+    }
+    _data.push_back( str );
 }
 
 void allSaveWindow::selectFile()

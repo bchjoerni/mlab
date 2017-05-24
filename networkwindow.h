@@ -14,16 +14,16 @@
 
 namespace Ui
 {
-    class networkRemoteWindow;
+    class networkWindow;
 }
 
-class networkRemoteWindow : public mLabWindow
+class networkWindow : public mLabWindow
 {
     Q_OBJECT
 
 public:
-    explicit networkRemoteWindow( QWidget *parent = 0 );
-    ~networkRemoteWindow();
+    explicit networkWindow( QWidget *parent = 0 );
+    ~networkWindow();
     void doUpdate() override;
     bool isReceiver() const override
     {
@@ -44,12 +44,13 @@ private:
     void uploadScreen();
     void downloadCmd();
 
-    Ui::networkRemoteWindow *_ui;
+    Ui::networkWindow *_ui;
     QNetworkAccessManager* _networkManager;
     QNetworkReply* _downloadReply;
     QByteArray _screenBytes;
     int _counterCommands;
     int _counterScreen;
+    int _counterReset;
     QString _password;
 
     const QString START_REMOTE= "start";
