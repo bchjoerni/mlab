@@ -52,7 +52,8 @@ SOURCES += main.cpp\
     limitsignalwindow.cpp \
     networkwindow.cpp \
     keithley2400port.cpp \
-    keithley2400window.cpp
+    keithley2400window.cpp \
+    eaps3000uicharwindow.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -94,7 +95,8 @@ HEADERS  += mainwindow.h \
     limitsignalwindow.h \
     networkwindow.h \
     keithley2400port.h \
-    keithley2400window.h
+    keithley2400window.h \
+    eaps3000uicharwindow.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -120,7 +122,8 @@ FORMS    += mainwindow.ui \
     errorlogwindow.ui \
     limitsignalwindow.ui \
     networkwindow.ui \
-    keithley2400window.ui
+    keithley2400window.ui \
+    eaps3000uicharwindow.ui
 
 CONFIG   += c++11
 

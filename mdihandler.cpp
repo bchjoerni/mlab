@@ -167,6 +167,13 @@ void mdiHandler::addEaps3000Window( const QString &title )
     addWindow( window, window->windowFlags(), title );
 }
 
+void mdiHandler::addEaps3000UICharWindow( const QString &title )
+{
+    LOG(INFO) << "add eaps3000Window";
+    eaps3000UICharWindow* window = new eaps3000UICharWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addEaps8000UsbWindow( const QString &title )
 {
     LOG(INFO) << "add eaps8000UsbWindow";

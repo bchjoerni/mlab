@@ -46,6 +46,10 @@ void windowAdderWindow::ok()
     {
         _mdi->addEaps3000Window( _ui->txt_eaps3000->text() );
     }
+    if( _ui->chb_eaps3000UIChar->isChecked() )
+    {
+        _mdi->addEaps3000UICharWindow( _ui->txt_eaps3000UIChar->text() );
+    }
     if( _ui->chb_eaps8000Usb->isChecked() )
     {
         _mdi->addEaps8000UsbWindow( _ui->txt_eaps8000Usb->text() );
@@ -64,7 +68,7 @@ void windowAdderWindow::ok()
     }
     if( _ui->chb_keithley2400->isChecked() )
     {
-        _mdi->addKeithley2400Window( _ui->txt_bopmgUIChar->text() );
+        _mdi->addKeithley2400Window( _ui->txt_keithley2400->text() );
     }
     if( _ui->chb_simpleGraph->isChecked() )
     {
@@ -151,6 +155,10 @@ bool windowAdderWindow::checkWindowNames()
     if( _ui->chb_eaps3000->isChecked() )
     {
         names.push_back( _ui->txt_eaps3000->text() );
+    }
+    if( _ui->chb_eaps3000UIChar->isChecked() )
+    {
+        names.push_back( _ui->txt_eaps3000UIChar->text() );
     }
     if( _ui->chb_eaps8000Usb->isChecked() )
     {

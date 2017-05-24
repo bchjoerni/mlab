@@ -39,7 +39,7 @@ void keithley2400Port::getInitValues()
     setCls();
 //    setRemoteControl( true );
 //    setOutput( true );
-    setConfigResistance();
+//    setConfigResistance();
     getIdn();
 }
 
@@ -65,6 +65,7 @@ void keithley2400Port::setEmitResistance( bool emitResistance )
 
 void keithley2400Port::setCls()
 {
+    sendKeithleyCmd( "*RST", false );
     sendKeithleyCmd( "*CLS", false );
 }
 
@@ -80,7 +81,7 @@ void keithley2400Port::setOutput( bool on )
 
 void keithley2400Port::setConfigResistance()
 {
-    sendKeithleyCmd( "CONFIG:RES", false );
+    sendKeithleyCmd( "CONF:RES", false );
 }
 
 void keithley2400Port::getIdn()
@@ -196,8 +197,6 @@ void keithley2400Port::receivedMsg( QByteArray msg )
     {
         return;
     }
-    msg.replace( 0x0A, "" ).replace( 0x0B, "" ).replace( 0x0D, "" )
-            .replace( 0x11, "" ).replace( 0x13, "" );
     if( msg.isEmpty() )
     {
         return;
@@ -217,7 +216,14 @@ void keithley2400Port::receivedMsg( QByteArray msg )
     bool conversionSuccessful = false;
     if( _expectedAnswer[0] == CMD_RESISTANCE )
     {
-        double resistance = msg.toDouble( &conversionSuccessful );
+        _inTimeValueCounter++;
+        int start = msg.indexOf( "," );
+        start++;
+        start = msg.indexOf( ",", start );
+        start++;
+        int end = msg.indexOf( ",", start );
+        double resistance = msg.mid( start, end-start).toDouble(
+                    &conversionSuccessful );
         if( conversionSuccessful )
         {
             _lastResistance = resistance;

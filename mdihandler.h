@@ -17,6 +17,7 @@
 #include "pairsavewindow.h"
 #include "allsavewindow.h"
 #include "eaps3000window.h"
+#include "eaps3000uicharwindow.h"
 #include "simplegraphwindow.h"
 #include "bopmguicharwindow.h"
 #include "keithley2400window.h"
@@ -54,6 +55,7 @@ public:
     void addBogMgWindow( const QString& title );
     void addKeithley2400Window( const QString& title );
     void addEaps3000Window( const QString& title );
+    void addEaps3000UICharWindow( const QString& title );
     void addEaps8000UsbWindow( const QString& title );
     void addEaps8000UsbUICharWindow( const QString& title );
     void addBopmgUICharWindow( const QString& title );
