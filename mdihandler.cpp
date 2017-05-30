@@ -130,6 +130,13 @@ void mdiHandler::addSimpleGraph( const QString &title )
     addWindow( window, window->windowFlags(), title );
 }
 
+void mdiHandler::addMultipleGraphs( const QString &title )
+{
+    LOG(INFO) << "add multipleGraphs";
+    multipleGraphsWindow* window = new multipleGraphsWindow;
+    addWindow( window, window->windowFlags(), title );
+}
+
 void mdiHandler::addCalcTemperatureWindow( const QString &title )
 {
     LOG(INFO) << "add addCalcTemperature";

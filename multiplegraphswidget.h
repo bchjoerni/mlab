@@ -1,28 +1,32 @@
-#ifndef SIMPLEGRAPHWIDGET_H
-#define SIMPLEGRAPHWIDGET_H
+#ifndef MULTIPLEGRAPHSWIDGET_H
+#define MULTIPLEGRAPHSWIDGET_H
+
 
 #include <QWidget>
 #include <QPainter>
 #include <QPaintEvent>
 #include <QString>
 
-#include <QDebug>
-
 #include <vector>
 #include <map>
 #include <algorithm>
+#include <utility>
 #include <cmath>
 
-class simpleGraphWidget : public QWidget
+class multipleGraphsWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit simpleGraphWidget(QWidget *parent = 0);
+    explicit multipleGraphsWidget( QWidget *parent = 0 );
     void newValue( const QString& id, double value );
-    void axisChanged( const QString& x, const QString& y );
-    void clearGraph();
+    void setNormalized( bool normalized );
+    void clearData();
     void setRunning( bool running );
+    void newSensor( const QString& name, bool draw );
+    void setSensorDraw( const QString& name, bool draw );
+    void deleteSensor( const QString& name );
+    QColor getGraphColor( int index, int total );
 
 protected:
     void paintEvent( QPaintEvent* event );
@@ -30,14 +34,16 @@ protected:
 
 private:
     void drawAxes( QPainter *painter );
-    QString getMinValueString( const QString& id );
-    QString getMaxValueString( const QString& id );
+    QString getMinYValueString();
+    QString getMaxYValueString();
     int getXPosition( double value, double min, double max, int textHeight );
     int getYPosition( double value, double min, double max, int textHeight );
+    double getYAbsMax();
+    double getYAbsMin();
 
     std::map<QString, std::vector<double> > _data;
-    QString _xId;
-    QString _yId;
+    std::vector<std::pair<QString, bool> > _sensors;
+    bool _normalized;
 
     int PRECISION_MAX_VALUES    = 4;
     int DIST_LEFT_BORDER_TEXT   = 1;
@@ -48,4 +54,4 @@ private:
     int DIST_TOP_BORDER_LINE    = 10;
 };
 
-#endif // SIMPLEGRAPHWIDGET_H
+#endif // MULTIPLEGRAPHSWIDGET_H

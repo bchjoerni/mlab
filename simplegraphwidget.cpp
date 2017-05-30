@@ -50,7 +50,7 @@ int simpleGraphWidget::getXPosition( double value, double min, double max,
     }
 
     return static_cast<int>( distBorderLineLeft + 1 + (value - min)/
-                             (max-min)*(this->width() - distBorderLineLeft
+                             std::abs(max-min)*(this->width() - distBorderLineLeft
                                         - DIST_RIGHT_BORDER_LINE - 2) );
 }
 
@@ -67,7 +67,7 @@ int simpleGraphWidget::getYPosition( double value, double min, double max,
     }
 
     return static_cast<int>( this->height() - distBorderLineBottom - 2 -
-                             (value - min)/(max-min)*
+                             (value - min)/std::abs(max-min)*
                              (this->height() - DIST_TOP_BORDER_LINE
                                          - distBorderLineBottom - 2) );
 }

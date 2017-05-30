@@ -53,7 +53,9 @@ SOURCES += main.cpp\
     networkwindow.cpp \
     keithley2400port.cpp \
     keithley2400window.cpp \
-    eaps3000uicharwindow.cpp
+    eaps3000uicharwindow.cpp \
+    multiplegraphswindow.cpp \
+    multiplegraphswidget.cpp
 
 HEADERS  += mainwindow.h \
     mlabwindow.h \
@@ -96,7 +98,9 @@ HEADERS  += mainwindow.h \
     networkwindow.h \
     keithley2400port.h \
     keithley2400window.h \
-    eaps3000uicharwindow.h
+    eaps3000uicharwindow.h \
+    multiplegraphswindow.h \
+    multiplegraphswidget.h
 
 FORMS    += mainwindow.ui \
     bopmgwindow.ui \
@@ -123,7 +127,8 @@ FORMS    += mainwindow.ui \
     limitsignalwindow.ui \
     networkwindow.ui \
     keithley2400window.ui \
-    eaps3000uicharwindow.ui
+    eaps3000uicharwindow.ui \
+    multiplegraphswindow.ui
 
 CONFIG   += c++11
 

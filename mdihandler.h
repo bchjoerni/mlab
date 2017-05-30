@@ -19,6 +19,7 @@
 #include "eaps3000window.h"
 #include "eaps3000uicharwindow.h"
 #include "simplegraphwindow.h"
+#include "multiplegraphswindow.h"
 #include "bopmguicharwindow.h"
 #include "keithley2400window.h"
 #include "temperaturecalcwindow.h"
@@ -51,6 +52,7 @@ public:
     void addPairSaveWindow( const QString& title );
     void addAllSaveWindow( const QString& title );
     void addSimpleGraph( const QString& title );
+    void addMultipleGraphs( const QString& title );
     void addCalcTemperatureWindow( const QString& title );
     void addBogMgWindow( const QString& title );
     void addKeithley2400Window( const QString& title );

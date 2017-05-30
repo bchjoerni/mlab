@@ -74,6 +74,10 @@ void windowAdderWindow::ok()
     {
         _mdi->addSimpleGraph( _ui->txt_simpleGraph->text() );
     }
+    if( _ui->chb_multipleGraphs->isChecked() )
+    {
+        _mdi->addMultipleGraphs( _ui->txt_multipleGraphs->text() );
+    }
     if( _ui->chb_calcTemperature->isChecked() )
     {
         _mdi->addCalcTemperatureWindow( _ui->txt_calcTemperature->text() );
@@ -184,6 +188,10 @@ bool windowAdderWindow::checkWindowNames()
     {
         names.push_back( _ui->txt_simpleGraph->text() );
     }
+    if( _ui->chb_multipleGraphs->isChecked() )
+    {
+        names.push_back( _ui->txt_multipleGraphs->text() );
+    }
     if( _ui->chb_calcTemperature->isChecked() )
     {
         names.push_back( _ui->txt_calcTemperature->text() );
@@ -211,10 +219,6 @@ bool windowAdderWindow::checkWindowNames()
     if( _ui->chb_screenshot->isChecked() )
     {
         names.push_back( _ui->txt_screenshot->text() );
-    }
-    if( _ui->chb_screenUploader->isChecked() )
-    {
-        names.push_back( _ui->txt_screenUploader->text() );
     }
     if( _ui->chb_networkRemote->isChecked() )
     {
