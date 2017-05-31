@@ -25,6 +25,7 @@ public:
     {
         return false;
     }
+    void mLabSignal( char signal, const QString& cmd ) override;
 
 private slots:
     void connectivityButtonPressed();

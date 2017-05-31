@@ -121,6 +121,15 @@ void tpg26xWindow::doUpdate()
     }
 }
 
+void tpg26xWindow::mLabSignal( char signal, const QString &cmd )
+{
+    if( signal == 18
+             || signal == 19 )
+    {
+        resetInfo();
+    }
+}
+
 void tpg26xWindow::unitUpdate( const QString &unit )
 {
     _unit = unit;

@@ -55,3 +55,14 @@ void screenshotWindow::screenshot()
             QDateTime::currentDateTime().toString( "yyyy-MM-dd hh:mm:ss" ) );
     _ui->lbl_status->setStyleSheet( STYLE_OK );
 }
+
+void screenshotWindow::mLabSignal( char signal, const QString& cmd )
+{
+    if( signal == 40 )
+    {
+        if( !_path.isEmpty() )
+        {
+            screenshot();
+        }
+    }
+}

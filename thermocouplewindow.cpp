@@ -119,6 +119,15 @@ void thermocoupleWindow::doUpdate()
     }
 }
 
+void thermocoupleWindow::mLabSignal( char signal, const QString &cmd )
+{
+    if( signal == 18
+             || signal == 19 )
+    {
+        resetInfo();
+    }
+}
+
 void thermocoupleWindow::probeTemperatureUpdate( double degreeCelsius )
 {
     CLOG(INFO, "v") << this->windowTitle().toStdString()
