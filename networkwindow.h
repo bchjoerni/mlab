@@ -46,6 +46,7 @@ private:
     void uploadScreen();
     void downloadCmd();
     void clearOnlineCmds();
+    QString errorString( QNetworkReply::NetworkError error );
 
     Ui::networkWindow *_ui;
     QNetworkAccessManager* _networkManager;

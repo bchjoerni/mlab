@@ -106,7 +106,7 @@ void networkWindow::startStopPressed()
         _password = _ui->txt_password->text();
         _ui->txt_password->setText( "" );
 
-        _counterCommands = 0;
+        _counterCommands = _ui->spb_ticks->value();
         _counterScreen = -1;
         _ui->lbl_status->setText( RUNNING );
         _ui->lbl_status->setStyleSheet( STYLE_OK );
@@ -160,11 +160,52 @@ void networkWindow::uploadScreen()
 
 void networkWindow::networkError( QNetworkReply::NetworkError error )
 {
-    LOG(INFO) << "network error: " << error;
-    _ui->lbl_info->setText( "Network error! (" + QString::number( error )
-                            + ")" );
-    emit newError( this->windowTitle() + ": network error "
-                   + QString::number( error ) );
+    QString errorStr = "Network error: " + errorString( error )
+            + " (" + QString::number( error ) + ")";
+    LOG(INFO) << errorStr.toStdString();
+    _ui->lbl_info->setText( errorStr );
+    emit newError( this->windowTitle() + ": " + errorStr );
+}
+
+QString networkWindow::errorString( QNetworkReply::NetworkError error )
+{
+    switch( error )
+    {
+        case QNetworkReply::ConnectionRefusedError:            return "Connection refused!";
+        case QNetworkReply::RemoteHostClosedError:             return "Remote host closed!";
+        case QNetworkReply::HostNotFoundError:                 return "Host not found!";
+        case QNetworkReply::TimeoutError:                      return "Timeout!";
+        case QNetworkReply::OperationCanceledError:            return "Operation canceled!";
+        case QNetworkReply::SslHandshakeFailedError:           return "SSL Handshake failed!";
+        case QNetworkReply::TemporaryNetworkFailureError:      return "Temporary network failure!";
+        case QNetworkReply::NetworkSessionFailedError:         return "Network session failed!";
+        case QNetworkReply::BackgroundRequestNotAllowedError:  return "Background request not allowed";
+    //    case QNetworkReply::TooManyRedirectsError:             return "Too many redirects!";
+    //    case QNetworkReply::InsecureRedirectError:             return "Insecure redirect!";
+        case QNetworkReply::ProxyConnectionRefusedError:       return "Proxy connection refused!";
+        case QNetworkReply::ProxyConnectionClosedError:        return "Proxy connection closed!";
+        case QNetworkReply::ProxyNotFoundError:                return "Proxy not found!";
+        case QNetworkReply::ProxyTimeoutError:                 return "Proxy timeout";
+        case QNetworkReply::ProxyAuthenticationRequiredError:  return "Proxy authentication required!";
+        case QNetworkReply::ContentAccessDenied:               return "Content access denied!";
+        case QNetworkReply::ContentOperationNotPermittedError: return "Content operation not permitted!";
+        case QNetworkReply::ContentNotFoundError:              return "Content not found!";
+        case QNetworkReply::AuthenticationRequiredError:       return "Authentication required!";
+        case QNetworkReply::ContentReSendError:                return "Content resend!";
+        case QNetworkReply::ContentConflictError:              return "Content conflict!";
+        case QNetworkReply::ContentGoneError:                  return "Content gone!";
+        case QNetworkReply::InternalServerError:               return "Internal server error!";
+        case QNetworkReply::OperationNotImplementedError:      return "Operation not implemented";
+        case QNetworkReply::ServiceUnavailableError:           return "Service unavailable!";
+        case QNetworkReply::ProtocolUnknownError:              return "Protocol unknown";
+        case QNetworkReply::ProtocolInvalidOperationError:     return "Protocol invalid operation!";
+        case QNetworkReply::UnknownNetworkError:               return "Unknown network!";
+        case QNetworkReply::UnknownProxyError:                 return "Unknown proxy!";
+        case QNetworkReply::UnknownContentError:               return "Unknown content";
+        case QNetworkReply::ProtocolFailure:                   return "Protocol failure";
+        case QNetworkReply::UnknownServerError:                return "Unknown server!";
+        default:                                               return "Unknown error!";
+    }
 }
 
 void networkWindow::uploadScreenProgress( qint64 bytesSent, qint64 bytesTotal )
