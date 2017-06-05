@@ -20,10 +20,10 @@ eapsUta12Port::eapsUta12Port( QObject *parent ) : labPort( parent ), _id( 0 ),
 
 void eapsUta12Port::setSerialValues()
 {
-    _port.setBaudRate( QSerialPort::Baud57600 );
-    _port.setDataBits( QSerialPort::Data8 );
-    _port.setStopBits( QSerialPort::OneStop );
-    _port.setParity(   QSerialPort::NoParity );
+    _port->setBaudRate( QSerialPort::Baud57600 );
+    _port->setDataBits( QSerialPort::Data8 );
+    _port->setStopBits( QSerialPort::OneStop );
+    _port->setParity(   QSerialPort::NoParity );
 }
 
 void eapsUta12Port::setLabPortVariables()

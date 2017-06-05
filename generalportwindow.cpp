@@ -41,8 +41,10 @@ void generalPortWindow::connectUiElements()
              SLOT( showInfoAllPorts() ) );
     connect( _ui->btn_connect, SIGNAL( clicked() ), this,
              SLOT( connectivityButtonPressed() ) );
-    connect( _ui->btn_resetInfo, SIGNAL( clicked() ), this,
-             SLOT( resetInfo() ) );
+    connect( _ui->btn_resetRefresh, SIGNAL( clicked() ), this,
+             SLOT( resetRefresh() ) );
+    connect( _ui->btn_clearInfo, SIGNAL( clicked() ), this,
+             SLOT( clearInfo() ) );
     connect( _ui->btn_send, SIGNAL( clicked() ), this, SLOT( sendMsg() ) );
     connect( _ui->btn_displayMsg, SIGNAL( clicked() ), this,
              SLOT( showReceivedMsg() ) );
@@ -390,25 +392,6 @@ void generalPortWindow::portError( QString error )
     emit newError( this->windowTitle() + ": " + error );
 }
 
-void generalPortWindow::resetInfo()
-{
-    _port.clearPortErrors();
-
-    if( _port.isRunning() )
-    {
-        _ui->lbl_info->setStyleSheet( "" );
-        _ui->btn_connect->setText( DISCONNECT_PORT );
-        _ui->btn_connect->setEnabled( true );
-    }
-    else
-    {
-        _ui->lbl_info->setText( "-" );
-        _ui->lbl_info->setStyleSheet( "" );
-        _ui->btn_connect->setText( CONNECT_PORT );
-        refreshPortList();
-    }
-}
-
 void generalPortWindow::receivedMsg( QByteArray data )
 {
     if( _ui->rad_displayReceivedOnClick->isChecked() )
@@ -540,4 +523,33 @@ void generalPortWindow::sendChars()
     delete bytes;
 }
 
+void generalPortWindow::resetRefresh()
+{
+    if( _ui->btn_connect->text() == DISCONNECT_PORT )
+    {
+        disconnectPort();
+    }
+    _port.reset();
+
+    refreshPortList();
+}
+
+void generalPortWindow::clearInfo()
+{
+    _port.clearPortErrors();
+
+    if( _port.isRunning() )
+    {
+        _ui->lbl_info->setStyleSheet( "" );
+        _ui->btn_connect->setText( DISCONNECT_PORT );
+        _ui->btn_connect->setEnabled( true );
+
+        emit changeWindowState( this->windowTitle(), true );
+    }
+    else
+    {
+        _ui->lbl_info->setStyleSheet( "" );
+        _ui->btn_connect->setText( CONNECT_PORT );
+    }
+}
 

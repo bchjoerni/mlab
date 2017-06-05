@@ -35,9 +35,11 @@ void limitSignalWindow::startStop()
     }
 }
 
-void limitSignalWindow::mLabSignal( char signal, const QString& cmd )
+void limitSignalWindow::mLabSignal( const QString& cmd )
 {
-    if( signal == SIGNAL_SHUTDOWN )
+    QString cmdLower = cmd.toLower().trimmed();
+
+    if( cmdLower == EMERGENCY_STOP.toLower() )
     {
         if( _ui->btn_startStop->text() == STOP )
         {
@@ -46,7 +48,7 @@ void limitSignalWindow::mLabSignal( char signal, const QString& cmd )
             _ui->btn_startStop->setText( START );
         }
     }
-    else if( signal == SIGNAL_STOP )
+    else if( cmdLower == STOP_SIGNAL.toLower() )
     {
         if( _ui->btn_startStop->text() == STOP
                 && _ui->chb_setZeroAtStopSignal->isChecked() )
@@ -68,22 +70,16 @@ void limitSignalWindow::putValue( const QString &id, double value )
         {
             LOG(INFO) << "limit signal window emits: "
                       << _ui->txt_window->text().toStdString() << ", "
-                      << _ui->spb_signal->value() << ", "
                       << _ui->txt_cmd->text().toStdString();
-            emit newSignal( _ui->txt_window->text(),
-                            static_cast<char>( _ui->spb_signal->value() ),
-                            _ui->txt_cmd->text() );
+            emit newSignal( _ui->txt_window->text(), _ui->txt_cmd->text() );
         }
         else if( _ui->rad_lesser->isChecked()
                  && value < _ui->dsb_limit->value() )
         {
             LOG(INFO) << "limit signal window emits: "
                       << _ui->txt_window->text().toStdString() << ", "
-                      << _ui->spb_signal->value() << ", "
                       << _ui->txt_cmd->text().toStdString();
-            emit newSignal( _ui->txt_window->text(),
-                            static_cast<char>( _ui->spb_signal->value() ),
-                            _ui->txt_cmd->text() );
+            emit newSignal( _ui->txt_window->text(), _ui->txt_cmd->text() );
         }
     }
 

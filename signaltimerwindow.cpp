@@ -44,11 +44,8 @@ void signalTimerWindow::doUpdate()
         {
             LOG(INFO) << "signal timer emits: "
                       << _ui->txt_window->text().toStdString() << ", "
-                      << _ui->spb_signal->value() << ", "
                       << _ui->txt_cmd->text().toStdString();
-            emit newSignal( _ui->txt_window->text(),
-                            static_cast<char>( _ui->spb_signal->value() ),
-                            _ui->txt_cmd->text() );
+            emit newSignal( _ui->txt_window->text(), _ui->txt_cmd->text() );
             _ui->spb_ticks->setValue( _ticks );
 
             if( _ui->rad_singleShot->isChecked() )
@@ -65,18 +62,23 @@ void signalTimerWindow::doUpdate()
     }
 }
 
-void signalTimerWindow::mLabSignal( char signal, const QString& cmd )
+void signalTimerWindow::mLabSignal( const QString& cmd )
 {
-    if( signal == SIGNAL_SHUTDOWN )
+    QString cmdLower = cmd.toLower().trimmed();
+
+    if( cmdLower == EMERGENCY_STOP.toLower() )
     {
         _ui->btn_startStop->setText( START );
         _ui->spb_ticks->setEnabled( true );
         _ui->spb_ticks->setStyleSheet( STYLE_NONE );
     }
-    else if( signal == SIGNAL_STOP )
+    else if( cmdLower == STOP_SIGNAL.toLower() )
     {
-        _ui->btn_startStop->setText( START );
-        _ui->spb_ticks->setEnabled( true );
-        _ui->spb_ticks->setStyleSheet( STYLE_NONE );
+        if( _ui->chb_setZeroAtStopSignal->isChecked() )
+        {
+            _ui->btn_startStop->setText( START );
+            _ui->spb_ticks->setEnabled( true );
+            _ui->spb_ticks->setStyleSheet( STYLE_NONE );
+        }
     }
 }

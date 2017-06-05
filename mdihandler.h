@@ -80,7 +80,7 @@ public slots:
     void windowClosed();
     void windowError( const QString& errorMsg );
     void putValue( const QString& id, double value );
-    void mLabSignal( const QString& receiver, char signal, const QString& cmd );
+    void mLabSignal( const QString& receiver, const QString& cmd );
     void changeWindowState( const QString& id, bool okay );
 
 signals:

@@ -25,7 +25,7 @@ public:
     {
         return false;
     }
-    void mLabSignal( char signal, const QString& cmd ) override;
+    void mLabSignal( const QString& cmd ) override;
 
 private slots:
     void connectivityButtonPressed();
@@ -35,7 +35,8 @@ private slots:
     void ambientTemperatureUpdate( double degreeCelsius );
     void probeTemperatureUpdate( double degreeCelsius );
     void portError( QString error );
-    void resetInfo();
+    void resetRefresh();
+    void clearInfo();
 
 private:
     void connectPortFunctions();

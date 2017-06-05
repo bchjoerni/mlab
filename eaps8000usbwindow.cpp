@@ -53,8 +53,10 @@ void eaps8000UsbWindow::connectUiElements()
     connect( _ui->btn_setValue, SIGNAL( clicked() ), this, SLOT( setValue() ) );
     connect( _ui->btn_measuredValuesVisibility, SIGNAL( clicked() ), this,
              SLOT( changeVisibility() ) );
-    connect( _ui->btn_resetInfo, SIGNAL( clicked() ), this,
-             SLOT( resetInfo() ) );
+    connect( _ui->btn_resetRefresh, SIGNAL( clicked() ), this,
+             SLOT( resetRefresh() ) );
+    connect( _ui->btn_clearInfo, SIGNAL( clicked() ), this,
+             SLOT( clearInfo() ) );
 }
 
 void eaps8000UsbWindow::addItems()
@@ -113,143 +115,77 @@ void eaps8000UsbWindow::refreshPortList()
     }
 }
 
-void eaps8000UsbWindow::mLabSignal( char signal, const QString& cmd )
+void eaps8000UsbWindow::mLabSignal( const QString& cmd )
 {
-    if( signal == SIGNAL_SHUTDOWN )
+    QString cmdLower = cmd.toLower().trimmed();
+
+    if( cmdLower == EMERGENCY_STOP.toLower() )
     {
         emergencyStop();
     }
-    else if( signal == SIGNAL_STOP )
+    else if( cmdLower == STOP_SIGNAL.toLower() )
     {
         if( _ui->chb_setZeroAtStopSignal->isChecked()
                 && _port.isOpen() )
         {
-            _port.setValue( eaps8000UsbPort::setValueType::setTypeVoltage, 0.0,
-                            false );
-            _port.setValue( eaps8000UsbPort::setValueType::setTypeCurrent, 0.0,
-                            false );
+            _port.setValue( eaps8000UsbPort::setValueType::setTypeVoltage,
+                            0, false );
+            _port.setValue( eaps8000UsbPort::setValueType::setTypeCurrent,
+                            0, false );
 
-            _ui->lbl_info->setText( STOP_RECEIVED );
+            _ui->lbl_info->setText( STOP_INFO_TEXT );
             _ui->lbl_info->setStyleSheet( STYLE_ERROR );
             emit changeWindowState( this->windowTitle(), false );
         }
     }
-    else if( signal == 12 )
+    else if( cmdLower == "btn_connectdisconnect\tpress" )
+    {
+        connectivityButtonPressed();
+    }
+    else if( cmdLower == "btn_connect\tpress" )
     {
         if( _ui->btn_connect->text() == CONNECT_PORT )
         {
             connectPort();
         }
     }
-    else if( signal == 13 )
+    else if( cmdLower == "btn_disconnect\tpress" )
     {
         if( _ui->btn_connect->text() == DISCONNECT_PORT )
         {
             disconnectPort();
         }
     }
-    else if( signal == 18
-             || signal == 19 )
+    else if( cmdLower == "btn_resetrefresh\tpress" )
     {
-        resetInfo();
+        resetRefresh();
     }
-    else if( signal == 30 )
+    else if( cmdLower == "btn_clearinfo\tpress" )
     {
-        if( _port.isRunning() )
-        {
-            _ui->dsp_setValue->setValue( 0.0 );
-            _ui->chb_adjustSetValue->setChecked( false );
-            _port.setValue( eaps8000UsbPort::setValueType::setTypeVoltage,
-                            0.0, false );
-            _port.setValue( eaps8000UsbPort::setValueType::setTypeCurrent,
-                            0.0, false );
-        }
+        clearInfo();
     }
-    else if( signal >= 31
-             && signal <= 39 )
+    else if( cmdLower.startsWith( "cob_setvalue\t" ) )
     {
-        if( !_port.isRunning() )
-        {
-            return;
-        }
-        if( cmd.at( 0 ) != 'a'
-                && cmd.at( 0 ) != 'n' )
-        {
-            return;
-        }
-        bool adjustValue = false;
-        if( cmd.at( 0 ) == 'a' )
-        {
-            adjustValue = true;
-        }
-        bool convOk = false;
-        double value = cmd.mid( 1 ).toDouble( &convOk );
-        if( !convOk )
-        {
-            return;
-        }
-
-        QString type;
-        QString unit;
-        if( signal == 31 )
-        {
-            type = VOLTAGE;
-            unit = UNIT_VOLT;
-        }
-        else if( signal == 32 )
-        {
-            type = CURRENT;
-            unit = UNIT_AMPERE;
-        }
-        else if( signal == 33 )
-        {
-            type = POWER;
-            unit = UNIT_WATT;
-        }
-        else if( signal == 34 )
-        {
-            type = POWER_BY_VOLTAGE;
-            unit = UNIT_WATT;
-        }
-        else if( signal == 35 )
-        {
-            type == POWER_BY_CURRENT;
-            unit = UNIT_WATT;
-        }
-        else if( signal == 36 )
-        {
-            type == RESISTANCE_BY_VOLTAGE;
-            unit = UNIT_OHM;
-        }
-        else if( signal == 37 )
-        {
-            type == RESISTANCE_BY_CURRENT;
-            unit = UNIT_OHM;
-        }
-        else if( signal == 38 )
-        {
-            type = _ui->cob_setValue->currentText();
-            unit = _ui->cob_setValueUnit->currentText();
-            value += _ui->dsp_setValue->value();
-        }
-        else if( signal == 39 )
-        {
-            type = _ui->cob_setValue->currentText();
-            unit = _ui->cob_setValueUnit->currentText();
-            value *= _ui->dsp_setValue->value();
-        }
-
+        QString type = cmdLower.mid( cmdLower.indexOf( "\t" )+1 );
         int indexType = _ui->cob_setValue->findText( type );
-        int indexUnit = _ui->cob_setValue->findText( unit );
-        if( indexType == -1
-                || indexUnit == -1 )
+        if( indexType == -1 )
         {
             return;
         }
-        _ui->dsp_setValue->setValue( value );
         _ui->cob_setValue->setCurrentIndex( indexType );
-        _ui->cob_setValueUnit->setCurrentIndex( indexUnit );
-        _ui->chb_adjustSetValue->setChecked( adjustValue );
+    }
+    else if( cmdLower.startsWith( "dsp_setvalue\t" ) )
+    {
+        QString valueStr = cmdLower.mid( cmdLower.indexOf( "\t" )+1 );
+        bool conversionSuccessful = false;
+        double value = valueStr.toDouble( &conversionSuccessful );
+        if( conversionSuccessful )
+        {
+            _ui->dsp_setValue->setValue( value );
+        }
+    }
+    else if( cmdLower == "btn_set\tpress" )
+    {
         setValue();
     }
 }
@@ -676,7 +612,18 @@ void eaps8000UsbWindow::portError( QString error )
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void eaps8000UsbWindow::resetInfo()
+void eaps8000UsbWindow::resetRefresh()
+{
+    if( _ui->btn_connect->text() == DISCONNECT_PORT )
+    {
+        disconnectPort();
+    }
+    _port.reset();
+
+    refreshPortList();
+}
+
+void eaps8000UsbWindow::clearInfo()
 {
     _port.clearPortErrors();
 
@@ -694,7 +641,6 @@ void eaps8000UsbWindow::resetInfo()
         _ui->lbl_info->setText( "-" );
         _ui->lbl_info->setStyleSheet( "" );
         _ui->btn_connect->setText( CONNECT_PORT );
-        refreshPortList();
     }
 }
 

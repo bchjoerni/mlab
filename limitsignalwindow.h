@@ -33,7 +33,7 @@ public:
         return true;
     }
     void putValue( const QString& id, double value ) override;
-    void mLabSignal( char signal, const QString& cmd ) override;
+    void mLabSignal( const QString& cmd ) override;
 
 private slots:
     void startStop();

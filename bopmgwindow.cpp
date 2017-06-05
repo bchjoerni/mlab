@@ -53,8 +53,10 @@ void bopmgWindow::connectUiElements()
     connect( _ui->btn_setValue, SIGNAL( clicked() ), this, SLOT( setValue() ) );
     connect( _ui->btn_measuredValuesVisibility, SIGNAL( clicked() ), this,
              SLOT( changeVisibility() ) );
-    connect( _ui->btn_resetInfo, SIGNAL( clicked() ), this,
-             SLOT( resetInfo() ) );
+    connect( _ui->btn_resetRefresh, SIGNAL( clicked() ), this,
+             SLOT( resetRefresh() ) );
+    connect( _ui->btn_clearInfo, SIGNAL( clicked() ), this,
+             SLOT( clearInfo() ) );
 }
 
 void bopmgWindow::addItems()
@@ -106,20 +108,28 @@ void bopmgWindow::refreshPortList()
     }
 }
 
-void bopmgWindow::mLabSignal( char signal, const QString& cmd )
+void bopmgWindow::mLabSignal( const QString& cmd )
 {
-    if( signal == SIGNAL_SHUTDOWN )
+    QString cmdLower = cmd.toLower().trimmed();
+
+    if( cmdLower == EMERGENCY_STOP )
     {
         emergencyStop();
     }
-    else if( signal == SIGNAL_STOP && _port.isOpen() )
+    else if( cmdLower == STOP_SIGNAL )
     {
-        _port.setValue( bopmgPort::setValueType::setTypeVoltage, 0, false );
-        _port.setValue( bopmgPort::setValueType::setTypeCurrent, 0, false );
+        if( _ui->chb_setZeroAtStopSignal->isChecked()
+                && _port.isOpen() )
+        {
+            _port.setValue( bopmgPort::setValueType::setTypeVoltage,
+                            0, false );
+            _port.setValue( bopmgPort::setValueType::setTypeCurrent,
+                            0, false );
 
-        _ui->lbl_info->setText( STOP_RECEIVED );
-        _ui->lbl_info->setStyleSheet( STYLE_ERROR );
-        emit changeWindowState( this->windowTitle(), false );
+            _ui->lbl_info->setText( STOP_INFO_TEXT );
+            _ui->lbl_info->setStyleSheet( STYLE_ERROR );
+            emit changeWindowState( this->windowTitle(), false );
+        }
     }
 }
 
@@ -492,7 +502,18 @@ void bopmgWindow::portError( QString error )
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void bopmgWindow::resetInfo()
+void bopmgWindow::resetRefresh()
+{
+    if( _ui->btn_connect->text() == DISCONNECT_PORT )
+    {
+        disconnectPort();
+    }
+    _port.reset();
+
+    refreshPortList();
+}
+
+void bopmgWindow::clearInfo()
 {
     _port.clearPortErrors();
 
@@ -510,6 +531,5 @@ void bopmgWindow::resetInfo()
         _ui->lbl_info->setText( "-" );
         _ui->lbl_info->setStyleSheet( "" );
         _ui->btn_connect->setText( CONNECT_PORT );
-        refreshPortList();
     }
 }

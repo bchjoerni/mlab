@@ -56,9 +56,9 @@ void screenshotWindow::screenshot()
     _ui->lbl_status->setStyleSheet( STYLE_OK );
 }
 
-void screenshotWindow::mLabSignal( char signal, const QString& cmd )
+void screenshotWindow::mLabSignal( const QString& cmd )
 {
-    if( signal == 40 )
+    if( cmd.toLower().trimmed() == "btn_screenshot\tpress" )
     {
         if( !_path.isEmpty() )
         {

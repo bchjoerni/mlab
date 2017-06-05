@@ -55,17 +55,17 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="lbl_info">
+      <item row="1" column="2">
+       <widget class="QPushButton" name="btn_clearInfo">
         <property name="text">
-         <string>-</string>
+         <string>clear info</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="btn_resetStatus">
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="lbl_info">
         <property name="text">
-         <string>reset status</string>
+         <string>-</string>
         </property>
        </widget>
       </item>

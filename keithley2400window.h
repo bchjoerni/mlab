@@ -26,7 +26,7 @@ public:
     {
         return false;
     }
-    void mLabSignal( char signal, const QString& cmd ) override;
+    void mLabSignal( const QString& cmd ) override;
 
 private slots:
     void emergencyStop();
@@ -36,7 +36,8 @@ private slots:
     void initFinished( const QString& idString );
     void resistanceUpdate( double resistance );
     void portError( QString error );
-    void resetInfo();
+    void resetRefresh();
+    void clearInfo();
 
 private:
     void connectPortFunctions();

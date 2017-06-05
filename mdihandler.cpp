@@ -12,7 +12,7 @@ void mdiHandler::emergencyStop()
     for( QMdiSubWindow* window : subWindows )
     {
         mLabWindow* labWindow = qobject_cast<mLabWindow*>( window->widget() );
-        labWindow->mLabSignal( SIGNAL_SHUTDOWN, SIGNAL_CMD_VOID );
+        labWindow->mLabSignal( "btn_emergencyStop\tpress" );
     }
 }
 
@@ -58,18 +58,17 @@ void mdiHandler::windowError( const QString &errorMsg )
     }
 }
 
-void mdiHandler::mLabSignal( const QString& receiver, char signal,
-                             const QString& cmd )
+void mdiHandler::mLabSignal( const QString& receiver, const QString& cmd )
 {
     auto subWindows = _mdiArea->subWindowList();
     for( QMdiSubWindow* window : subWindows )
     {
         mLabWindow* labWindow = qobject_cast<mLabWindow*>( window->widget() );
 
-        if( receiver == SIGNAL_RECEIVER_ALL
-                || receiver == labWindow->getTitle() )
+        if( receiver.trimmed() == SIGNAL_RECEIVER_ALL
+                || receiver.trimmed() == labWindow->getTitle() )
         {
-            labWindow->mLabSignal( signal, cmd );
+            labWindow->mLabSignal( cmd.trimmed() );
         }
     }
 }
@@ -285,8 +284,8 @@ void mdiHandler::addWindow( mLabWindow* window, Qt::WindowFlags flags,
     connect( window, SIGNAL( closing() ), this, SLOT( windowClosed() ) );
     connect( window, SIGNAL( newValue( QString, double ) ), this,
              SLOT( putValue( QString, double ) ) );
-    connect( window, SIGNAL( newSignal( QString, char, QString ) ), this,
-             SLOT( mLabSignal( QString, char, QString ) ) );
+    connect( window, SIGNAL( newSignal( QString, QString ) ), this,
+             SLOT( mLabSignal( QString, QString ) ) );
     connect( window, SIGNAL( newError( QString ) ), this,
              SLOT( windowError( QString ) ) );
     connect( window, SIGNAL( changeWindowState( QString, bool ) ), this,

@@ -29,9 +29,11 @@ temperatureCalcWindow::~temperatureCalcWindow()
     delete _ui;
 }
 
-void temperatureCalcWindow::mLabSignal( char signal, const QString& cmd )
+void temperatureCalcWindow::mLabSignal( const QString& cmd )
 {
-    if( signal == SIGNAL_SHUTDOWN )
+    QString cmdLower = cmd.toLower().trimmed();
+
+    if( cmdLower == EMERGENCY_STOP.toLower() )
     {
         if( _running )
         {
@@ -41,12 +43,12 @@ void temperatureCalcWindow::mLabSignal( char signal, const QString& cmd )
             emit changeWindowState( this->windowTitle(), false );
         }
     }
-    else if( signal == SIGNAL_STOP )
+    else if( cmdLower == STOP_SIGNAL.toLower() )
     {
         if( _running )
         {
             _running = false;
-            _ui->lbl_status->setText( STOP_RECEIVED );
+            _ui->lbl_status->setText( STOP_INFO_TEXT );
             _ui->lbl_status->setStyleSheet( STYLE_ERROR );
             emit changeWindowState( this->windowTitle(), false );
         }

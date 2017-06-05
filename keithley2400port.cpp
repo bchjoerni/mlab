@@ -16,10 +16,10 @@ keithley2400Port::keithley2400Port( QObject *parent ) : labPort( parent ),
 
 void keithley2400Port::setSerialValues()
 {
-    _port.setBaudRate( QSerialPort::Baud19200 );
-    _port.setDataBits( QSerialPort::Data8 );
-    _port.setStopBits( QSerialPort::OneStop );
-    _port.setParity(   QSerialPort::NoParity );
+    _port->setBaudRate( QSerialPort::Baud19200 );
+    _port->setDataBits( QSerialPort::Data8 );
+    _port->setStopBits( QSerialPort::OneStop );
+    _port->setParity(   QSerialPort::NoParity );
 }
 
 void keithley2400Port::setLabPortVariables()

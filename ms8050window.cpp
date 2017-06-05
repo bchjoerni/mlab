@@ -62,8 +62,10 @@ void ms8050Window::connectUiElements()
 {
     connect( _ui->btn_connect, SIGNAL( clicked() ), this,
              SLOT( connectivityButtonPressed() ) );
-    connect( _ui->btn_resetInfo, SIGNAL( clicked() ), this,
-             SLOT( resetInfo() ) );
+    connect( _ui->btn_resetRefresh, SIGNAL( clicked() ), this,
+             SLOT( resetRefresh() ) );
+    connect( _ui->btn_clearInfo, SIGNAL( clicked() ), this,
+             SLOT( clearInfo() ) );
 }
 
 void ms8050Window::refreshPortList()
@@ -223,7 +225,18 @@ void ms8050Window::portError( QString error )
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void ms8050Window::resetInfo()
+void ms8050Window::resetRefresh()
+{
+    if( _ui->btn_connect->text() == DISCONNECT_PORT )
+    {
+        disconnectPort();
+    }
+    _port.reset();
+
+    refreshPortList();
+}
+
+void ms8050Window::clearInfo()
 {
     _port.clearPortErrors();
 
@@ -241,7 +254,6 @@ void ms8050Window::resetInfo()
         _ui->lbl_info->setText( "-" );
         _ui->lbl_info->setStyleSheet( "" );
         _ui->btn_connect->setText( CONNECT_PORT );
-        refreshPortList();
     }
 }
 

@@ -68,8 +68,10 @@ void eaps8000UsbUICharWindow::connectUiElements()
              SLOT( connectivityButtonPressed() ) );
     connect( _ui->btn_startStop, SIGNAL( clicked() ), this,
              SLOT( startStop() ) );
-    connect( _ui->btn_resetInfo, SIGNAL( clicked() ), this,
-             SLOT( resetInfo() ) );
+    connect( _ui->btn_resetRefresh, SIGNAL( clicked() ), this,
+             SLOT( resetRefresh() ) );
+    connect( _ui->btn_clearInfo, SIGNAL( clicked() ), this,
+             SLOT( clearInfo() ) );
 }
 
 void eaps8000UsbUICharWindow::addItems()
@@ -125,163 +127,167 @@ void eaps8000UsbUICharWindow::emergencyStop()
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void eaps8000UsbUICharWindow::mLabSignal( char signal, const QString& cmd )
+void eaps8000UsbUICharWindow::mLabSignal( const QString& cmd )
 {
-    if( signal == SIGNAL_SHUTDOWN )
+    QString cmdLower = cmd.toLower().trimmed();
+
+    if( cmdLower == EMERGENCY_STOP.toLower() )
     {
         emergencyStop();
     }
-    else if( signal == SIGNAL_STOP )
+    else if( cmdLower == STOP_SIGNAL.toLower() )
     {
         if( _ui->chb_setZeroAtStopSignal->isChecked() )
         {
             uiCharFinished();
 
-            _ui->lbl_info->setText( STOP_RECEIVED );
+            _ui->lbl_info->setText( STOP_INFO_TEXT );
             _ui->lbl_info->setStyleSheet( STYLE_ERROR );
         }
     }
-    else if( signal == 10 )
+    else if( cmdLower == "btn_startstop\tpress" )
     {
-        if( _ui->btn_startStop->text() == STOP )
-        {
-            startStop();
-        }
+        startStop();
     }
-    else if( signal == 11 )
+    else if( cmdLower == "btn_start\tpress" )
     {
         if( _ui->btn_startStop->text() == START )
         {
             startStop();
         }
     }
-    else if( signal == 12 )
+    else if( cmdLower == "btn_stop\tpress" )
+    {
+        if( _ui->btn_startStop->text() == STOP )
+        {
+            startStop();
+        }
+    }
+    else if( cmdLower == "btn_connectdisconnect\tpress" )
+    {
+        connectivityButtonPressed();
+    }
+    else if( cmdLower == "btn_connect\tpress" )
     {
         if( _ui->btn_connect->text() == CONNECT_PORT )
         {
             connectPort();
         }
     }
-    else if( signal == 13 )
+    else if( cmdLower == "btn_disconnect\tpress")
     {
         if( _ui->btn_connect->text() == DISCONNECT_PORT )
         {
             disconnectPort();
         }
     }
-    else if( signal == 14 )
+    else if( cmdLower == "chb_setzeroatstopsignal\ttrue" )
     {
-        if( cmd == "true" )
-        {
-            _ui->chb_setZeroAtStopSignal->setChecked( true );
-        }
-        else if( cmd == "false" )
-        {
-            _ui->chb_setZeroAtStopSignal->setChecked( false );
-        }
+        _ui->chb_setZeroAtStopSignal->setChecked( true );
     }
-    else if( signal == 15 )
+    else if( cmdLower == "chb_setzeroatstopsignal\tfalse" )
     {
-        if( cmd == "true" )
-        {
-            _ui->chb_setZeroWhenFinished->setChecked( true );
-        }
-        else if( cmd == "false" )
-        {
-            _ui->chb_setZeroWhenFinished->setChecked( false );
-        }
+        _ui->chb_setZeroAtStopSignal->setChecked( false );
     }
-    else if( signal == 16 )
+    else if( cmdLower == "chb_setzerowhenfinished\ttrue" )
     {
-        if( cmd == "true" )
-        {
-            _ui->chb_emitStopSignal->setChecked( true );
-        }
-        else if( cmd == "false" )
-        {
-            _ui->chb_emitStopSignal->setChecked( false );
-        }
+        _ui->chb_setZeroWhenFinished->setChecked( true );
     }
-    else if( signal == 18
-             || signal == 19 )
+    else if( cmdLower == "chb_setzerowhenfinished\tfalse" )
     {
-        resetInfo();
+        _ui->chb_setZeroWhenFinished->setChecked( false );
     }
-    else if( signal == 41 )
+    else if( cmdLower == "chb_emitstopsignal\ttrue" )
     {
-        int indexType = _ui->cob_setValue->findText( cmd );
+        _ui->chb_emitStopSignal->setChecked( true );
+    }
+    else if( cmdLower == "chb_emitstopsignal\tfalse" )
+    {
+        _ui->chb_emitStopSignal->setChecked( false );
+    }
+    else if( cmdLower == "btn_resetrefresh\tpress" )
+    {
+        resetRefresh();
+    }
+    else if( cmdLower == "btn_clearinfo\tpress" )
+    {
+        clearInfo();
+    }
+    else if( cmdLower.startsWith( "cob_setvalue\t" ) )
+    {
+        QString type = cmdLower.mid( cmdLower.indexOf( "\t" )+1 );
+        int indexType = _ui->cob_setValue->findText( type );
         if( indexType == -1 )
         {
             return;
         }
         _ui->cob_setValue->setCurrentIndex( indexType );
     }
-    else if( signal == 42 )
+    else if( cmdLower.startsWith( "dsb_stepsize\t" ) )
     {
+        QString value = cmdLower.mid( cmdLower.indexOf( "\t" )+1 );
         bool conversionSuccessful = false;
-        double stepSize = cmd.toDouble( &conversionSuccessful );
+        double stepSize = value.toDouble( &conversionSuccessful );
         if( conversionSuccessful )
         {
             _ui->dsb_stepSize->setValue( stepSize );
         }
     }
-    else if( signal == 43 )
+    else if( cmdLower == "chb_calcvalues\ttrue" )
     {
-        if( cmd == "true" )
-        {
-            _ui->chb_calcValues->setChecked( true );
-        }
-        else if( cmd == "false" )
-        {
-            _ui->chb_calcValues->setChecked( false );
-        }
+        _ui->chb_calcValues->setChecked( true );
     }
-    else if( signal == 45 )
+    else if( cmdLower == "chb_calcvalues\tfalse" )
     {
+        _ui->chb_calcValues->setChecked( false );
+    }
+    else if( cmdLower.startsWith( "dsb_fromvalue\t" ) )
+    {
+        QString value = cmdLower.mid( cmdLower.indexOf( "\t" )+1 );
         bool conversionSuccessful = false;
-        double fromValue = cmd.toDouble( &conversionSuccessful );
+        double fromValue = value.toDouble( &conversionSuccessful );
         if( conversionSuccessful )
         {
             _ui->dsb_fromValue->setValue( fromValue );
         }
     }
-    else if( signal == 46 )
+    else if( cmdLower.startsWith( "dsb_tovalue\t" ) )
     {
+        QString value = cmdLower.mid( cmdLower.indexOf( "\t" )+1 );
         bool conversionSuccessful = false;
-        double toValue = cmd.toDouble( &conversionSuccessful );
+        double toValue = value.toDouble( &conversionSuccessful );
         if( conversionSuccessful )
         {
             _ui->dsb_toValue->setValue( toValue );
         }
     }
-    else if( signal == 47 )
+    else if( cmdLower.startsWith( "cob_unit\t" ) )
     {
-        int unitType = _ui->cob_unit->findText( cmd );
+        QString unit = cmdLower.mid( cmdLower.indexOf( "\t" )+1 );
+        int unitType = _ui->cob_unit->findText( unit );
         if( unitType == -1 )
         {
             return;
         }
         _ui->cob_unit->setCurrentIndex( unitType );
     }
-    else if( signal == 51 )
+    else if( cmdLower.startsWith( "spb_repeat\t" ) )
     {
+        QString value = cmdLower.mid( cmdLower.indexOf( "\t" )+1 );
         bool conversionSuccessful = false;
-        int repeat = cmd.toInt( &conversionSuccessful );
+        int repeat = value.toInt( &conversionSuccessful );
         if( conversionSuccessful )
         {
             _ui->spb_repeat->setValue( repeat );
         }
     }
-    else if( signal == 52 )
+    else if( cmdLower == "chb_loop\ttrue" )
     {
-        if( cmd == "true" )
-        {
-            _ui->chb_loop->setChecked( true );
-        }
-        else if( cmd == "false" )
-        {
-            _ui->chb_loop->setChecked( false );
-        }
+        _ui->chb_loop->setChecked( true );
+    }
+    else if( cmdLower == "chb_loop\tfalse" )
+    {
+        _ui->chb_loop->setChecked( false );
     }
 }
 
@@ -352,7 +358,7 @@ void eaps8000UsbUICharWindow::setValues()
 
         if( _ui->chb_emitStopSignal->isChecked() )
         {
-            emit newSignal( SIGNAL_RECEIVER_ALL, SIGNAL_STOP, SIGNAL_CMD_VOID );
+            emit newSignal( SIGNAL_RECEIVER_ALL, STOP_SIGNAL );
         }
         return;
     }
@@ -625,7 +631,18 @@ void eaps8000UsbUICharWindow::portError( QString error )
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void eaps8000UsbUICharWindow::resetInfo()
+void eaps8000UsbUICharWindow::resetRefresh()
+{
+    if( _ui->btn_connect->text() == DISCONNECT_PORT )
+    {
+        disconnectPort();
+    }
+    _port.reset();
+
+    refreshPortList();
+}
+
+void eaps8000UsbUICharWindow::clearInfo()
 {
     _port.clearPortErrors();
 
@@ -643,6 +660,5 @@ void eaps8000UsbUICharWindow::resetInfo()
         _ui->lbl_info->setText( "-" );
         _ui->lbl_info->setStyleSheet( "" );
         _ui->btn_connect->setText( CONNECT_PORT );
-        refreshPortList();
     }
 }

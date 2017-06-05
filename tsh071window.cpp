@@ -46,12 +46,14 @@ void tsh071Window::connectUiElements()
              SLOT( setRotation() ) );
     connect( _ui->btn_measuredValuesVisibility, SIGNAL( clicked() ), this,
              SLOT( changeVisibility() ) );
-    connect( _ui->btn_resetInfo, SIGNAL( clicked() ), this,
-             SLOT( resetInfo() ) );
     connect( _ui->btn_startPump, SIGNAL( clicked() ), this,
              SLOT( startPump() ) );
     connect( _ui->btn_stopPump, SIGNAL( clicked() ), this,
              SLOT( stopPump() ) );
+    connect( _ui->btn_resetRefresh, SIGNAL( clicked() ), this,
+             SLOT( resetRefresh() ) );
+    connect( _ui->btn_clearInfo, SIGNAL( clicked() ), this,
+             SLOT( clearInfo() ) );
 }
 
 void tsh071Window::addItems()
@@ -170,6 +172,20 @@ void tsh071Window::doUpdate()
     }
 }
 
+void tsh071Window::mLabSignal( const QString &cmd )
+{
+    QString cmdLower = cmd.toLower().trimmed();
+
+    if( cmdLower == "btn_resetrefresh\tpress" )
+    {
+        resetRefresh();
+    }
+    else if( cmdLower == "btn_clearinfo\tpress" )
+    {
+        clearInfo();
+    }
+}
+
 void tsh071Window::rpmUpdate( int rpm )
 {
     CLOG(INFO, "v") << this->windowTitle().toStdString()
@@ -258,7 +274,18 @@ void tsh071Window::portError( QString error )
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void tsh071Window::resetInfo()
+void tsh071Window::resetRefresh()
+{
+    if( _ui->btn_connect->text() == DISCONNECT_PORT )
+    {
+        disconnectPort();
+    }
+    _port.reset();
+
+    refreshPortList();
+}
+
+void tsh071Window::clearInfo()
 {
     _port.clearPortErrors();
 
@@ -268,7 +295,6 @@ void tsh071Window::resetInfo()
         _ui->lbl_info->setStyleSheet( "" );
         _ui->btn_connect->setText( DISCONNECT_PORT );
         _ui->btn_connect->setEnabled( true );
-        _ui->spb_id->setEnabled( false );
 
         emit changeWindowState( this->windowTitle(), true );
     }
@@ -277,7 +303,5 @@ void tsh071Window::resetInfo()
         _ui->lbl_info->setText( "-" );
         _ui->lbl_info->setStyleSheet( "" );
         _ui->btn_connect->setText( CONNECT_PORT );
-        _ui->spb_id->setEnabled( true );
-        refreshPortList();
     }
 }

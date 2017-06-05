@@ -23,42 +23,43 @@ pairSaveWindow::~pairSaveWindow()
     delete _ui;
 }
 
-void pairSaveWindow::mLabSignal( char signal, const QString& cmd )
+void pairSaveWindow::mLabSignal( const QString& cmd )
 {    
-    if( signal == SIGNAL_SHUTDOWN
-            || (signal == SIGNAL_STOP &&
-                _ui->chb_setZeroAtStopSignal->isChecked()) )
+    QString cmdLower = cmd.toLower();
+
+    if( cmdLower == STOP_SIGNAL
+            && _ui->chb_setZeroAtStopSignal->isChecked() )
     {
         if( _recording )
         {
-            _recording = false;
+            _recording = false ;
             _ui->btn_startStop->setText( START_RECORDING );
-            _ui->lbl_status->setText( signal == SIGNAL_SHUTDOWN ?
-                                          EMERGENCY_STOP : STOP_RECEIVED );
+            _ui->lbl_status->setText( STOP_INFO_TEXT );
             _ui->lbl_status->setStyleSheet( STYLE_ERROR );
             _ui->btn_selectFile->setEnabled( true );
-            _ui->cob_delimiter->setEnabled( true );
-            _ui->cob_x->setEnabled( true );
-            _ui->cob_y->setEnabled( true );
             _intervalCounter = 0;
             emit changeWindowState( this->windowTitle(), false );
         }
     }
-    else if( signal == 10 )
+    else if( cmdLower == "btn_startstop\tpress" )
     {
-        if( _ui->btn_startStop->text() == STOP_RECORDING )
-        {
-            startStopPressed();
-        }
+        startStopPressed();
     }
-    else if( signal == 11 )
+    else if( cmdLower == "btn_startrecording\tpress" )
     {
         if( _ui->btn_startStop->text() == START_RECORDING )
         {
             startStopPressed();
         }
     }
-    else if( signal == 19 )
+    else if( cmdLower == "btn_stoprecording\tpress" )
+    {
+        if( _ui->btn_startStop->text() == STOP_RECORDING )
+        {
+            startStopPressed();
+        }
+    }
+    else if( cmdLower == "btn_resetcounter\tpress" )
     {
         resetCounter();
     }

@@ -51,6 +51,13 @@
       <item row="0" column="1">
        <widget class="QComboBox" name="cob_ports"/>
       </item>
+      <item row="0" column="4">
+       <widget class="QPushButton" name="btn_resetRefresh">
+        <property name="text">
+         <string>reset / refresh</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="2">
        <widget class="QPushButton" name="btn_connect">
         <property name="text">
@@ -58,14 +65,14 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
-       <widget class="QPushButton" name="btn_resetInfo">
+      <item row="1" column="4">
+       <widget class="QPushButton" name="btn_clearInfo">
         <property name="text">
-         <string>reset / refresh</string>
+         <string>clear info</string>
         </property>
        </widget>
       </item>
-      <item row="1" column="0" colspan="2">
+      <item row="1" column="0" colspan="3">
        <widget class="QLabel" name="lbl_info">
         <property name="text">
          <string>-</string>

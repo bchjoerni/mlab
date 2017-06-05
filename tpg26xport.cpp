@@ -15,10 +15,10 @@ tpg26xPort::tpg26xPort( QObject *parent ) : labPort( parent ),
 
 void tpg26xPort::setSerialValues()
 {
-    _port.setBaudRate( QSerialPort::Baud9600 );
-    _port.setDataBits( QSerialPort::Data8 );
-    _port.setStopBits( QSerialPort::OneStop );
-    _port.setParity(   QSerialPort::NoParity );
+    _port->setBaudRate( QSerialPort::Baud9600 );
+    _port->setDataBits( QSerialPort::Data8 );
+    _port->setStopBits( QSerialPort::OneStop );
+    _port->setParity(   QSerialPort::NoParity );
 }
 
 void tpg26xPort::setLabPortVariables()

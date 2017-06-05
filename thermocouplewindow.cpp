@@ -33,8 +33,10 @@ void thermocoupleWindow::connectUiElements()
 {
     connect( _ui->btn_connect, SIGNAL( clicked() ), this,
              SLOT( connectivityButtonPressed() ) );
-    connect( _ui->btn_resetInfo, SIGNAL( clicked() ), this,
-             SLOT( resetInfo() ) );
+    connect( _ui->btn_resetRefresh, SIGNAL( clicked() ), this,
+             SLOT( resetRefresh() ) );
+    connect( _ui->btn_clearInfo, SIGNAL( clicked() ), this,
+             SLOT( clearInfo() ) );
 }
 
 void thermocoupleWindow::refreshPortList()
@@ -119,12 +121,17 @@ void thermocoupleWindow::doUpdate()
     }
 }
 
-void thermocoupleWindow::mLabSignal( char signal, const QString &cmd )
+void thermocoupleWindow::mLabSignal( const QString &cmd )
 {
-    if( signal == 18
-             || signal == 19 )
+    QString cmdLower = cmd.toLower().trimmed();
+
+    if( cmdLower == "btn_resetrefresh\tpress" )
     {
-        resetInfo();
+        resetRefresh();
+    }
+    else if( cmdLower == "btn_clearinfo\tpress" )
+    {
+        clearInfo();
     }
 }
 
@@ -165,7 +172,18 @@ void thermocoupleWindow::portError( QString error )
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void thermocoupleWindow::resetInfo()
+void thermocoupleWindow::resetRefresh()
+{
+    if( _ui->btn_connect->text() == DISCONNECT_PORT )
+    {
+        disconnectPort();
+    }
+    _port.reset();
+
+    refreshPortList();
+}
+
+void thermocoupleWindow::clearInfo()
 {
     _port.clearPortErrors();
 
@@ -183,6 +201,5 @@ void thermocoupleWindow::resetInfo()
         _ui->lbl_info->setText( "-" );
         _ui->lbl_info->setStyleSheet( "" );
         _ui->btn_connect->setText( CONNECT_PORT );
-        refreshPortList();
     }
 }

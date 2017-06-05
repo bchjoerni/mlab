@@ -12,10 +12,10 @@ ms8050Port::ms8050Port( QObject *parent ) : labPort( parent ),
 
 void ms8050Port::setSerialValues()
 {
-    _port.setBaudRate( QSerialPort::Baud2400 );
-    _port.setDataBits( QSerialPort::Data8 );
-    _port.setStopBits( QSerialPort::OneStop );
-    _port.setParity(   QSerialPort::EvenParity );
+    _port->setBaudRate( QSerialPort::Baud2400 );
+    _port->setDataBits( QSerialPort::Data8 );
+    _port->setStopBits( QSerialPort::OneStop );
+    _port->setParity(   QSerialPort::EvenParity );
 }
 
 void ms8050Port::setLabPortVariables()

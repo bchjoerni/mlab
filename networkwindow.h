@@ -29,20 +29,23 @@ public:
     {
         return false;
     }
-    void mLabSignal( char signal, const QString& cmd ) override;
+    void mLabSignal( const QString& cmd ) override;
 
 private slots:
     void startStopPressed();
     void networkError( QNetworkReply::NetworkError error );
-    void uploadProgress( qint64, qint64 );
-    void downloadProgress( qint64, qint64 );
-    void uploadFinished();
+    void uploadScreenProgress( qint64, qint64 );
+    void downloadCmdsProgress( qint64, qint64 );
+    void downloadCmdsFinished();
+    void uploadScreenFinished();
     void commandTicksChanged();
     void readCommands();
+    void clearOnlineCmdsFinished();
 
 private:
     void uploadScreen();
     void downloadCmd();
+    void clearOnlineCmds();
 
     Ui::networkWindow *_ui;
     QNetworkAccessManager* _networkManager;

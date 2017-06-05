@@ -36,7 +36,8 @@ private slots:
     void minMaxUpdate( char minMax );
     void relativeUpdate( bool relative );
     void portError( QString error );
-    void resetInfo();
+    void resetRefresh();
+    void clearInfo();
 
 private:
     void connectPortFunctions();

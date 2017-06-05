@@ -23,17 +23,17 @@ simpleGraphWindow::~simpleGraphWindow()
 }
 
 
-void simpleGraphWindow::mLabSignal( char signal, const QString& cmd )
-{
-    if( signal == SIGNAL_SHUTDOWN
-            || (signal == SIGNAL_STOP &&
-                _ui->chb_setZeroAtStopSignal->isChecked()) )
+void simpleGraphWindow::mLabSignal( const QString& cmd )
+{    
+    QString cmdLower = cmd.toLower().trimmed();
+
+    if( cmdLower == STOP_SIGNAL
+            && _ui->chb_setZeroAtStopSignal->isChecked() )
     {
         if( _ui->btn_startStop->text() == STOP )
         {
             _ui->btn_startStop->setText( START );
-            _ui->lbl_status->setText( signal == SIGNAL_SHUTDOWN ?
-                                          EMERGENCY_STOP : STOP_RECEIVED  );
+            _ui->lbl_status->setText( STOP_INFO_TEXT  );
             _ui->lbl_status->setStyleSheet( STYLE_ERROR );
 
             emit changeWindowState( this->windowTitle(), false );

@@ -39,7 +39,8 @@ private slots:
     void clearOutput();
     void connectivityButtonPressed();
     void portError( QString error );
-    void resetInfo();
+    void resetRefresh();
+    void clearInfo();
     void receivedMsg( QByteArray msg );
     void showReceivedMsg();
     void sendMsg();

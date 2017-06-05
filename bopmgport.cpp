@@ -21,10 +21,10 @@ bopmgPort::bopmgPort( QObject *parent ) : labPort( parent ),
 
 void bopmgPort::setSerialValues()
 {
-    _port.setBaudRate( QSerialPort::Baud19200 );
-    _port.setDataBits( QSerialPort::Data8 );
-    _port.setStopBits( QSerialPort::OneStop );
-    _port.setParity(   QSerialPort::NoParity );
+    _port->setBaudRate( QSerialPort::Baud19200 );
+    _port->setDataBits( QSerialPort::Data8 );
+    _port->setStopBits( QSerialPort::OneStop );
+    _port->setParity(   QSerialPort::NoParity );
 }
 
 void bopmgPort::setLabPortVariables()

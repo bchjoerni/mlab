@@ -26,7 +26,7 @@ public:
     {
         return false;
     }
-    void mLabSignal( char signal, const QString& cmd ) override;
+    void mLabSignal( const QString& cmd ) override;
 
 private slots:
     void emergencyStop();
@@ -42,7 +42,8 @@ private slots:
     void pressureUpdate( double pressure );
     void temperatureUpdate( double temperature );
     void portError( QString error );
-    void resetInfo();
+    void resetRefresh();
+    void clearInfo();
     void updateUnitRange();
 
 private:

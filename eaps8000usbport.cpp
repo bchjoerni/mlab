@@ -18,10 +18,10 @@ eaps8000UsbPort::eaps8000UsbPort( QObject *parent ) : labPort( parent ),
 
 void eaps8000UsbPort::setSerialValues()
 {
-    _port.setBaudRate( QSerialPort::Baud57600 );
-    _port.setDataBits( QSerialPort::Data8 );
-    _port.setStopBits( QSerialPort::OneStop );
-    _port.setParity(   QSerialPort::OddParity );
+    _port->setBaudRate( QSerialPort::Baud57600 );
+    _port->setDataBits( QSerialPort::Data8 );
+    _port->setStopBits( QSerialPort::OneStop );
+    _port->setParity(   QSerialPort::OddParity );
 }
 
 void eaps8000UsbPort::setLabPortVariables()

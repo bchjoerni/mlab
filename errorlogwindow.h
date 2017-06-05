@@ -32,7 +32,7 @@ public:
     void doUpdate() override
     {
     }
-    void mLabSignal( char signal, const QString& cmd ) override;
+    void mLabSignal( const QString& cmd ) override;
     void mLabError( const QString& errorMsg );
 
 private slots:

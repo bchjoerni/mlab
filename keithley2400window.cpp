@@ -35,8 +35,10 @@ void keithley2400Window::connectUiElements()
 
     connect( _ui->btn_connect, SIGNAL( clicked() ), this,
              SLOT( connectivityButtonPressed() ) );
-    connect( _ui->btn_resetInfo, SIGNAL( clicked() ), this,
-             SLOT( resetInfo() ) );
+    connect( _ui->btn_resetRefresh, SIGNAL( clicked() ), this,
+             SLOT( resetRefresh() ) );
+    connect( _ui->btn_clearInfo, SIGNAL( clicked() ), this,
+             SLOT( clearInfo() ) );
 }
 
 void keithley2400Window::setPortEmits()
@@ -70,15 +72,17 @@ void keithley2400Window::refreshPortList()
     }
 }
 
-void keithley2400Window::mLabSignal( char signal, const QString& cmd )
+void keithley2400Window::mLabSignal( const QString& cmd )
 {
-    if( signal == SIGNAL_SHUTDOWN )
+    QString cmdLower = cmd.toLower().trimmed();
+
+    if( cmdLower == EMERGENCY_STOP.toLower() )
     {
         emergencyStop();
     }
-    else if( signal == SIGNAL_STOP && _port.isOpen() )
+    else if( cmdLower == STOP_SIGNAL.toLower() )
     {
-        emergencyStop();
+
     }
 }
 
@@ -168,7 +172,18 @@ void keithley2400Window::portError( QString error )
     emit changeWindowState( this->windowTitle(), false );
 }
 
-void keithley2400Window::resetInfo()
+void keithley2400Window::resetRefresh()
+{
+    if( _ui->btn_connect->text() == DISCONNECT_PORT )
+    {
+        disconnectPort();
+    }
+    _port.reset();
+
+    refreshPortList();
+}
+
+void keithley2400Window::clearInfo()
 {
     _port.clearPortErrors();
 
@@ -186,6 +201,5 @@ void keithley2400Window::resetInfo()
         _ui->lbl_info->setText( "-" );
         _ui->lbl_info->setStyleSheet( "" );
         _ui->btn_connect->setText( CONNECT_PORT );
-        refreshPortList();
     }
 }

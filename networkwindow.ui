@@ -6,241 +6,44 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>318</width>
-    <height>386</height>
+    <width>348</width>
+    <height>319</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>network remote</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout_3">
-   <item row="0" column="0">
-    <widget class="QLabel" name="lbl_status_lbl">
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="4" column="1" colspan="3">
+    <widget class="QSpinBox" name="spb_ticks">
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="minimum">
+      <number>1</number>
+     </property>
+     <property name="maximum">
+      <number>100000</number>
+     </property>
+     <property name="value">
+      <number>30</number>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1" colspan="6">
+    <widget class="QLineEdit" name="txt_password">
      <property name="text">
-      <string>status:</string>
+      <string/>
+     </property>
+     <property name="echoMode">
+      <enum>QLineEdit::Password</enum>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="lbl_status">
-     <property name="styleSheet">
-      <string notr="true">color: red;</string>
-     </property>
-     <property name="text">
-      <string>pausing</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QPushButton" name="btn_startStop">
-     <property name="text">
-      <string>start</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0" colspan="3">
-    <widget class="QGroupBox" name="grp_commands">
-     <property name="title">
-      <string>commands</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout_2">
-      <property name="leftMargin">
-       <number>1</number>
-      </property>
-      <property name="topMargin">
-       <number>8</number>
-      </property>
-      <property name="rightMargin">
-       <number>1</number>
-      </property>
-      <property name="bottomMargin">
-       <number>1</number>
-      </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lbl_urlCmd_lbl">
-        <property name="text">
-         <string>URL:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="4">
-       <widget class="QLineEdit" name="txt_urlCmd">
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <property name="placeholderText">
-         <string>ftp://example.com/cmd.txt</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QLabel" name="lbl_checkCmd_lbl">
-        <property name="text">
-         <string>every</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QSpinBox" name="spb_ticksCmd">
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>100000</number>
-        </property>
-        <property name="value">
-         <number>30</number>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="3" colspan="2">
-       <widget class="QLabel" name="lbl_ticksCmd">
-        <property name="text">
-         <string>ticks</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="4">
-       <widget class="QLabel" name="lbl_ticksToNextCmd_lbl">
-        <property name="text">
-         <string>ticks to next download:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="4">
-       <widget class="QLabel" name="lbl_ticksToNextCmd">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="text">
-         <string>30</string>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="3">
-    <widget class="QGroupBox" name="grp_screenUpload">
-     <property name="title">
-      <string>screen upload</string>
-     </property>
-     <layout class="QGridLayout" name="gridLayout">
-      <property name="leftMargin">
-       <number>1</number>
-      </property>
-      <property name="topMargin">
-       <number>8</number>
-      </property>
-      <property name="rightMargin">
-       <number>1</number>
-      </property>
-      <property name="bottomMargin">
-       <number>1</number>
-      </property>
-      <item row="0" column="0">
-       <widget class="QLabel" name="lbl_urlUpload_lbl">
-        <property name="text">
-         <string>URL:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1" colspan="2">
-       <widget class="QLineEdit" name="txt_urlUpload">
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <property name="placeholderText">
-         <string>ftp://example.com/pic.png</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0" colspan="2">
-       <widget class="QLabel" name="lbl_usernameUpload_lbl">
-        <property name="text">
-         <string>username:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLineEdit" name="txt_usernameUpload">
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <property name="placeholderText">
-         <string/>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="0" colspan="2">
-       <widget class="QLabel" name="lbl_passwordUpload_lbl">
-        <property name="text">
-         <string>password:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="2" column="2">
-       <widget class="QLineEdit" name="txt_passwordUpload">
-        <property name="text">
-         <string/>
-        </property>
-        <property name="echoMode">
-         <enum>QLineEdit::Password</enum>
-        </property>
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="0" colspan="2">
-       <widget class="QSpinBox" name="spb_ticksUpload">
-        <property name="alignment">
-         <set>Qt::AlignCenter</set>
-        </property>
-        <property name="minimum">
-         <number>1</number>
-        </property>
-        <property name="maximum">
-         <number>1000</number>
-        </property>
-        <property name="value">
-         <number>5</number>
-        </property>
-       </widget>
-      </item>
-      <item row="3" column="2">
-       <widget class="QLabel" name="lbl_ticksUpload">
-        <property name="text">
-         <string>ticks after commands</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="4" column="0" colspan="3">
-    <widget class="QLabel" name="lbl_info">
-     <property name="text">
-      <string>Specify download parameter! (commands empty URLs are ignored)</string>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
+   <item row="10" column="3" colspan="3">
     <widget class="QSpinBox" name="spb_reset">
      <property name="alignment">
       <set>Qt::AlignCenter</set>
@@ -253,14 +56,33 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="2">
-    <widget class="QLabel" name="lbl_resetTicks_lbl">
+   <item row="0" column="1" colspan="5">
+    <widget class="QLabel" name="lbl_status">
+     <property name="styleSheet">
+      <string notr="true">color: red;</string>
+     </property>
      <property name="text">
-      <string>ticks</string>
+      <string>pausing</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
+   <item row="9" column="3" colspan="4">
+    <widget class="QLabel" name="lbl_ticksToNext">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>30</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="0" colspan="2">
     <widget class="QCheckBox" name="chb_reset">
      <property name="text">
       <string>reset every</string>
@@ -270,16 +92,160 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="lbl_password_lbl">
+     <property name="text">
+      <string>password:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="lbl_wait_lbl">
+     <property name="text">
+      <string>wait</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="lbl_status_lbl">
+     <property name="text">
+      <string>status:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="6">
+    <widget class="QPushButton" name="btn_info">
+     <property name="text">
+      <string>info</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="QLabel" name="lbl_username_lbl">
+     <property name="text">
+      <string>username:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="lbl_url_lbl">
+     <property name="text">
+      <string>URL:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="lbl_every_lbl">
+     <property name="text">
+      <string>every</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="0" colspan="2">
+    <widget class="QLabel" name="lbl_ticksToNext_lbl">
+     <property name="text">
+      <string>ticks to next action:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1">
+    <widget class="QSpinBox" name="spb_ticksWait">
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="minimum">
+      <number>0</number>
+     </property>
+     <property name="maximum">
+      <number>10000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="3" colspan="4">
+    <widget class="QLabel" name="lbl_waitToScreenUpload">
+     <property name="text">
+      <string>ticks to screen upload</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="6">
+    <widget class="QLabel" name="lbl_resetTicks_lbl">
+     <property name="text">
+      <string>ticks</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="6">
+    <widget class="QLineEdit" name="txt_username">
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="6">
+    <widget class="QLineEdit" name="txt_url">
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+     <property name="placeholderText">
+      <string>ftp://example.com/mlab</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="4" colspan="2">
+    <widget class="QLabel" name="lbl_ticks">
+     <property name="text">
+      <string>ticks</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="6">
+    <widget class="QPushButton" name="btn_startStop">
+     <property name="text">
+      <string>start</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="2">
+    <widget class="QCheckBox" name="chb_downloadCmds">
+     <property name="text">
+      <string>download cmds</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="4" colspan="3">
+    <widget class="QCheckBox" name="chb_uploadScreen">
+     <property name="text">
+      <string>upload screen</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="0" colspan="7">
+    <widget class="QLabel" name="lbl_info">
+     <property name="text">
+      <string>Specify parameter...</string>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
-  <tabstop>btn_startStop</tabstop>
-  <tabstop>txt_urlCmd</tabstop>
-  <tabstop>spb_ticksCmd</tabstop>
-  <tabstop>txt_urlUpload</tabstop>
-  <tabstop>txt_usernameUpload</tabstop>
-  <tabstop>txt_passwordUpload</tabstop>
-  <tabstop>spb_ticksUpload</tabstop>
+  <tabstop>spb_ticks</tabstop>
  </tabstops>
  <resources/>
  <connections/>

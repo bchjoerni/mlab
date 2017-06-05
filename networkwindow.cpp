@@ -12,7 +12,7 @@ networkWindow::networkWindow( QWidget *parent ) :
 
     connect( _ui->btn_startStop, SIGNAL( clicked() ), this,
              SLOT( startStopPressed() ) );
-    connect( _ui->spb_ticksCmd, SIGNAL( valueChanged( int ) ), this,
+    connect( _ui->spb_ticks, SIGNAL( valueChanged( int ) ), this,
              SLOT( commandTicksChanged() ) );
 
     _ui->lbl_status->setText( PAUSING );
@@ -24,21 +24,9 @@ networkWindow::~networkWindow()
     delete _ui;
 }
 
-void networkWindow::mLabSignal( char signal, const QString& cmd )
+void networkWindow::mLabSignal( const QString& cmd )
 {
-    if( signal == SIGNAL_SHUTDOWN
-            || (signal == SIGNAL_STOP) )
-    {
-        if( _ui->btn_startStop->text() == STOP_REMOTE )
-        {
-            _ui->lbl_status->setText( PAUSING );
-            _ui->lbl_status->setStyleSheet( STYLE_ERROR );
-            _ui->lbl_info->setText( signal == SIGNAL_SHUTDOWN ?
-                                        "Shutdown signal received!" :
-                                        "Stop signal received!" );
-            _ui->btn_startStop->setText( START_REMOTE );
-        }
-    }
+
 }
 
 void networkWindow::doUpdate()
@@ -46,8 +34,8 @@ void networkWindow::doUpdate()
     if( _ui->btn_startStop->text() == STOP_REMOTE )
     {
         _counterCommands++;
-        _ui->lbl_ticksToNextCmd->setText(
-            QString::number( _ui->spb_ticksCmd->value() - _counterCommands ) );
+        _ui->lbl_ticksToNext->setText(
+            QString::number( _ui->spb_ticks->value() - _counterCommands ) );
 
         if( _ui->chb_reset->isChecked() )
         {
@@ -62,13 +50,13 @@ void networkWindow::doUpdate()
         }
     }
 
-    if( _counterCommands >= _ui->spb_ticksCmd->value() )
+    if( _counterCommands >= _ui->spb_ticks->value() )
     {
         _counterCommands = 0;
         _counterScreen = 0;
-        _ui->lbl_ticksToNextCmd->setText( QString::number(
-                                              _ui->spb_ticksCmd->value() ) );
-        if( !_ui->txt_urlCmd->text().isEmpty() )
+        _ui->lbl_ticksToNext->setText( QString::number(
+                                              _ui->spb_ticks->value() ) );
+        if( _ui->chb_downloadCmds->isChecked() )
         {
             downloadCmd();
         }
@@ -78,9 +66,9 @@ void networkWindow::doUpdate()
     {
         _counterScreen++;
     }
-    if( _counterScreen-1 >= _ui->spb_ticksUpload->value() )
+    if( _counterScreen-1 >= _ui->spb_ticks->value() )
     {
-        if( !_ui->txt_urlUpload->text().isEmpty() )
+        if( _ui->chb_uploadScreen->isChecked() )
         {
             uploadScreen();
         }
@@ -90,32 +78,33 @@ void networkWindow::doUpdate()
 
 void networkWindow::commandTicksChanged()
 {
-    _ui->lbl_ticksToNextCmd->setText( QString::number(
-                                             _ui->spb_ticksCmd->value() ) );
-    _ui->spb_ticksUpload->setMaximum( _ui->spb_ticksCmd->value() );
+    _ui->lbl_ticksToNext->setText( QString::number(
+                                             _ui->spb_ticks->value() ) );
+    _ui->spb_ticksWait->setMaximum( _ui->spb_ticks->value() );
 }
 
 void networkWindow::startStopPressed()
 {
     if( _ui->btn_startStop->text() == START_REMOTE )
     {
-        QUrl urlCmd( _ui->txt_urlCmd->text() );
-        if( !urlCmd.isValid() && !urlCmd.isEmpty() )
+        QUrl url( _ui->txt_url->text() );
+        if( !url.isValid() && !url.isEmpty() )
         {
             _ui->lbl_info->setText( "Invalid cmd url!" );
             return;
         }
-        QUrl urlUpload( _ui->txt_urlUpload->text() );
-        if( !urlUpload.isValid() && !urlUpload.isEmpty() )
+
+        if( _ui->txt_url->text().right( 1 ) != "/" )
         {
-            _ui->lbl_info->setText( "Invalid upload url!" );
-            return;
+            _ui->txt_url->setText( _ui->txt_url->text() + "/" );
         }
 
-        _ui->grp_screenUpload->setEnabled( false );
-        _ui->grp_commands->setEnabled( false );
-        _password = _ui->txt_passwordUpload->text();
-        _ui->txt_passwordUpload->setText( "" );
+        _ui->txt_url->setEnabled( false );
+        _ui->txt_username->setEnabled( false );
+        _ui->txt_password->setEnabled( false );
+
+        _password = _ui->txt_password->text();
+        _ui->txt_password->setText( "" );
 
         _counterCommands = 0;
         _counterScreen = -1;
@@ -125,8 +114,9 @@ void networkWindow::startStopPressed()
     }
     else
     {
-        _ui->grp_screenUpload->setEnabled( true );
-        _ui->grp_commands->setEnabled( true );
+        _ui->txt_url->setEnabled( true );
+        _ui->txt_username->setEnabled( true );
+        _ui->txt_password->setEnabled( true );
 
         _ui->lbl_status->setText( PAUSING );
         _ui->lbl_status->setStyleSheet( STYLE_ERROR );
@@ -152,8 +142,8 @@ void networkWindow::uploadScreen()
     buffer.open( QIODevice::WriteOnly );
     pixmap.save( &buffer, "PNG" );
 
-    QUrl url( _ui->txt_urlUpload->text() );
-    url.setUserName( _ui->txt_usernameUpload->text() );
+    QUrl url( _ui->txt_url->text() + "screen.png" );
+    url.setUserName( _ui->txt_username->text() );
     url.setPassword( _password );
     url.setPort( 21 );
 
@@ -161,10 +151,11 @@ void networkWindow::uploadScreen()
     QNetworkReply* reply = _networkManager->put( upload, _screenBytes );
 
     connect( reply, SIGNAL( uploadProgress( qint64, qint64 ) ), this,
-             SLOT( uploadProgress( qint64, qint64 ) ) );
+             SLOT( uploadScreenProgress( qint64, qint64 ) ) );
     connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
             this, SLOT( networkError( QNetworkReply::NetworkError ) ) );
-    connect( reply, SIGNAL( finished() ), this, SLOT( uploadFinished() ) );
+    connect( reply, SIGNAL( finished() ), this,
+             SLOT( uploadScreenFinished() ) );
 }
 
 void networkWindow::networkError( QNetworkReply::NetworkError error )
@@ -176,18 +167,18 @@ void networkWindow::networkError( QNetworkReply::NetworkError error )
                    + QString::number( error ) );
 }
 
-void networkWindow::uploadProgress( qint64 bytesSent, qint64 bytesTotal )
+void networkWindow::uploadScreenProgress( qint64 bytesSent, qint64 bytesTotal )
 {
     if( bytesTotal > 0 )
     {
-        _ui->lbl_info->setText( "Upload: "
+        _ui->lbl_info->setText( "Upload screen: "
                                 + QString::number( bytesSent/bytesTotal )
                                 + "%, " + QDateTime::currentDateTime()
                                 .toString( "yyyy-MM-dd hh:mm:ss" ) );
     }
 }
 
-void networkWindow::uploadFinished()
+void networkWindow::uploadScreenFinished()
 {
     if( !_ui->lbl_info->text().startsWith( "Network error" ) )
     {
@@ -197,12 +188,11 @@ void networkWindow::uploadFinished()
     }
 }
 
-void networkWindow::downloadProgress( qint64 bytesSent,
-                                            qint64 bytesTotal )
+void networkWindow::downloadCmdsProgress( qint64 bytesSent, qint64 bytesTotal )
 {
     if( bytesTotal > 0 )
     {
-        _ui->lbl_info->setText( "Download: "
+        _ui->lbl_info->setText( "Download cmds: "
                                 + QString::number( bytesSent/bytesTotal )
                                 + "%" + QDateTime::currentDateTime()
                                 .toString( "yyyy-MM-dd hh:mm:ss" ) );
@@ -211,15 +201,18 @@ void networkWindow::downloadProgress( qint64 bytesSent,
 
 void networkWindow::downloadCmd()
 {
-    QNetworkRequest request( QUrl( _ui->txt_urlCmd->text() ) );
+    QNetworkRequest request( QUrl( _ui->txt_url->text().replace( "ftp", "http" )
+                                   + "cmd.txt" ) );
     _downloadReply = _networkManager->get( request );
 
     connect( _downloadReply, SIGNAL( readyRead() ), this,
              SLOT( readCommands() ) );
     connect( _downloadReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this,
-             SLOT( downloadProgress( qint64, qint64 ) ) );
+             SLOT( downloadCmdsProgress( qint64, qint64 ) ) );
     connect( _downloadReply, SIGNAL( error( QNetworkReply::NetworkError ) ),
              this, SLOT( networkError( QNetworkReply::NetworkError ) ) );
+    connect( _downloadReply, SIGNAL( finished() ), this,
+             SLOT( downloadCmdsFinished() ) );
 }
 
 void networkWindow::readCommands()
@@ -229,25 +222,41 @@ void networkWindow::readCommands()
         QString cmdLine = _downloadReply->readLine();
         LOG(INFO) << "network command read: " << cmdLine.toStdString();
         int firstSeperator = cmdLine.indexOf( "\t" );
-        int secondSeperator = cmdLine.indexOf( "\t", firstSeperator+1 );
 
-        if( firstSeperator != -1
-                && secondSeperator != -1 )
+        if( firstSeperator != -1 )
         {
             QString receiver = cmdLine.left( firstSeperator );
-            bool conversionSuccessful = false;
-            int temp = cmdLine.mid( firstSeperator+1,
-                                    secondSeperator-firstSeperator-1 ).toInt(
-                        &conversionSuccessful );
-            if( conversionSuccessful
-                    && temp < 256 )
-            {
-                char signal = static_cast<char>( temp );
-                QString cmd = cmdLine.mid( secondSeperator+1 );
-                _ui->lbl_info->setText( "signal " + QString::number( temp )
-                                        + " emitted!" );
-                emit newSignal( receiver, signal, cmd );
-            }
+            QString cmd = cmdLine.mid( firstSeperator+1 );
+
+            emit newSignal( receiver, cmd );
         }
     }
 }
+
+void networkWindow::downloadCmdsFinished()
+{
+    clearOnlineCmds();
+}
+
+void networkWindow::clearOnlineCmds()
+{
+    QUrl url( _ui->txt_url->text() + "cmd.txt" );
+    url.setUserName( _ui->txt_username->text() );
+    url.setPassword( _password );
+    url.setPort( 21 );
+
+    QNetworkRequest upload( url );
+    QNetworkReply* reply = _networkManager->put( upload, "" );
+
+    connect( reply, SIGNAL( error( QNetworkReply::NetworkError ) ),
+            this, SLOT( networkError( QNetworkReply::NetworkError ) ) );
+    connect( reply, SIGNAL( finished() ), this,
+             SLOT( clearOnlineCmdsFinished() ) );
+}
+
+void networkWindow::clearOnlineCmdsFinished()
+{
+
+}
+
+

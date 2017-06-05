@@ -15,10 +15,10 @@ elFlowPort::elFlowPort( QObject* parent ) : labPort( parent ), _inMsg( false ),
 
 void elFlowPort::setSerialValues()
 {
-    _port.setBaudRate( QSerialPort::Baud38400 );
-    _port.setDataBits( QSerialPort::Data8 );
-    _port.setStopBits( QSerialPort::OneStop );
-    _port.setParity(   QSerialPort::NoParity );
+    _port->setBaudRate( QSerialPort::Baud38400 );
+    _port->setDataBits( QSerialPort::Data8 );
+    _port->setStopBits( QSerialPort::OneStop );
+    _port->setParity(   QSerialPort::NoParity );
 }
 
 void elFlowPort::setLabPortVariables()

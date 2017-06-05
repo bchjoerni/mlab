@@ -12,10 +12,10 @@ tsh071Port::tsh071Port( QObject* parent ) : labPort( parent ),
 
 void tsh071Port::setSerialValues()
 {
-    _port.setBaudRate( QSerialPort::Baud9600 );
-    _port.setDataBits( QSerialPort::Data8 );
-    _port.setStopBits( QSerialPort::OneStop );
-    _port.setParity(   QSerialPort::NoParity );
+    _port->setBaudRate( QSerialPort::Baud9600 );
+    _port->setDataBits( QSerialPort::Data8 );
+    _port->setStopBits( QSerialPort::OneStop );
+    _port->setParity(   QSerialPort::NoParity );
 }
 
 void tsh071Port::setLabPortVariables()

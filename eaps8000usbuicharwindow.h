@@ -29,7 +29,7 @@ public:
     {
         return false;
     }
-    void mLabSignal( char signal, const QString& cmd ) override;
+    void mLabSignal( const QString& cmd ) override;
 
 private slots:
     void connectivityButtonPressed();
@@ -41,7 +41,8 @@ private slots:
     void currentUpdate( double current );
     void powerUpdate( double power);
     void portError( QString error );
-    void resetInfo();
+    void resetRefresh();
+    void clearInfo();
     void updateUnitRange();
     void fixStepSizeChanged();
     void calculateRemainingTicks();

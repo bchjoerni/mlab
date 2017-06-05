@@ -20,6 +20,7 @@ class labPort : public QObject
 
 public:
     explicit labPort( QObject *parent = 0 );
+    ~labPort();
     bool openPort( const QString& portName );
     void sendMsg( const char* msg, int numChars, bool inTime = false );
     void closePort();
@@ -27,6 +28,7 @@ public:
     bool isRunning();
     QString getPortName();
     void clearPortErrors();
+    void reset();
     virtual void updateValues();
 
     // settings for using enabling using raw labport!:
@@ -53,7 +55,7 @@ protected:
     virtual void getInitValues();
     void checkInTimeCount();
 
-    QSerialPort _port;
+    QSerialPort* _port;
     int _initTimeoutMs;
     int _initValueCounter;
     int _numInitValues;

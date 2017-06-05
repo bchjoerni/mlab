@@ -16,10 +16,10 @@ thermocouplePort::thermocouplePort( QObject *parent ) : labPort( parent ),
 
 void thermocouplePort::setSerialValues()
 {
-    _port.setBaudRate( QSerialPort::Baud38400 );
-    _port.setDataBits( QSerialPort::Data8 );
-    _port.setStopBits( QSerialPort::OneStop );
-    _port.setParity(   QSerialPort::NoParity );
+    _port->setBaudRate( QSerialPort::Baud38400 );
+    _port->setDataBits( QSerialPort::Data8 );
+    _port->setStopBits( QSerialPort::OneStop );
+    _port->setParity(   QSerialPort::NoParity );
 }
 
 void thermocouplePort::setLabPortVariables()

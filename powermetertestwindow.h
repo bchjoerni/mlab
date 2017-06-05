@@ -27,7 +27,7 @@ public:
     {
         return false;
     }
-    void mLabSignal( char signal, const QString& cmd ) override;
+    void mLabSignal( const QString& cmd ) override;
 
 private slots:
     void emergencyStop();
@@ -37,6 +37,7 @@ private slots:
     void setValue();
     void visibilitySelectionChanged();
     void changeVisibility();
+    void clearInfo();
 
 private:
     void refreshPortList();
