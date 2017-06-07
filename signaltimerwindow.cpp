@@ -44,8 +44,10 @@ void signalTimerWindow::doUpdate()
         {
             LOG(INFO) << "signal timer emits: "
                       << _ui->txt_window->text().toStdString() << ", "
-                      << _ui->txt_cmd->text().toStdString();
-            emit newSignal( _ui->txt_window->text(), _ui->txt_cmd->text() );
+                      << _ui->txt_cmd->text().replace(
+                             "\\t", "\t" ).toStdString();
+            emit newSignal( _ui->txt_window->text(),
+                            _ui->txt_cmd->text().replace( "\\t", "\t" ) );
             _ui->spb_ticks->setValue( _ticks );
 
             if( _ui->rad_singleShot->isChecked() )

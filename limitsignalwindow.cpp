@@ -70,16 +70,20 @@ void limitSignalWindow::putValue( const QString &id, double value )
         {
             LOG(INFO) << "limit signal window emits: "
                       << _ui->txt_window->text().toStdString() << ", "
-                      << _ui->txt_cmd->text().toStdString();
-            emit newSignal( _ui->txt_window->text(), _ui->txt_cmd->text() );
+                      << _ui->txt_cmd->text().replace(
+                             "\\t", "\t" ).toStdString();
+            emit newSignal( _ui->txt_window->text(),
+                            _ui->txt_cmd->text().replace( "\\t", "\t" ) );
         }
         else if( _ui->rad_lesser->isChecked()
                  && value < _ui->dsb_limit->value() )
         {
             LOG(INFO) << "limit signal window emits: "
                       << _ui->txt_window->text().toStdString() << ", "
-                      << _ui->txt_cmd->text().toStdString();
-            emit newSignal( _ui->txt_window->text(), _ui->txt_cmd->text() );
+                      << _ui->txt_cmd->text().replace(
+                             "\\t", "\t" ).toStdString();
+            emit newSignal( _ui->txt_window->text(),
+                            _ui->txt_cmd->text().replace( "\\t", "\t" ) );
         }
     }
 
