@@ -52,8 +52,8 @@ private:
     QString PR_ERRORS[8] = { "No error", "underrange!", "overrange!",
                              "sensor error!", "turned off!", "no gauge!",
                              "id error!", "unknown error!" };
-    const QString PRESSURE_GAUGE_1 = "pressure gauge 1";
-    const QString PRESSURE_GAUGE_2 = "pressure gauge 2";
+    const QString PRESSURE_GAUGE_1 = "p. gauge 1";
+    const QString PRESSURE_GAUGE_2 = "p. gauge 2";
 };
 
 #endif // TPG26XWINDOW_H

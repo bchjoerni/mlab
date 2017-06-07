@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>348</width>
-    <height>319</height>
+    <height>345</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -155,7 +155,7 @@
     </widget>
    </item>
    <item row="8" column="1">
-    <widget class="QSpinBox" name="spb_ticksWait">
+    <widget class="QSpinBox" name="spb_ticksScreen">
      <property name="alignment">
       <set>Qt::AlignCenter</set>
      </property>
@@ -245,7 +245,17 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>btn_startStop</tabstop>
+  <tabstop>txt_url</tabstop>
+  <tabstop>txt_username</tabstop>
+  <tabstop>txt_password</tabstop>
   <tabstop>spb_ticks</tabstop>
+  <tabstop>btn_info</tabstop>
+  <tabstop>chb_downloadCmds</tabstop>
+  <tabstop>chb_uploadScreen</tabstop>
+  <tabstop>spb_ticksScreen</tabstop>
+  <tabstop>chb_reset</tabstop>
+  <tabstop>spb_reset</tabstop>
  </tabstops>
  <resources/>
  <connections/>

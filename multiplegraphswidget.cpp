@@ -13,6 +13,11 @@ void multipleGraphsWidget::resizeEvent( QResizeEvent *event )
 
 QColor multipleGraphsWidget::getGraphColor( int index, int total )
 {
+    if( total < 1 )
+    {
+        total = 1;
+    }
+
     if( total > 1 )
     {
         total--;
@@ -23,6 +28,11 @@ QColor multipleGraphsWidget::getGraphColor( int index, int total )
         index = total;
     }
 
+    if( index < 0 )
+    {
+        index = 0;
+    }
+
     return QColor::fromRgb( 0, 255-255*index/total, 255*index/total );
 }
 
@@ -30,6 +40,11 @@ void multipleGraphsWidget::paintEvent( QPaintEvent *event )
 {
     QPainter painter( this );
     drawAxes( &painter );
+
+    if( _data.size() <= 1 )
+    {
+        return;
+    }
 
     double yAbsMax = 1.0;
     double yAbsMin = 0.0;

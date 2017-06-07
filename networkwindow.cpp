@@ -66,7 +66,7 @@ void networkWindow::doUpdate()
     {
         _counterScreen++;
     }
-    if( _counterScreen-1 >= _ui->spb_ticks->value() )
+    if( _counterScreen-1 >= _ui->spb_ticksScreen->value() )
     {
         if( _ui->chb_uploadScreen->isChecked() )
         {
@@ -80,7 +80,7 @@ void networkWindow::commandTicksChanged()
 {
     _ui->lbl_ticksToNext->setText( QString::number(
                                              _ui->spb_ticks->value() ) );
-    _ui->spb_ticksWait->setMaximum( _ui->spb_ticks->value() );
+    _ui->spb_ticksScreen->setMaximum( _ui->spb_ticks->value() );
 }
 
 void networkWindow::startStopPressed()
@@ -111,6 +111,8 @@ void networkWindow::startStopPressed()
         _ui->lbl_status->setText( RUNNING );
         _ui->lbl_status->setStyleSheet( STYLE_OK );
         _ui->btn_startStop->setText( STOP_REMOTE );
+        LOG(INFO) << "networkwindow started, url="
+                  << _ui->txt_url->text().toStdString();
     }
     else
     {
@@ -126,7 +128,7 @@ void networkWindow::startStopPressed()
 
 void networkWindow::uploadScreen()
 {
-    LOG(INFO) << "upload screen";
+    LOG(INFO) << "start upload screen...";
     QPixmap pixmap;
     QScreen *screen = QGuiApplication::primaryScreen();
     if( !screen )
@@ -226,6 +228,7 @@ void networkWindow::uploadScreenFinished()
         _ui->lbl_info->setText( "Screen upload finished. "
                                     + QDateTime::currentDateTime()
                                     .toString( "yyyy-MM-dd hh:mm:ss" ) );
+        LOG(INFO) << "screen upload finished";
     }
 }
 
@@ -242,6 +245,7 @@ void networkWindow::downloadCmdsProgress( qint64 bytesSent, qint64 bytesTotal )
 
 void networkWindow::downloadCmd()
 {
+    LOG(INFO) << "start download cmds";
     QNetworkRequest request( QUrl( _ui->txt_url->text().replace( "ftp", "http" )
                                    + "cmd.txt" ) );
     _downloadReply = _networkManager->get( request );
@@ -277,6 +281,7 @@ void networkWindow::readCommands()
 void networkWindow::downloadCmdsFinished()
 {
     clearOnlineCmds();
+    LOG(INFO) << "download cmds finished, clear online cmds";
 }
 
 void networkWindow::clearOnlineCmds()
@@ -297,7 +302,7 @@ void networkWindow::clearOnlineCmds()
 
 void networkWindow::clearOnlineCmdsFinished()
 {
-
+    LOG(INFO) << "clear online cmds finished";
 }
 
 

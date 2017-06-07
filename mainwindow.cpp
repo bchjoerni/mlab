@@ -115,6 +115,16 @@ void mainWindow::cascadeWindows()
 
 void mainWindow::addWindow()
 {
+    if( !_mdi->getWindowNames().isEmpty()
+            && !_ui->btn_startMeasurement->isEnabled() )
+    {
+        QMessageBox msgBox;
+        msgBox.setWindowTitle( "Warning!" );
+        msgBox.setText( "Adding windows takes some time - if the program is "
+                        "running, this might cause errors!" );
+        msgBox.exec();
+    }
+
     windowAdderWindow waw( _mdi, this );
     waw.exec();
 }
