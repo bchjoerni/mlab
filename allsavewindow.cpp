@@ -80,8 +80,9 @@ void allSaveWindow::doUpdate()
         _fileStream << "{" << std::endl;
         if( _ui->chb_saveDateTime->isChecked() )
         {
-            _fileStream << QDateTime::currentDateTime().
-                           toString( "yyyy-MM-dd hh:mm:ss" ).toStdString();
+            _fileStream << QDateTime::currentDateTime().toString(
+                               "yyyy-MM-dd hh:mm:ss" ).toStdString()
+                        << std::endl;
         }
         for( std::string s : _data )
         {
