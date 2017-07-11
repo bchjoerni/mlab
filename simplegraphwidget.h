@@ -18,11 +18,15 @@ class simpleGraphWidget : public QWidget
     Q_OBJECT
 
 public:
+    enum axisType{ axisLinear, axisLog10, axisLn };
+
     explicit simpleGraphWidget(QWidget *parent = 0);
     void newValue( const QString& id, double value );
     void axisChanged( const QString& x, const QString& y );
     void clearGraph();
     void setRunning( bool running );
+    void setXAxisType( axisType type );
+    void setYAxisType( axisType type );
 
 protected:
     void paintEvent( QPaintEvent* event );
@@ -38,6 +42,8 @@ private:
     std::map<QString, std::vector<double> > _data;
     QString _xId;
     QString _yId;
+    axisType _xAxisType;
+    axisType _yAxisType;
 
     int PRECISION_MAX_VALUES    = 4;
     int DIST_LEFT_BORDER_TEXT   = 1;

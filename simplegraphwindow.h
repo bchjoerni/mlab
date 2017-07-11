@@ -33,8 +33,12 @@ private slots:
     void startStop();
     void clearGraph();
     void axisChanged();
+    void xAxisTypeChanged();
+    void yAxisTypeChanged();
 
 private:
+    void addAxisTypes();
+
     Ui::simpleGraphWindow *_ui;
 
     const QString RUNNING = "drawing";
@@ -42,6 +46,10 @@ private:
 
     const QString START = "start drawing";
     const QString STOP  = "stop drawing";
+
+    const QString AXIS_LINEAR = "linear";
+    const QString AXIS_LOG10  = "log_10";
+    const QString AXIS_LN     = "ln";
 };
 
 #endif // SIMPLEGRAPHWINDOW_H

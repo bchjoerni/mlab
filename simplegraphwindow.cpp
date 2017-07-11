@@ -7,6 +7,8 @@ simpleGraphWindow::simpleGraphWindow( QWidget *parent ) :
 {
     _ui->setupUi( this );
 
+    addAxisTypes();
+
     connect( _ui->btn_startStop, SIGNAL( clicked() ), this,
              SLOT( startStop() ) );
     connect( _ui->btn_clearGraph, SIGNAL( clicked() ), this,
@@ -15,6 +17,10 @@ simpleGraphWindow::simpleGraphWindow( QWidget *parent ) :
              SLOT( axisChanged() ) );
     connect( _ui->cob_y, SIGNAL( currentTextChanged( QString ) ), this,
              SLOT( axisChanged() ) );
+    connect( _ui->cob_scaleX, SIGNAL( currentTextChanged( QString ) ), this,
+             SLOT( xAxisTypeChanged() ) );
+    connect( _ui->cob_scaleY, SIGNAL( currentTextChanged( QString ) ), this,
+             SLOT( yAxisTypeChanged() ) );
 }
 
 simpleGraphWindow::~simpleGraphWindow()
@@ -22,6 +28,16 @@ simpleGraphWindow::~simpleGraphWindow()
     delete _ui;
 }
 
+void simpleGraphWindow::addAxisTypes()
+{
+    _ui->cob_scaleX->addItem( AXIS_LINEAR );
+    _ui->cob_scaleX->addItem( AXIS_LOG10 );
+    // _ui->cob_scaleX->addItem( AXIS_LN ); looks the same as log10 ...
+
+    _ui->cob_scaleY->addItem( AXIS_LINEAR );
+    _ui->cob_scaleY->addItem( AXIS_LOG10 );
+    // _ui->cob_scaleY->addItem( AXIS_LN );
+}
 
 void simpleGraphWindow::mLabSignal( const QString& cmd )
 {    
@@ -105,6 +121,42 @@ void simpleGraphWindow::axisChanged()
 {
     _ui->wgt_graph->axisChanged( _ui->cob_x->currentText(),
                                  _ui->cob_y->currentText() );
+}
+
+void simpleGraphWindow::xAxisTypeChanged()
+{
+    if( _ui->cob_scaleX->currentText() == AXIS_LINEAR )
+    {
+        _ui->wgt_graph->setXAxisType( simpleGraphWidget::axisType::axisLinear );
+    }
+    else if( _ui->cob_scaleX->currentText() == AXIS_LOG10 )
+    {
+        _ui->wgt_graph->setXAxisType( simpleGraphWidget::axisType::axisLog10 );
+    }
+    else if( _ui->cob_scaleX->currentText() == AXIS_LN )
+    {
+        _ui->wgt_graph->setXAxisType( simpleGraphWidget::axisType::axisLn );
+    }
+
+    _ui->wgt_graph->update();
+}
+
+void simpleGraphWindow::yAxisTypeChanged()
+{
+    if( _ui->cob_scaleY->currentText() == AXIS_LINEAR )
+    {
+        _ui->wgt_graph->setYAxisType( simpleGraphWidget::axisType::axisLinear );
+    }
+    else if( _ui->cob_scaleY->currentText() == AXIS_LOG10 )
+    {
+        _ui->wgt_graph->setYAxisType( simpleGraphWidget::axisType::axisLog10 );
+    }
+    else if( _ui->cob_scaleY->currentText() == AXIS_LN )
+    {
+        _ui->wgt_graph->setYAxisType( simpleGraphWidget::axisType::axisLn );
+    }
+
+    _ui->wgt_graph->update();
 }
 
 void simpleGraphWindow::clearGraph()

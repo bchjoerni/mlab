@@ -26,13 +26,79 @@ void simpleGraphWidget::paintEvent( QPaintEvent *event )
         double yMin = *std::min_element( y.begin(), y.end() );
         double yMax = *std::max_element( y.begin(), y.end() );
 
+        if( _xAxisType == axisType::axisLog10 )
+        {
+            xMin = (xMin < std::numeric_limits<double>::epsilon() ?
+                        0 : std::log10( xMin ));
+            xMax = (xMax < std::numeric_limits<double>::epsilon() ?
+                        0 : std::log10( xMax ));
+        }
+        if( _xAxisType == axisType::axisLn )
+        {
+            xMin = (xMin < std::numeric_limits<double>::epsilon() ?
+                        0 : std::log( xMin ));
+            xMax = (xMax < std::numeric_limits<double>::epsilon() ?
+                        0 : std::log( xMax ));
+        }
+
+        if( _yAxisType == axisType::axisLog10 )
+        {
+            yMin = (yMin < std::numeric_limits<double>::epsilon() ?
+                        0 : std::log10( yMin ));
+            yMax = (yMax < std::numeric_limits<double>::epsilon() ?
+                        0 : std::log10( yMax ));
+        }
+        if( _yAxisType == axisType::axisLn )
+        {
+            yMin = (yMin < std::numeric_limits<double>::epsilon() ?
+                        0 : std::log( yMin ));
+            yMax = (yMax < std::numeric_limits<double>::epsilon() ?
+                        0 : std::log( yMax ));
+        }
+
         for( unsigned int i = 0; i < (x > y ? y.size()-1 : x.size()-1); i++ )
         {
-            painter.drawLine( getXPosition( x[x.size()-1-i], xMin, xMax,
-                              textHeight ),
-                    getYPosition( y[y.size()-1-i], yMin, yMax, textHeight ),
-                    getXPosition( x[x.size()-2-i], xMin, xMax, textHeight ),
-                    getYPosition( y[y.size()-2-i], yMin, yMax, textHeight ) );
+            double x1 = x[x.size()-1-i];
+            double x2 = x[x.size()-2-i];
+
+            double y1 = y[y.size()-1-i];
+            double y2 = y[y.size()-2-i];
+
+            if( _xAxisType == axisType::axisLog10 )
+            {
+                x1 = (x1 < std::numeric_limits<double>::epsilon() ?
+                            0 : std::log10( x1 ));
+                x2 = (x2 < std::numeric_limits<double>::epsilon() ?
+                            0 : std::log10( x2 ));
+            }
+            if( _xAxisType == axisType::axisLn )
+            {
+                x1 = (x1 < std::numeric_limits<double>::epsilon() ?
+                            0 : std::log( x1 ));
+                x2 = (x2 < std::numeric_limits<double>::epsilon() ?
+                            0 : std::log( x2 ));
+            }
+
+            if( _yAxisType == axisType::axisLog10 )
+            {
+                y1 = (y1 < std::numeric_limits<double>::epsilon() ?
+                            0 : std::log10( y1 ));
+                y2 = (y2 < std::numeric_limits<double>::epsilon() ?
+                            0 : std::log10( y2 ));
+            }
+            if( _yAxisType == axisType::axisLn )
+            {
+                y1 = (y1 < std::numeric_limits<double>::epsilon() ?
+                            0 : std::log( y1 ));
+                y2 = (y2 < std::numeric_limits<double>::epsilon() ?
+                            0 : std::log( y2 ));
+            }
+
+            painter.drawLine(
+                        getXPosition( x1, xMin, xMax, textHeight ),
+                        getYPosition( y1, yMin, yMax, textHeight ),
+                        getXPosition( x2, xMin, xMax, textHeight ),
+                        getYPosition( y2, yMin, yMax, textHeight ) );
         }
     }
 }
@@ -164,4 +230,14 @@ void simpleGraphWidget::axisChanged( const QString& x, const QString& y )
 {
     _xId = x;
     _yId = y;
+}
+
+void simpleGraphWidget::setXAxisType( axisType type )
+{
+    _xAxisType = type;
+}
+
+void simpleGraphWidget::setYAxisType( axisType type )
+{
+    _yAxisType = type;
 }
