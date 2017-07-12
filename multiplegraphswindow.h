@@ -38,6 +38,7 @@ private slots:
     void deleteSensors();
     void drawSettingsChanged();
     void normalizedChanged();
+    void yAxisChanged();
 
 private:
     void updateSensorColors();
@@ -49,6 +50,9 @@ private:
 
     const QString START = "start drawing";
     const QString STOP  = "stop drawing";
+
+    const QString AXIS_LINEAR = "linear";
+    const QString AXIS_LOG    = "logarithmic";
 };
 
 #endif // MULTIPLEGRAPHSWINDOW_H

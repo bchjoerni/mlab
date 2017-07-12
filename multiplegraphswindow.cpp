@@ -18,8 +18,13 @@ multipleGraphsWindow::multipleGraphsWindow( QWidget *parent ) :
              SLOT( deleteSensors() ) );
     connect( _ui->chb_normalize, SIGNAL( clicked() ), this,
              SLOT( normalizedChanged() ) );
+    connect( _ui->cob_yAxis, SIGNAL( currentTextChanged( QString ) ), this,
+             SLOT( yAxisChanged() ) );
     connect( _ui->list_sensors, SIGNAL( itemSelectionChanged() ), this,
              SLOT( drawSettingsChanged() ) );
+
+    _ui->cob_yAxis->addItem( AXIS_LINEAR );
+    _ui->cob_yAxis->addItem( AXIS_LOG );
 }
 
 multipleGraphsWindow::~multipleGraphsWindow()
@@ -145,6 +150,18 @@ void multipleGraphsWindow::drawSettingsChanged()
 void multipleGraphsWindow::normalizedChanged()
 {
     _ui->wgt_graph->setNormalized( _ui->chb_normalize->isChecked() );
+}
+
+void multipleGraphsWindow::yAxisChanged()
+{
+    if( _ui->cob_yAxis->currentText() == AXIS_LOG )
+    {
+        _ui->wgt_graph->setYAxis( multipleGraphsWidget::axisType::log );
+    }
+    else
+    {
+        _ui->wgt_graph->setYAxis( multipleGraphsWidget::axisType::linear );
+    }
 }
 
 void multipleGraphsWindow::updateSensorColors()

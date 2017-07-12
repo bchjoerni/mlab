@@ -153,6 +153,12 @@
    </item>
    <item row="0" column="0" colspan="6">
     <widget class="simpleGraphWidget" name="wgt_graph" native="true">
+     <property name="minimumSize">
+      <size>
+       <width>100</width>
+       <height>100</height>
+      </size>
+     </property>
      <property name="styleSheet">
       <string notr="true">background-color: white;</string>
      </property>

@@ -46,16 +46,6 @@ void multipleGraphsWidget::paintEvent( QPaintEvent *event )
         return;
     }
 
-    double yAbsMax = 1.0;
-    double yAbsMin = 0.0;
-
-    if( !_normalized )
-    {
-        yAbsMax = getYAbsMax();
-        yAbsMin = getYAbsMin();
-    }
-
-
     for( unsigned int i = 0; i < _sensors.size(); i++ )
     {
         painter.setPen( getGraphColor( i, _sensors.size() ) );
@@ -67,39 +57,87 @@ void multipleGraphsWidget::paintEvent( QPaintEvent *event )
                 continue;
             }
 
-            std::vector<double>& y = _data[_sensors[i].first];
-            if( y.size() > 1 )
+            if( _data[_sensors[i].first].size() > 1 )
             {
-                int textHeight = painter.fontMetrics().height();
-                double xMin = 0;
-                double xMax = y.size()-1;
-
-                if( _normalized )
-                {
-                    double yMin = *std::min_element( y.begin(), y.end() );
-                    double yMax = *std::max_element( y.begin(), y.end() );
-
-                    for( unsigned int k = 0; k < y.size()-1; k++ )
-                    {
-                        painter.drawLine(
-                            getXPosition( xMax-k, xMin, xMax, textHeight ),
-                            getYPosition( (y[y.size()-1-k]-yMin)/std::abs(yMax-yMin), 0, 1, textHeight ),
-                            getXPosition( xMax-k - 1, xMin, xMax, textHeight ),
-                            getYPosition( (y[y.size()-2-k]-yMin)/std::abs(yMax-yMin), 0, 1, textHeight ) );
-                    }
-                }
-                else
-                {
-                    for( unsigned int k = 0; k < y.size()-1; k++ )
-                    {
-                        painter.drawLine(
-                            getXPosition( xMax-k, xMin, xMax, textHeight ),
-                            getYPosition( y[y.size()-1-k], yAbsMin, yAbsMax, textHeight ),
-                            getXPosition( xMax-k - 1, xMin, xMax, textHeight ),
-                            getYPosition( y[y.size()-2-k], yAbsMin, yAbsMax, textHeight ) );
-                    }
-                }
+                drawDataFromSensor( &painter, i );
             }
+        }
+    }
+}
+
+void multipleGraphsWidget::drawDataFromSensor( QPainter *painter,
+                                               int sensorNum )
+{
+    std::vector<double>& y = _data[_sensors[sensorNum].first];
+
+    int textHeight = painter->fontMetrics().height();
+    double xMin = 0;
+    double xMax = y.size()-1;
+
+    if( _normalized )
+    {
+        double yMin = *std::min_element( y.begin(), y.end() );
+        double yMax = *std::max_element( y.begin(), y.end() );
+
+        if( _yAxisType == axisType::log )
+        {
+            yMin = yMin < std::numeric_limits<double>::epsilon() ?
+                        0 : std::log( yMin );
+            yMax = yMax < std::numeric_limits<double>::epsilon() ?
+                        0 : std::log( yMax );
+        }
+
+        for( unsigned int k = 0; k < y.size()-1; k++ )
+        {
+            double y1 = y[y.size()-1-k];
+            double y2 = y[y.size()-2-k];
+
+            if( _yAxisType == axisType::log )
+            {
+                y1 = y1 < std::numeric_limits<double>::epsilon() ?
+                            0 : std::log( y1 );
+                y2 = y2 < std::numeric_limits<double>::epsilon() ?
+                            0 : std::log( y2 );
+            }
+
+            painter->drawLine(
+                getXPosition( xMax-k, xMin, xMax, textHeight ),
+                getYPosition( (y1-yMin)/std::abs(yMax-yMin), 0, 1, textHeight ),
+                getXPosition( xMax-k - 1, xMin, xMax, textHeight ),
+                getYPosition( (y2-yMin)/std::abs(yMax-yMin), 0, 1, textHeight ) );
+        }
+    }
+    else
+    {
+        double yAbsMax = getYAbsMax();
+        double yAbsMin = getYAbsMin();
+
+        if( _yAxisType == axisType::log )
+        {
+            yAbsMax = yAbsMax < std::numeric_limits<double>::epsilon() ?
+                        0 : std::log( yAbsMax );
+            yAbsMin = yAbsMin < std::numeric_limits<double>::epsilon() ?
+                        0 : std::log( yAbsMin );
+        }
+
+        for( unsigned int k = 0; k < y.size()-1; k++ )
+        {
+            double y1 = y[y.size()-1-k];
+            double y2 = y[y.size()-2-k];
+
+            if( _yAxisType == axisType::log )
+            {
+                y1 = y1 < std::numeric_limits<double>::epsilon() ?
+                            0 : std::log( y1 );
+                y2 = y2 < std::numeric_limits<double>::epsilon() ?
+                            0 : std::log( y2 );
+            }
+
+            painter->drawLine(
+                getXPosition( xMax-k, xMin, xMax, textHeight ),
+                getYPosition( y1, yAbsMin, yAbsMax, textHeight ),
+                getXPosition( xMax-k - 1, xMin, xMax, textHeight ),
+                getYPosition( y2, yAbsMin, yAbsMax, textHeight ) );
         }
     }
 }
@@ -373,3 +411,10 @@ void multipleGraphsWidget::setNormalized( bool normalized )
     _normalized = normalized;
     update();
 }
+
+void multipleGraphsWidget::setYAxis( axisType type )
+{
+    _yAxisType = type;
+    update();
+}
+

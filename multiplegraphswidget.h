@@ -18,9 +18,12 @@ class multipleGraphsWidget : public QWidget
     Q_OBJECT
 
 public:
+    enum axisType { linear, log };
+
     explicit multipleGraphsWidget( QWidget *parent = 0 );
     void newValue( const QString& id, double value );
     void setNormalized( bool normalized );
+    void setYAxis( axisType type );
     void clearData();
     void setRunning( bool running );
     void newSensor( const QString& name, bool draw );
@@ -34,6 +37,7 @@ protected:
 
 private:
     void drawAxes( QPainter *painter );
+    void drawDataFromSensor( QPainter *painter, int sensorNum );
     QString getMinYValueString();
     QString getMaxYValueString();
     int getXPosition( double value, double min, double max, int textHeight );
@@ -44,6 +48,7 @@ private:
     std::map<QString, std::vector<double> > _data;
     std::vector<std::pair<QString, bool> > _sensors;
     bool _normalized;
+    axisType _yAxisType;
 
     int PRECISION_MAX_VALUES    = 4;
     int DIST_LEFT_BORDER_TEXT   = 1;
