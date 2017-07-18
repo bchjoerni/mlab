@@ -1,6 +1,7 @@
 #include "simplegraphwidget.h"
 
-simpleGraphWidget::simpleGraphWidget( QWidget *parent ) : QWidget( parent )
+simpleGraphWidget::simpleGraphWidget( QWidget *parent ) : QWidget( parent ),
+    _xAxisType( axisType::axisLinear ), _yAxisType( axisType::axisLinear )
 {
 
 }

@@ -69,6 +69,10 @@ void multipleGraphsWidget::drawDataFromSensor( QPainter *painter,
                                                int sensorNum )
 {
     std::vector<double>& y = _data[_sensors[sensorNum].first];
+    if( y.size() < 2 )
+    {
+        return;
+    }
 
     int textHeight = painter->fontMetrics().height();
     double xMin = 0;
@@ -151,11 +155,15 @@ double multipleGraphsWidget::getYAbsMax()
         if( _sensors[i].second )
         {
             std::vector<double>& y = _data[_sensors[i].first];
-            double yMax = *std::max_element( y.begin(), y.end() );
 
-            if( yMax > absMaxValue )
+            if( y.size() > 1 )
             {
-                absMaxValue = yMax;
+                double yMax = *std::max_element( y.begin(), y.end() );
+
+                if( yMax > absMaxValue )
+                {
+                    absMaxValue = yMax;
+                }
             }
         }
     }
@@ -177,11 +185,15 @@ double multipleGraphsWidget::getYAbsMin()
         if( _sensors[i].second )
         {
             std::vector<double>& y = _data[_sensors[i].first];
-            double yMin = *std::min_element( y.begin(), y.end() );
 
-            if( yMin < absMinValue )
+            if( y.size() > 1 )
             {
-                absMinValue = yMin;
+                double yMin = *std::min_element( y.begin(), y.end() );
+    
+                if( yMin < absMinValue )
+                {
+                    absMinValue = yMin;
+                }
             }
         }
     }
@@ -290,6 +302,11 @@ void multipleGraphsWidget::drawAxes( QPainter *painter )
 
 QString multipleGraphsWidget::getMinYValueString()
 {
+    if( _data.size() == 0 )
+    {
+        return "";
+    }
+
     double minValue = std::numeric_limits<double>::max();
 
     for( unsigned int i = 0; i < _sensors.size(); i++ )
@@ -315,6 +332,11 @@ QString multipleGraphsWidget::getMinYValueString()
 
 QString multipleGraphsWidget::getMaxYValueString()
 {
+    if( _data.size() == 0 )
+    {
+        return "";
+    }
+
     double maxValue = std::numeric_limits<double>::min();
 
     for( unsigned int i = 0; i < _sensors.size(); i++ )
