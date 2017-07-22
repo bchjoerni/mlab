@@ -185,10 +185,10 @@ void pairSaveWindow::addDelimiters()
 {
     _ui->cob_delimiter->clear();
 
+    _ui->cob_delimiter->addItem( DELIMITER_TABSTOP );
     _ui->cob_delimiter->addItem( DELIMITER_KOMMA );
     _ui->cob_delimiter->addItem( DELIMITER_SEMIKOLON );
     _ui->cob_delimiter->addItem( DELIMITER_WHITESPACE );
-    _ui->cob_delimiter->addItem( DELIMITER_TABSTOP );
 }
 
 QString pairSaveWindow::getDelimiter()
